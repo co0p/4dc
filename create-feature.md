@@ -14,9 +14,9 @@ Before generating a feature, verify that a `CONSTITUTION.md` file exists in the 
 - Do not proceed with feature generation until the constitution exists
 
 **If `CONSTITUTION.md` exists:**
-- Read and understand the project's core principles
-- Use the constitution to guide technical approach and implementation decisions
-- Ensure the feature aligns with the project's stated values and constraints
+- Read and understand the project's core principles and technical foundation
+- Ensure the feature respects constitutional constraints (tech stack, principles, limitations)
+- Use the constitution to guide what's feasible and align with project values
 
 ## Process
 
@@ -73,9 +73,9 @@ Use this structure for all features—small, testable increments with Gherkin-st
 # [Feature Title]
 
 ## Job Story
-When [situation]  
-I want to [action]  
-So I can [outcome]
+**When** [situation]  
+**I want to** [action]  
+**So I can** [outcome]
 
 **Assumption Being Tested:** [Specific hypothesis for this increment]
 
@@ -108,9 +108,9 @@ So I can [outcome]
 # Upload Profile Picture
 
 ## Job Story
-When I'm setting up my profile for the first time  
-I want to upload a recognizable photo  
-So I can build trust with other users before my first consultation
+**When** I'm setting up my profile for the first time  
+**I want to** upload a recognizable photo  
+**So I can** build trust with other users before my first consultation
 
 **Assumption Being Tested:** Users will complete profile setup if photo upload takes less than 30 seconds.
 

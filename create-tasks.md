@@ -18,10 +18,10 @@ Before generating tasks, verify that all prerequisite files exist:
 - Do not proceed until all three files exist
 
 **If all files exist:**
-- Read the constitution to understand testing philosophy, deployment approach, and technical constraints
-- Read the feature to understand acceptance criteria (Given/When/Then)
-- Read the ADR to understand component boundaries, data flow, and technical decisions
-- Generate tasks that implement the ADR's decisions to satisfy the feature's acceptance criteria
+- Read `CONSTITUTION.md` to understand the broad technical foundation, testing philosophy, and deployment constraints
+- Read `[feature-name]/feature.md` to understand what to build (acceptance criteria)
+- Read `[feature-name]/adr.md` to understand how to build it (technical decisions that comply with constitution)
+- Generate tasks that implement the feature following the ADR within all given constraints
 
 ## Task Structure Guidelines
 

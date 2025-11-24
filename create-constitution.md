@@ -32,7 +32,20 @@ Before generating the constitution, the AI should analyze:
 
 ## Suggesting Principles - The 6 Pillars
 
-A strong constitution covers the **6 core pillars** of modern software engineering. These guide AI decision-making across architecture, implementation, and trade-offs. **Suggest 3-5 principles total**, covering at least 3 different pillars.
+A strong constitution covers the **6 core pillars** of modern software engineering. These guide AI decision-making across architecture, implementation, and trade-offs.
+
+**Before suggesting principles, ask the user:**
+
+```
+How comprehensive should your constitution be?
+A. Cover all 6 pillars (comprehensive guidance for all aspects)
+B. Focus on 3-5 key principles (lighter, focused on project priorities)
+X. You decide based on project context
+```
+
+- **Option A (All 6 Pillars):** Include one principle from each pillar for complete coverage
+- **Option B (3-5 Principles):** Suggest the most relevant principles based on project context, covering at least 3 different pillars
+- **Option X (AI Decision):** Analyze project context and choose the appropriate level of detail
 
 ### The 6 Pillars
 
@@ -126,7 +139,10 @@ When asking about technology, be specific about the stack. **Always include opti
    C. MongoDB
    D. SQLite
    E. Redis
-   F. None yet
+   F. in-memory
+   G. None yet
+   X. Skip this question / I don't know yet
+
 5. What testing framework are you using?
    A. Jest
    B. Vitest

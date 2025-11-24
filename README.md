@@ -76,10 +76,10 @@ Tasks (HOW - Implementation)
 
 ## Workflow
 
-1. **Create Constitution** - Define your project's technical foundation and principles
-2. **Write Feature** - Describe the feature from the user's perspective (references Constitution)
-3. **Generate ADR** - Document architectural decisions for the feature (references Constitution + Feature)
-4. **Generate Tasks** - Break down implementation steps (references ADR + Feature)
+1. **Create Constitution** - Define your project's technical foundation and principles (the broad foundation)
+2. **Write Feature** - Describe the feature from the user's perspective
+3. **Generate ADR** - Document architectural decisions that comply with the constitution and implement the feature
+4. **Generate Tasks** - Break down implementation steps that follow the ADR within all given constraints
 5. **Implement** - Follow the tasks, checking them off as you go
 
 ## Templates
@@ -93,12 +93,12 @@ Each document type has a template to guide AI generation:
 
 ## Example
 
-See the `examples/` directory for a complete example:
+See the `example/` directory for a complete example:
 
-- `examples/CONSTITUTION.md` - mediaid medical transcription project
-- `examples/transcribe-consultation/feature.md` - Two-phase transcription feature
-- `examples/transcribe-consultation/adr.md` - Architectural decisions for the feature
-- `examples/transcribe-consultation/tasks.md` - Implementation task breakdown
+- `example/CONSTITUTION.md` - EpicSum CSV time aggregation tool
+- `example/sum-time-by-ticket/feature.md` - Time aggregation feature
+- `example/sum-time-by-ticket/adr.md` - Architectural decisions for the feature
+- `example/sum-time-by-ticket/tasks.md` - Implementation task breakdown
 
 ## Key Principles
 
@@ -109,11 +109,7 @@ See the `examples/` directory for a complete example:
 - Tasks capture implementation steps (actionable work)
 
 **Constitutional Alignment:**
-- Every ADR decision must reference constitutional principles
-- Features must respect constitutional constraints
-- Tasks implement the ADR while adhering to the constitution
-
-**No Code in ADRs:**
-- ADRs document decisions and trade-offs, not implementations
-- Actual code belongs in the project repository
-- ADRs guide developers on what to build and why, not exact syntax
+- Constitution establishes the broad technical foundation
+- Features describe user needs while respecting constitutional constraints
+- ADRs make technical decisions that comply with the constitution and implement the feature
+- Tasks execute the feature implementation following ADR guidance within all constraints (constitution, feature, ADR)

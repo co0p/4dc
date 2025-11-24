@@ -19,9 +19,9 @@ Before generating an ADR, verify that both prerequisite files exist:
 - Do not proceed until both files exist
 
 **If both files exist:**
-- Read and understand the constitution's technical decisions and principles
-- Read the feature to understand user goals and acceptance criteria
-- Document decisions that fulfill the feature while respecting the constitution
+- Read the constitution to understand the broad technical foundation and constraints
+- Read the feature to understand what needs to be built (user goals and acceptance criteria)
+- Make technical decisions that comply with the constitution while implementing the feature
 
 ## Process
 
@@ -197,6 +197,14 @@ ADRs are read by **developers implementing the feature** who need to understand:
 - What constraints to respect during implementation
 
 Keep ADRs **technical and tactical**—focused on this specific increment's architecture, not general principles (those are in the constitution).
+
+## No Code in ADRs
+
+**Important:** ADRs document decisions and trade-offs, not implementations.
+- Actual code belongs in the project repository
+- ADRs guide developers on what to build and why, not exact syntax
+- Focus on architectural choices, component boundaries, and data flow
+- Leave implementation details to the tasks and code itself
 
 ## Output
 
