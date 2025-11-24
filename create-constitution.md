@@ -249,6 +249,41 @@ Each principle should include:
 - [Concrete example or implication 3]
 ```
 
+### 3. Technical Decisions
+Specific technology choices with rationale (languages, frameworks, deployment).
+
+### 4. Human Review & Readability Requirements
+**MANDATORY:** All constitutions must include this section to ensure code safety and maintainability. See the "Human Review & Readability Requirements" section below for full content and rationale.
+
+
+## Human Review & Readability Requirements
+
+**Rationale**
+
+A primary goal of the constitution is to ensure long-term maintainability, auditability, and safety. Human review and explicit readability standards reduce risk (misinterpretation, security issues, regressions), speed audits and post‑mortems, and improve the ability of future contributors and automated agents to reason about and reuse the code.
+
+**Mandatory policy**
+
+- Any constitutional item that specifies the creation or modification of code MUST require a human review before any code is executed, merged into protected branches, or deployed to production.
+- Agents may prepare code changes but must:
+  1. Create a draft pull request (PR) containing the proposed changes.
+  2. Attach the constitution reference and a short summary linking to the ADR, tests, and safety checklist.
+  3. Ensure the code follows the repository's readability and maintainability standards (see checklist below).
+- The code must not be executed in production until at least one named human reviewer with the appropriate role approves the PR.
+
+**Readability & Maintainability checklist (to include in the constitution template)**
+
+- Clear, descriptive function and variable names.
+- Docstrings or comments for non-trivial logic.
+- Small, focused commits with descriptive messages.
+- Tests or validation steps when relevant.
+- Prefer structured, machine-readable templates (YAML/JSON) for artifacts the agent will consume.
+- No secrets or credentials in code or prompts; use vaults or ephemeral tokens.
+
+**Implementation Note**
+
+When generating a constitution, include a section that mandates human review for code changes. This ensures automated agents cannot bypass safety controls and maintains code quality standards.
+
 
 ## Output Format
 
@@ -298,9 +333,24 @@ Each principle should include:
 - [Declarative statement]: [Why we chose this]
 - [Declarative statement]: [Why we chose this]
 
-
 ---
 
+## Human Review & Readability Requirements
+
+**Mandatory Policy:**
+- All code changes require human review before execution, merging, or deployment
+- Automated agents must create draft PRs with constitution references and safety checklists
+- No code execution in production without approval from a named human reviewer
+
+**Readability & Maintainability Checklist:**
+- Clear, descriptive function and variable names
+- Docstrings or comments for non-trivial logic
+- Small, focused commits with descriptive messages
+- Tests or validation steps when relevant
+- Prefer structured, machine-readable templates (YAML/JSON) for agent-consumed artifacts
+- No secrets or credentials in code or prompts; use vaults or ephemeral tokens
+
+---
 
 **Last Updated:** [Current Date in YYYY-MM-DD format]
 ```
