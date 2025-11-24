@@ -34,6 +34,6 @@
     - Valid file → no error, script continues
   - [x] Verify error messages are clear and actionable
 
-- [ ] **Deploy**
-  - [ ] Commit: "Add input argument validation"
-  - [ ] Push to branch (or merge to main per constitution's direct deployment approach)
+- [x] **Deploy**
+  - [x] Commit: "Add input argument validation"
+  - [x] Push to branch (or merge to main per constitution's direct deployment approach)
