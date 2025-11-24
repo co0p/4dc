@@ -3,6 +3,9 @@
 # Ticket pattern for validation and extraction
 TICKET_PATTERN='\[([A-Za-z0-9-]+)\]'
 
+# Date format (auto-detected from first data row)
+DATE_FORMAT=""
+
 # Argument validation: Check if input file argument is provided
 if [ -z "$1" ]; then
     echo "please specify an input csv" >&2
@@ -58,14 +61,39 @@ validate_csv_format() {
 
 validate_csv_format "$1"
 
-# Sum time by ticket ID using awk for aggregation
+# Sum time by ticket ID with monthly grouping using awk for aggregation
 sum_time_by_ticket() {
     local file="$1"
     
-    # Use awk to process and aggregate
+    # Use awk to process and aggregate by month
     awk -F';' '
     NR == 1 { next }  # Skip header
     {
+        # Extract and parse date (field 1)
+        date_field = $1
+        gsub(/^[ \t]+|[ \t]+$/, "", date_field)
+        
+        # Detect date format and extract year/month
+        if (index(date_field, ".") > 0) {
+            # DD.MM.YY format
+            split(date_field, d, ".")
+            day = d[1]
+            month = d[2]
+            year = "20" d[3]  # Convert YY to 20YY
+        } else {
+            # YYYY-MM-DD format
+            split(date_field, d, "-")
+            year = d[1]
+            month = d[2]
+            day = d[3]
+        }
+        
+        # Create numeric month key for sorting (YYYYMM)
+        month_key = year sprintf("%02d", month)
+        
+        # Create display format (YYYY/MM)
+        month_display[month_key] = year "/" sprintf("%02d", month)
+        
         # Extract ticket ID from Description (field 5)
         match($5, /\[([A-Za-z0-9-]+)\]/)
         ticket_id = substr($5, RSTART, RLENGTH)
@@ -80,21 +108,70 @@ sum_time_by_ticket() {
         mins = t[2]
         total_mins = hours * 60 + mins
         
-        # Accumulate
-        ticket_minutes[ticket_id] += total_mins
-        ticket_counts[ticket_id] += 1
+        # Accumulate by month and ticket (use concatenated key)
+        key = month_key SUBSEP ticket_id
+        month_ticket_minutes[key] += total_mins
+        month_ticket_counts[key] += 1
+        
+        # Track tickets per month
+        if (!(month_key in month_tickets_seen)) {
+            month_tickets_seen[month_key] = ticket_id
+        } else if (index(month_tickets_seen[month_key], ticket_id) == 0) {
+            month_tickets_seen[month_key] = month_tickets_seen[month_key] "," ticket_id
+        }
+        
+        # Accumulate monthly totals
+        month_totals[month_key] += total_mins
+        month_counts[month_key] += 1
     }
     END {
-        # Print header
-        printf "%-12s | %-12s | %-8s\n", "Ticket ID", "Total Time", "Entries"
-        printf "%-12s-+-%-12s-+-%-8s\n", "------------", "------------", "--------"
+        # Collect and sort months in descending order
+        n = 0
+        for (month in month_totals) {
+            months[n++] = month
+        }
         
-        # Print results
-        for (ticket_id in ticket_minutes) {
-            total_mins = ticket_minutes[ticket_id]
-            hours = int(total_mins / 60)
-            mins = total_mins % 60
-            printf "%-12s | %d:%02d       | %-8d\n", ticket_id, hours, mins, ticket_counts[ticket_id]
+        # Simple bubble sort descending
+        for (i = 0; i < n; i++) {
+            for (j = i + 1; j < n; j++) {
+                if (months[i] < months[j]) {
+                    temp = months[i]
+                    months[i] = months[j]
+                    months[j] = temp
+                }
+            }
+        }
+        
+        # Print results grouped by month
+        for (m = 0; m < n; m++) {
+            month_key = months[m]
+            
+            # Calculate monthly total time
+            month_mins = month_totals[month_key]
+            month_hours = int(month_mins / 60)
+            month_min_part = month_mins % 60
+            
+            # Print month header
+            printf "\n=== %s - Total: %d:%02d (%d entries) ===\n\n", \
+                month_display[month_key], month_hours, month_min_part, month_counts[month_key]
+            
+            # Print ticket table header
+            printf "%-12s | %-12s | %-8s\n", "Ticket ID", "Total Time", "Entries"
+            printf "%-12s-+-%-12s-+-%-8s\n", "------------", "------------", "--------"
+            
+            # Print tickets for this month
+            split(month_tickets_seen[month_key], tickets, ",")
+            for (idx in tickets) {
+                ticket_id = tickets[idx]
+                if (ticket_id == "") continue
+                
+                key = month_key SUBSEP ticket_id
+                ticket_mins = month_ticket_minutes[key]
+                ticket_hours = int(ticket_mins / 60)
+                ticket_min_part = ticket_mins % 60
+                printf "%-12s | %d:%02d       | %-8d\n", \
+                    ticket_id, ticket_hours, ticket_min_part, month_ticket_counts[key]
+            }
         }
     }
     ' "$file"
