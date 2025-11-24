@@ -43,6 +43,6 @@
   - [x] Test time carry-over: manually add row with 2:50, another with 0:30, confirm total 3:20
   - [x] Verify all acceptance criteria from use case pass
 
-- [ ] **Deploy**
-  - [ ] Commit changes: "Add time aggregation by ticket ID"
-  - [ ] Merge to main: `git checkout main && git merge feature/sum-time-by-ticket`
+- [x] **Deploy**
+  - [x] Commit changes: "Add time aggregation by ticket ID"
+  - [x] Merge to main: `git checkout main && git merge feature/sum-time-by-ticket`

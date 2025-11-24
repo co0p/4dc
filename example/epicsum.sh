@@ -20,8 +20,8 @@ validate_csv_format() {
     local file="$1"
     local expected_header="Date; Person; Project; Aufgabe; Description; Time"
     
-    # Read and validate header
-    local header=$(head -n 1 "$file")
+    # Read and validate header (strip carriage returns for Windows line endings)
+    local header=$(head -n 1 "$file" | tr -d '\r')
     if [ "$header" != "$expected_header" ]; then
         echo "Invalid CSV: Missing or incorrect header row" >&2
         exit 1
@@ -31,6 +31,9 @@ validate_csv_format() {
     local line_num=1
     while IFS= read -r line; do
         line_num=$((line_num + 1))
+        
+        # Strip carriage returns for Windows line endings
+        line="${line%$'\r'}"
         
         # Skip header row
         if [ $line_num -eq 2 ]; then
