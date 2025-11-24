@@ -136,7 +136,7 @@ Update after completing each task to track progress.
 | Path                                    | Status    | Description                                |
 |-----------------------------------------|-----------|------------------------------------------- |
 | `components/profile/UploadPhoto.tsx`    | add       | Upload form component with file input     |
-| `components/profile/UploadPhoto.test.tsx` | add     | Unit tests for upload component           |
+| `components/profile/UploadPhoto.test.tsx` | add       | Unit tests for upload component           |
 | `pages/api/profile/picture.ts`          | add       | POST endpoint for image upload            |
 | `pages/api/profile/picture.test.ts`     | add       | Unit tests for upload endpoint            |
 | `lib/storage/s3.ts`                     | edit      | Add S3 upload helper functions            |
