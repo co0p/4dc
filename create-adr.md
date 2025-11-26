@@ -133,6 +133,50 @@ Keep ADRs focused on **technical decisions for small increments**. Aim for one s
 
 ---
 
+## Pillars of Software Engineering
+
+When an ADR results in new or modified code, it should explicitly reference the core pillars of software engineering that will guide implementation. In addition to correctness, performance, and security, ADRs should explicitly include Maintainability and Readability as first-class pillars.
+
+- Correctness
+- Performance
+- Security
+- Maintainability
+- Readability
+
+ADRs should state which pillars are primary and which are secondary for the change.
+
+---
+
+## Readability Level
+
+For any ADR that produces code (new code, significant refactors, or behavioral changes), the ADR author must specify a readability_level value describing the expected level of human-oriented clarity and maintainability for the delivered code. This helps reviewers and implementers align on expectations and review criteria.
+
+Allowed values:
+- low: Focus is on rapid prototyping or proof-of-concept. Minimal comments and tests; structure may be informal. Use when speed of iteration is the priority.
+- medium: Balanced approach. Clear naming, reasonable comments, basic tests, and adherence to the project's style guide. Suitable for typical feature work.
+- high: High standard for maintainability and readability. Comprehensive documentation, thorough inline comments, unit/integration tests, clear modularization, and examples. Use for foundational libraries, public APIs, or code that will be widely reused.
+
+Example ADR metadata snippet (include near the top of the ADR):
+
+```yaml
+title: "Example ADR title"
+status: proposed
+date: 2025-11-24
+author: Your Name
+pillars:
+  - Maintainability
+  - Readability
+  - Correctness
+readability_level: medium
+summary: |
+  Short summary of the decision and expected code quality.
+```
+
+Review requirement:
+- Any ADR that results in code must include a human review before merging into a protected branch or deploying the resulting code. The readability_level should inform the scope of the review (e.g., a "high" level ADR requires more thorough documentation and test coverage checks by the reviewer).
+
+---
+
 ## Template Example
 
 ```markdown
