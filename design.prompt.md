@@ -6,7 +6,7 @@ argument-hint: increment name or brief description
 
 # Rule: Generating an Initial Design Document
 
-This document represents the **HOW (Initial)** - sketching initial design ideas, potential approaches, and technical considerations before implementation.
+This document represents the **HOW (Initial)** plus a short **WHY** - sketching initial design ideas, potential approaches, and technical considerations before implementation. For each key consideration, include a one-line rationale and optionally link to relevant ADRs or CONSTITUTION.md entries (e.g., `(see: CONSTITUTION.md#security)` or `(ADR: 2025-03-01-auth-strategy)`).
 
 ## Goal
 
@@ -114,13 +114,13 @@ Keep designs focused on **initial approach for small increments**. Aim for one s
 
 ### [Design Consideration]
 **Approach:** [What we'll try first]  
-**Rationale:** [Why this seems reasonable - technical reasoning]  
+**Why (1 line):** [Concise reason for choosing this approach; can reference ADR or CONSTITUTION.md, e.g., (see: CONSTITUTION.md#section) or (ADR: YYYY-MM-DD-title)]  
 **Trade-offs:** [What we're accepting vs. what we're gaining]  
 **Alternatives to Consider:** [Other approaches we might pivot to]
 
 ### [Design Consideration]
 **Approach:** [What we'll try]  
-**Rationale:** [Why]  
+**Why (1 line):** [Brief reason; optional link to ADR/CONSTITUTION.md]  
 **Trade-offs:** [Gains vs. costs]  
 **Alternatives to Consider:** [Other options]
 
@@ -167,19 +167,19 @@ We'll try client-side image upload with backend validation and storage in cloud 
 
 ### Image Upload Pattern
 **Approach:** Client uploads directly to backend API, backend stores in S3-compatible storage  
-**Rationale:** Simple request/response pattern fits constitutional "speed over complexity". No presigned URLs or direct-to-S3 needed for MVP.  
+**Why (1 line):** Simple request/response pattern fits "speed over complexity" principle (see: CONSTITUTION.md#development-principles)  
 **Trade-offs:** Backend handles file upload (bandwidth cost) but simpler to implement and secure. Accept slower uploads for cleaner architecture.  
 **Alternatives to Consider:** Direct client→S3 upload (presigned URLs) - might revisit if upload speed becomes an issue.
 
 ### Image Validation
 **Approach:** Backend validates file type and size before storage  
-**Rationale:** Server-side validation is trustworthy; client-side can be bypassed. Prevents malicious uploads.  
+**Why (1 line):** Server-side validation is trustworthy; client-side can be bypassed (see: CONSTITUTION.md#security)  
 **Trade-offs:** Upload completes then fails validation (wasted bandwidth) but more secure. Accept this for MVP.  
 **Alternatives to Consider:** Client-only validation - skip due to security; dual validation - unnecessary complexity for now.
 
 ### Storage Location
 **Approach:** Cloud object storage (S3/compatible), not database  
-**Rationale:** Images are large binary data; database storage would bloat backup size and slow queries. Object storage is designed for this.  
+**Why (1 line):** Images are large binary data; object storage is designed for this use case (ADR: 2025-01-15-cloud-storage)  
 **Trade-offs:** External dependency on S3 but appropriate tool for the job. Cost is negligible at current scale.  
 **Alternatives to Consider:** Database blob storage - avoid due to performance; filesystem storage - avoid due to scaling/backup complexity.
 
@@ -242,7 +242,8 @@ Keep designs **lightweight and flexible**—focused on getting started, not fina
 3. **Focus on initial approach for this increment** - not the entire system
 4. **Ask 2-3 clarifying questions** only about architectural uncertainties
 5. **Sketch 2-5 key considerations** - component boundaries, data flow, integration, storage
-6. **Make trade-offs explicit** - what we're accepting vs. what we're gaining
-7. **Keep it concise** - aim for one screen, lightweight starting point
-8. **No implementation code** - only initial architectural ideas and rationale
-9. **Stay flexible** - this is a starting point, not final decisions
+6. **Add 1-line "Why" for each key consideration** and include a link to an ADR or CONSTITUTION.md if applicable. Keep the "Why" concise — no long policy text. Prefer referencing existing ADRs/Constitution entries instead of copying their content. Use simple link forms like `(see: CONSTITUTION.md#section)` or `(ADR: YYYY-MM-DD-title)`.
+7. **Make trade-offs explicit** - what we're accepting vs. what we're gaining
+8. **Keep it concise** - aim for one screen, lightweight starting point
+9. **No implementation code** - only initial architectural ideas and rationale
+10. **Stay flexible** - this is a starting point, not final decisions
