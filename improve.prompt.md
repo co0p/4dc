@@ -6,13 +6,11 @@ argument-hint: increment name
 
 # Rule: Generating a Refactor Plan
 
-## Persona: Craftsperson View
-
 This document represents **Make It Good** - improving code quality, extracting patterns, and cleaning up after getting the feature working.
 
 ## Goal
 
-To guide an AI assistant in creating a focused refactor plan that improves code quality after a feature is working. This is the "make it good" phase of Kent Beck's "make it work, make it good, make it fast" cycle.
+To guide an AI assistant in creating a focused refactor plan that improves code quality after a feature is working, just as a craftsperson would refine their work. This is the "make it good" phase of Kent Beck's "make it work, make it good, make it fast" cycle.
 
 ## Prerequisites
 

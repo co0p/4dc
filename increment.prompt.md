@@ -6,13 +6,11 @@ argument-hint: increment name or user capability
 
 # Rule: Generating an Increment Specification
 
-## Persona: Product Owner View
-
 This document represents the **WHAT** - describing individual increments from the user's perspective without technical implementation details.
 
 ## Goal
 
-To guide an AI assistant in creating a lightweight, focused increment specification in Markdown format. Each increment is a **small, testable addition** (subfunction) that validates a specific assumption through Gherkin-style acceptance criteria.
+To guide an AI assistant in creating a lightweight, focused increment specification in Markdown format, just as a product owner would define user value. Each increment is a **small, testable addition** (subfunction) that validates a specific assumption through Gherkin-style acceptance criteria.
 
 ## Prerequisites
 

@@ -1,7 +1,7 @@
 # 4DC – 4 Document Cascade
 
-A documentation system for clear, incremental, AI-assisted development, enabling robust, explicit architectural learning.  
-**Everything starts with the constitution.**
+A documentation system for clear, incremental, AI-assisted development, enabling robust, explicit architectural learning and evolution of the codebase.  
+**Learn fast within safe bounds.**
 
 ---
 
@@ -9,20 +9,20 @@ A documentation system for clear, incremental, AI-assisted development, enabling
 
 The core workflow in 4DC is an explicit, repeatable learning loop:
 
-1. **Start with the Constitution:**  
-   Define foundational principles and technical constraints (`CONSTITUTION.md`). Every increment is built on this bedrock.
-
-2. **Increment (WHAT):**  
+1. **Increment (WHAT):**  
    Describe the user-focused value to deliver. Summarize requirements and acceptance criteria in `[increment-name]/increment.md`.
 
-3. **Design (HOW – Initial Sketch):**  
-   Outline a technical approach (but don’t commit to details) in `[increment-name]/design.md`.
+2. **Design (HOW – Initial Sketch):**  
+   Outline a technical approach to guide implementation in `[increment-name]/design.md`.
 
-4. **Breakdown (HOW – Detailed):**  
-   Break the solution into small, verifiable steps in `[increment-name]/tasks.md`.
+3. **Breakdown (HOW – Detailed):**  
+   Break the solution into small, verifiable steps in `[increment-name]/breakdown.md`. Complete each task, checking off progress as you implement.
 
-5. **Implement & Improve:**  
-   Complete each task, check off progress, and refactor after acceptance. During improvement, codify recurring patterns as Architecture Decision Records.
+4. **Improve:**  
+   After acceptance criteria pass, refactor and identify patterns. Codify recurring decisions as Architecture Decision Records.
+
+**The Constitution provides guardrails:**  
+Define foundational principles and technical constraints once (`CONSTITUTION.md`). Every increment explores and experiments within these safe bounds. Architecture emerges from implementation, not upfront planning.
 
 ---
 
@@ -79,11 +79,22 @@ Each example demonstrates the full documentation cycle, from constitution throug
 
 ---
 
-## References & Inspirations
+## Inspirations
 
-Ideas in 4DC are based on or inspired by:
+4DC synthesizes concepts from multiple software engineering thought leaders and methodologies:
 
-- **Kent Beck** – "Make it work, make it good, make it fast"
-- **Martin Fowler** – Documentation and ADR discipline
-- **Mary & Tom Poppendieck** – Lean Software principles
-- **Robert C. Martin (Uncle Bob)** – Separation of concerns, clean code
+### Core Philosophy
+- **Kent Beck** – ["Make it work, make it good, make it fast"](https://wiki.c2.com/?MakeItWorkMakeItRightMakeItFast) - The improve phase embodies this three-step cycle, emphasizing working software first, then refactoring for quality
+- **Lean Software Development (Mary & Tom Poppendieck)** – Defer commitment, learn through building, eliminate waste - 4DC defers architectural decisions until patterns emerge from real implementation
+
+### Documentation Patterns
+- **Architecture Decision Records (Michael Nygard)** – [Documenting architectural decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) in a lightweight, searchable format - 4DC's `design/` folder captures emergent patterns as ADRs
+- **Martin Fowler** – [Evolutionary Architecture](https://martinfowler.com/articles/designDead.html), incremental design, and refactoring discipline - Constitution vs. ADRs separation mirrors upfront vs. emergent decisions
+
+### Requirements & Acceptance Testing
+- **Gherkin/BDD (Behavior-Driven Development)** – Given/When/Then format for acceptance criteria - Used in `increment.md` to define testable user outcomes
+- **Job Stories (Intercom/JTBD)** – ["When [situation], I want to [action], so I can [outcome]"](https://www.intercom.com/blog/using-job-stories-design-features-ui-ux/) - Captures user motivation more effectively than user stories
+
+### Software Craftsmanship
+- **Robert C. Martin (Uncle Bob)** – [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), SOLID principles, separation of concerns - Constitution's 6 Pillars framework maps to these foundational engineering practices
+- **The Agile Manifesto** – Working software over comprehensive documentation - 4DC uses just enough documentation to enable autonomous development without bureaucracy

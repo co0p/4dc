@@ -6,13 +6,11 @@ argument-hint: increment name
 
 # Rule: Generating a Task List
 
-## Persona: Developer View
-
 This document represents the **HOW - Detailed** - breaking down implementation into actionable, step-by-step tasks that can be followed by developers or AI agents.
 
 ## Goal
 
-To guide an AI assistant in creating a **lean, incremental task list** in Markdown format that breaks down a small feature into actionable implementation steps. Tasks should be minimal, testable, and deliver value incrementally.
+To guide an AI assistant in creating a **lean, incremental task list** in Markdown format that breaks down a small feature into actionable implementation steps, just as a developer would plan their work. Tasks should be minimal, testable, and deliver value incrementally.
 
 ## Prerequisites
 
