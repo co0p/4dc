@@ -106,8 +106,14 @@ Each example demonstrates the full documentation cycle, from constitution throug
 
 1. **Find prompt files** in the root or `.github/prompts/` directory (e.g. `create-constitution.prompt.md`, `increment.prompt.md`, etc).
 2. **Invoke workflows** by referencing prompt files in Copilot Chat:
+
+   **Step 0 (first-time only)** — create the constitution:
    ```
    @workspace /create-constitution
+   ```
+
+   **Then the normal cycle:**
+   ```
    @workspace /increment add todo item
    @workspace /design
    @workspace /breakdown
