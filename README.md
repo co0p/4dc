@@ -105,16 +105,19 @@ Each example demonstrates the full documentation cycle, from constitution throug
 4DC is designed for seamless AI-assistance via prompt files:
 
 1. **Find prompt files** in the root or `.github/prompts/` directory (e.g. `create-constitution.prompt.md`, `increment.prompt.md`, etc).
-2. **Invoke workflows** by referencing prompt files in Copilot Chat:
+2. **Create your constitution first** to establish foundational principles:
    ```
    @workspace /create-constitution
+   ```
+3. **Invoke workflow steps** by referencing prompt files in Copilot Chat:
+   ```
    @workspace /increment add todo item
    @workspace /design
    @workspace /breakdown
    @workspace /improve
    ```
 
-3. **Integration tip:** For repository-wide discoverability, copy prompt files to `.github/prompts/` and reference as:
+4. **Integration tip:** For repository-wide discoverability, copy prompt files to `.github/prompts/` and reference as:
    ```
    #file:.github/prompts/create-feature.md
    ```
