@@ -1,30 +1,23 @@
-# LLM-Human Interaction: Improve Step Questioning Style Reference
+# LLM-Human Interaction: Improve Step Findings Style Reference
 
-When initializing the improve step, ask the following numbered questions about patterns, trade-offs, and decisions. Answers should use letters, with X to skip and _ to enter a custom text answer. Mention briefly the relevance about each question using findings in the codebase.
+The improve step should be findings-driven, not question-driven. Present factual observations from the codebase, organized by lenses.
 
-## Example Question Format
+## Findings Format
 
-1. What pattern has emerged in the code?
-   A. Repeated logic
-   B. New abstraction
-   C. Consistent integration
-   X. Skip this question
-   _. Enter your own answer
+Present each finding as a factual observation with evidence from the codebase:
 
-2. What trade-off was made during implementation?
-   A. Performance vs. readability
-   B. Simplicity vs. flexibility
-   C. Speed vs. maintainability
-   X. Skip this question
-   _. Enter your own answer
+### Finding 1: [Title]
+- **Lens:** [Naming/Modularity/Architecture/Testing/Duplication/Documentation]
+- **Observation:** [Factual description of what was found]
+- **Evidence:** [Specific file/line references from the codebase]
+- **Recommendation:** [Suggested action based on industry best practices]
 
-3. What decision should be codified for future increments?
-   A. Module boundaries
-   B. Data flow
-   C. Integration approach
-   X. Skip this question
-   _. Enter your own answer
+### Finding 2: [Title]
+- **Lens:** [...]
+- **Observation:** [...]
+- **Evidence:** [...]
+- **Recommendation:** [...]
 
 ---
 
-Always number questions, use letters for answers, include X to skip, and _ for custom text answers.
+Always present findings with facts and evidence. Do not ask the user what to look for; let the lenses and codebase analysis guide recommendations.
