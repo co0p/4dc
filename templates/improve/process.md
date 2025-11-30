@@ -38,16 +38,20 @@ During the lens analysis, identify and document:
 - **Unexpected Challenges:** Issues that arose during implementation and how they were addressed.
 - **Emerging Patterns:** Recurring solutions or approaches that could be standardized.
 
-### Surface ADR Candidates
-When divergent implementations or emerging patterns appear (e.g., different approaches to user validation, error handling, or component structure), explicitly surface these as ADR candidates:
+### Surface ADR Candidates and Create ADRs
+When divergent implementations or emerging patterns appear (e.g., different approaches to user validation, error handling, or component structure), surface these as ADR candidates:
 - Describe the observation (divergent approaches or emerging pattern).
 - Recommend whether an ADR should be created.
 - Provide rationale for the recommendation.
-- Leave the final ADR creation decision to the user.
 
-ADRs should only be suggested for broadly relevant patterns or architectural decisions, not for trivial or stylistic changes.
+Once the user agrees to create an ADR:
+1. Create the ADR file immediately using the ADR Output Template
+2. Save it to the design folder as `design/adr-[number]-[name].md`
+3. List the created ADR in the improve.md output under "ADRs Created"
 
-Proceed to implement the selected refactorings first, grouped and labeled by lens context. Only after refactorings are completed and patterns or architectural decisions emerge, suggest and document ADRs as needed.
+ADRs should only be created for broadly relevant patterns or architectural decisions, not for trivial or stylistic changes.
+
+Proceed to implement the selected refactorings first, grouped and labeled by lens context.
 
 
 ## 4. Suggest Lenses-Based Refactoring Plan & User Selection
@@ -81,21 +85,22 @@ All improvement work must be performed on a dedicated feature branch (e.g., `imp
 Inform the user: "If any critical information is missing or the suggested refactorings need refinement, I will ask targeted follow-up questions."
 
 ## 6. Generate Improvement Plan
-Inform the user: "Once you confirm or provide additional answers, I will generate the improvement document strictly following the improve output format. The plan will always include sections for Assessment, Lessons, ADR Candidates, and Improvements."
+Inform the user: "Once you confirm or provide additional answers, I will generate the improvement document strictly following the improve output format."
 
-For the improve output, use the format described in output.md with the following sections:
-   - **Assessment:** Evaluation of implementation vs. Constitution/Design goals, quality, risks, and architectural opportunities
-   - **Lessons:** What worked well, what could be improved, unexpected challenges, emerging patterns
-   - **ADR Candidates:** Surfaced candidates for review with explicit recommendations (final ADR creation is at user's discretion)
-   - **Improvements:** Actionable refinements grouped by lens context with priority and effort estimates
+For the improve output, use the concise format described in output.md:
+   - **Assessment:** Brief evaluation of Constitution/Design alignment, quality, and risks
+   - **Lessons:** What worked well, what to improve, emerging patterns
+   - **ADRs Created:** List of ADR files created during this improve phase (not candidates - files are already generated)
+   - **Improvements:** Each improvement as a separate section with explicit file references, lens, priority, and effort
 
-For all actionable improvement tasks and subtasks:
-   - Progress tracking using checkboxes for each task and subtask
-   - Clear labeling and mapping to the relevant lens context
-   - Code snippets for each change or refactoring
-   - Validation steps to confirm correctness
-   - Documentation of decisions and rationale
-This format ensures clarity, traceability, and actionable progress for each improvement.
+Each improvement section must include:
+   - Lens context (Naming/Modularity/Architecture/Testing/Duplication/Documentation)
+   - Priority (H/M/L)
+   - Effort estimate
+   - Explicit file paths to change
+   - Specific change description
+
+This format ensures the output is parsable by the /increment prompt for follow-up implementation.
 
 For any architectural decisions (ADRs) required during the improve phase, use the ADR format described in adr.md:
    - Context: Briefly describe the situation or problem that led to the decision
@@ -108,26 +113,23 @@ Ensure ADRs are clearly separated from refactoring tasks and only created for im
 ## 7. Save Improvement Plan
 Inform the user: "I will save the generated improvement plan as improve.md in the project root."
 
-**Action:** Write the improvement plan as `improve.md` in the project root directory. The file must contain the following sections:
-- **Assessment:** Evaluation against Constitution/Design goals
-- **Lessons:** Learnings from the implementation
-- **ADR Candidates:** Surfaced candidates for review (explicit, ready to inform next increments)
-- **Improvements:** Actionable refinements with lens mapping
+**Action:** Write the improvement plan as `improve.md` in the project root directory. The file must contain:
+- **Assessment:** Brief evaluation against Constitution/Design goals
+- **Lessons:** Key learnings from the implementation
+- **ADRs Created:** List of ADR files created (files already generated, not pending)
+- **Improvements:** Each improvement as a separate section with file references
 
 ### Summary of Findings
-Provide a brief summary confirming the plan was saved, listing the included sections and lenses covered.
+Provide a brief summary confirming the plan was saved.
 
 ## 8. Final Validation
 Inform the user: "Before saving, I will validate that all requirements are met."
 
 **Verification Checklist:**
-- Assessment section evaluates implementation against Constitution and Design goals
-- Lessons section documents learnings, challenges, and emerging patterns
-- ADR Candidates section explicitly surfaces candidates for review with clear recommendations
-- Improvements section contains actionable, prioritized refinements with lens mapping
-- At least 3 lenses are covered in the analysis
-- Each refactoring suggestion is labeled with its lens context
-- ADR candidates are ready to inform next increments
-- Improvements are explicit and actionable
+- Assessment section contains Constitution/Design alignment and risks
+- Lessons section documents learnings and emerging patterns
+- ADRs Created section lists generated ADR files (not candidates)
+- Each improvement is a separate section with explicit file references
+- Improvements include lens, priority, effort, and change description
 
 If anything is missing, STOP and ask for clarification or fixes.
