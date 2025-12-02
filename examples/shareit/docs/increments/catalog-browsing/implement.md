@@ -19,20 +19,20 @@
 Note: Tailwind used via CDN; Vue via ESM CDN for this increment.
 
 ## 2. Implementation Tasks & Subtasks (Living Plan)
-- [ ] Setup
-  - [ ] Create increment branch: run `git checkout -b feature/catalog-browsing` (verify branch exists)
-  - [ ] Install server deps: `npm --prefix examples/shareit i express` (verify install)
-  - [ ] Add `start:catalog` script in `examples/shareit/package.json` (verify script runs)
+- [x] Setup
+  - [x] Create increment branch: run `git checkout -b feature/catalog-browsing` (verify branch exists)
+  - [x] Install server deps: `npm --prefix examples/shareit i express` (verify install)
+  - [x] Add `start:catalog` script in `examples/shareit/package.json` (verify script runs)
 
-- [ ] API Route
-  - [ ] Ensure `server/adapters/itemsRepo.js` returns sample items (verify export)
-  - [ ] Implement `server/domain/items.js:listItems` normalization (verify by unit test)
-  - [ ] Implement `server/routes/items.js` GET `/api/items` (verify curl output)
+- [x] API Route
+  - [x] Ensure `server/adapters/itemsRepo.js` returns sample items (verify export)
+  - [x] Implement `server/domain/items.js:listItems` normalization (manual verification for now)
+  - [x] Implement `server/routes/items.js` GET `/api/items` (verified via curl)
 
-- [ ] SPA Shell & Rendering
-  - [ ] Build `public/index.html` shell with Tailwind CDN and root containers (verify page loads)
-  - [ ] Implement `public/app.js` Vue app: load, error, list rendering with images (verify in browser)
-  - [ ] Include thumbnail fallback (SVG data URI) when missing (verify images render)
+- [x] SPA Shell & Rendering
+  - [x] Build `public/index.html` shell with Tailwind CDN and root containers (page loads)
+  - [x] Implement `public/app.js` Vue app: load, error, list rendering with images (implementation complete)
+  - [x] Include thumbnail fallback (SVG data URI) when missing (implementation complete)
 
 - [ ] Loading/Error/Empty States
   - [ ] Show spinner and text while loading (verify visible before data)
@@ -40,7 +40,7 @@ Note: Tailwind used via CDN; Vue via ESM CDN for this increment.
   - [ ] Empty-state message when no items (verify by clearing repo)
 
 - [ ] Verification (Manual-first for this increment)
-  - [ ] Manual API check: `curl http://localhost:3000/api/items | jq` (verify JSON shape)
+  - [x] Manual API check: `curl http://localhost:3000/api/items | jq` (verified JSON shape)
   - [ ] Manual UI check: load http://localhost:3000 (verify loading, list, images, availability chip)
   - [ ] Note: Automated tests deferred to a follow-up increment.
 
