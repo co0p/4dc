@@ -8,7 +8,8 @@ Before saving `CONSTITUTION.md`, validate the following:
 - Update Process: A clear, actionable process section is included.
 - Technical Decisions: Includes Languages, Frameworks, and Deployment with rationale.
 - Last Updated: Date formatted as YYYY-MM-DD using today’s date.
-- JSON Emissions: Step 3 (questions), Step 4 (proposal), Step 6/7 (summary) JSON blocks are well-formed.
+- Workflow Sections: Present and complete — LLM Collaboration & Increment Workflow, Scope Drift Management, Testing & Verification Policy, Post-Implementation Stabilization, Merge & Release, Documentation & Traceability, Roles & Decision Gates.
+- JSON Emissions (Internal): Step 3 (questions), Step 4 (proposal), Save Step (summary) JSON blocks are well-formed and treated as internal-only (not user-facing).
 - No Conflicts: Content is consistent (no contradictory rules across sections).
 
 If any item fails, STOP and request clarification or corrections before saving.

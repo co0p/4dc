@@ -5,7 +5,8 @@
 - Enforce the STOP gate at Step 3 until the user answers or explicitly waives.
 - Keep principles explicit, testable, and specific; avoid vague phrasing.
 - Use today’s date for "Last Updated" in YYYY-MM-DD format.
-- When requested in steps, emit JSON exactly as specified—no extra prose inside JSON blocks.
+- Human-first interaction: never surface raw JSON to the user unless explicitly requested.
+- When emitting structured outputs for automation, do so internally only (tooling/CI) and emit JSON exactly as specified—no extra prose inside JSON blocks.
 - Avoid harmful, hateful, lewd, or violent content; refuse such requests.
 
 Human-first interaction: Always ask questions and present summaries in plain language. JSON emissions are internal-only for tooling and should not be shown to the user unless they explicitly request to see them.
@@ -47,8 +48,21 @@ Internally emit a PrinciplesProposal JSON (see Output section for schema). Do no
 ## 5. Ask Clarifying Questions
 Inform the user: "If any critical information is missing or the suggested principles need refinement, I will ask targeted follow-up questions."
 
-## 6. Generate Constitution
-Inform the user: "Once you confirm or provide additional answers, I will generate the constitution document following the output format. The constitution will always include a section specifying where increments should be stored, using your answer or the recommended location (`docs/increments/`)."
+## 6. Planned Sections Summary (STOP)
+Present a human-readable checklist of sections you plan to generate and request confirmation:
+- Vision, Mission, Core Values
+- Architectural Principles (3–5; mapped to pillars)
+- Pillar Coverage
+- Update Process
+- Technical Decisions (Languages, Frameworks, Deployment)
+- Workflow: LLM Collaboration & Increment Workflow; Scope Drift Management; Testing & Verification Policy; Post-Implementation Stabilization; Merge & Release; Documentation & Traceability; Roles & Decision Gates
+- Increments Location
+- Last Updated (YYYY-MM-DD)
+
+**STOP:** Ask the user to confirm this Planned Sections Summary or request changes before generation.
+
+## 7. Generate Constitution
+Inform the user: "Once you confirm the Planned Sections Summary (and provide any additional answers), I will generate the constitution document following the output format. The constitution will always include a section specifying where increments should be stored, using your answer or the recommended location (`docs/increments/`)."
 
 Include the following additional sections in the generated document to guide LLM-supported incremental delivery:
 - LLM Collaboration & Increment Workflow (STOP gates, feature branch, commit cadence, non-interactive phases)
@@ -59,7 +73,7 @@ Include the following additional sections in the generated document to guide LLM
 - Documentation & Traceability (required increment artifacts, decision logging)
 - Roles & Decision Gates (sponsor, implementer, reviewer responsibilities)
 
-## 7. Save Constitution
+## 8. Save Constitution
 Inform the user: "I will save the generated constitution as CONSTITUTION.md in the project root."
 
 ### Summary of Findings
@@ -67,21 +81,21 @@ Provide a brief summary confirming the constitution was saved, listing the inclu
 
 Internally emit a ConstitutionSummary JSON (see Output section for schema) confirming sections, coverage, counts, paths, and date. Do not display this JSON to the user; provide a human-readable confirmation.
 
-## 8. Final Validation
+## 9. Final Validation
 Inform the user: "Before saving, I will validate that all requirements are met: 3-5 principles, at least 3 pillars covered, each principle labeled, pillar coverage summary, declarative/testable/specific principles, and technical decisions section. If anything is missing, I will STOP and ask for clarification or fixes."
 
 Also validate the presence of new workflow sections (LLM Collaboration, Scope Drift, Testing, Stabilization, Merge & Release, Documentation & Roles). If any are missing, STOP and add them.
 
 ---
 
-## Structured JSON Outputs
+## Structured JSON Outputs (Internal Only)
 
 To enable automation and validation, emit a concise JSON block at specific steps. Place each JSON in a fenced block marked with `json` and do not include non-JSON prose inside the block.
 
 Visibility: These JSON blocks are for internal tooling/CI only. Do not surface them to users unless explicitly requested.
 
-### Step 3 — ClarificationRequest JSON
-Emit when asking the pillar questions and the increments location. Do not proceed until answered.
+### ClarificationRequest (Step 3)
+Emit internally when asking the pillar questions and the increments location. Do not proceed until answered.
 
 Schema (informal):
 ```json
@@ -100,8 +114,8 @@ Schema (informal):
 }
 ```
 
-### Step 4 — PrinciplesProposal JSON
-Emit when proposing 3–5 core principles mapped to pillars.
+### PrinciplesProposal (Step 4)
+Emit internally when proposing 3–5 core principles mapped to pillars.
 
 Schema (informal):
 ```json
@@ -121,8 +135,8 @@ Schema (informal):
 }
 ```
 
-### Step 6/7 — ConstitutionSummary JSON
-Emit after generating and saving the constitution to confirm coverage and metadata.
+### ConstitutionSummary (Save Step)
+Emit internally after generating and saving the constitution to confirm coverage and metadata.
 
 Schema (informal):
 ```json

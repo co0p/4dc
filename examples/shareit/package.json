@@ -1,0 +1,10 @@
+{
+  "name": "shareit-example",
+  "private": true,
+  "scripts": {
+    "start:catalog": "node server/app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
