@@ -26,4 +26,38 @@ function listItems(items) {
   }));
 }
 
-module.exports = { listItems };
+async function borrowItem(repo, id) {
+  const item = await repo.findById(id);
+  if (!item) {
+    const err = new Error('Item not found');
+    err.status = 404;
+    throw err;
+  }
+  const current = normalizeAvailability(item);
+  if (current === 'borrowed') {
+    const err = new Error('Item already borrowed');
+    err.status = 409;
+    throw err;
+  }
+  const updated = await repo.update(id, { availability: 'borrowed' });
+  return listItems([updated])[0];
+}
+
+async function returnItem(repo, id) {
+  const item = await repo.findById(id);
+  if (!item) {
+    const err = new Error('Item not found');
+    err.status = 404;
+    throw err;
+  }
+  const current = normalizeAvailability(item);
+  if (current === 'available') {
+    const err = new Error('Item not borrowed');
+    err.status = 409;
+    throw err;
+  }
+  const updated = await repo.update(id, { availability: 'available' });
+  return listItems([updated])[0];
+}
+
+module.exports = { listItems, borrowItem, returnItem };
