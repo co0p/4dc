@@ -1,0 +1,41 @@
+{
+  "name": "4dc-prompts",
+  "displayName": "4DC Prompts (local)",
+  "publisher": "local",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "main": "extension.js",
+  "activationEvents": [
+    "onCommand:4dc.open.createConstitution",
+    "onCommand:4dc.open.designPrompt",
+    "onCommand:4dc.open.implementPrompt",
+    "onCommand:4dc.open.incrementPrompt",
+    "onCommand:4dc.open.improvePrompt"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "4dc.open.createConstitution",
+        "title": "4DC: Open create-constitution.prompt.md"
+      },
+      {
+        "command": "4dc.open.designPrompt",
+        "title": "4DC: Open design.prompt.md"
+      },
+      {
+        "command": "4dc.open.implementPrompt",
+        "title": "4DC: Open implement.prompt.md"
+      },
+      {
+        "command": "4dc.open.incrementPrompt",
+        "title": "4DC: Open increment.prompt.md"
+      },
+      {
+        "command": "4dc.open.improvePrompt",
+        "title": "4DC: Open improve.prompt.md"
+      }
+    ]
+  }
+}
