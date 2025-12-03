@@ -2,32 +2,36 @@
 
 ## Purpose
 
-This CONSTITUTION captures the engineering guardrails for the Pomodoro tray app: a tiny, focused macOS menu-bar timer implemented in Go. It exists to guide everyday choices across the 4dc loop (increment → design → implement → improve), keeping decisions aligned with our priorities: simplicity, reliability, and minimal user friction.
+This CONSTITUTION exists to make explicit the engineering principles and trade-offs that guide development of the Pomodoro tray app. It should be used as the first reference when making design, testing, dependency, and release decisions so day-to-day work remains aligned with the product's intent: a minimal, reliable macOS menu-bar Pomodoro implemented as a single Go binary.
 
 ## Context
 
 - Product / domain:
-  - A lightweight macOS menu-bar Pomodoro timer implemented in Go. Single-purpose UX: start/stop timers, simple notifications, and minimal configuration.
+  - A lightweight Pomodoro timer that lives in the macOS menu bar. The product prioritizes minimal configuration, predictable behavior, and a small footprint.
 - Team:
-  - Small project scope; intended for a small maintainer or small community contributors. Emphasis on pragmatic engineering over heavyweight process.
+  - Small, maintenance-focused contributors or a solo maintainer. Preference for short feedback loops and incremental changes over heavy upfront design.
 - Non-negotiables:
-  - The app must be small, responsive, and unobtrusive.
-  - The product ships to individual users on macOS. Distribution and signing expectations should be decided up-front (see Open Questions).
-  - User privacy: no telemetry unless explicitly stated and opt-in.
+  - Platform: macOS-only (menu bar / tray experience).
+  - Distribution: Single binary artifacts are the primary release format.
+  - Privacy: Offline by default; no telemetry or automatic reporting.
+  - Implementation: Go (golang) is the primary implementation language.
 
 ## Our Principles and Trade-offs
 
-We prioritize delivering a small, reliable product quickly while avoiding long-term complexity that undermines maintainability. Decisions bias toward pragmatic minimalism: prefer readable, idiomatic Go and the standard library unless a dependency clearly reduces complexity and maintenance cost.
+We prioritize delivering a focused, dependable experience with minimal overhead. That means favoring straightforward implementations and tiny, well-tested core logic while allowing the UI glue to remain pragmatic and platform-specific.
 
-- Speed vs safety: Favor small, frequent, low-risk releases. Safety (platform compatibility, privacy, and not breaking users) is enforced for public releases; prototypes or internal builds may be faster and lighter on checks.
-- Short-term delivery vs long-term maintainability: Prefer small, well-documented shortcuts over opaque hacks. If we take a shortcut, we record it and set a timebox for cleanup.
-- Experimentation vs stability: Experimentation is allowed in forks/feature branches or behind flags; the main branch must remain stable for users.
+- Speed vs safety: prefer fast, small, reversible changes that keep the app useful; invest in tests for core timer semantics and config handling to avoid regressions.
+- Short-term delivery vs long-term maintainability: prefer simple, clean code for core components and accept limited, recorded shortcuts in non-critical UI glue when necessary. Pay down those shortcuts intentionally.
+- Experimentation vs stability: permit short-lived experiments behind feature flags or in branches, but only release experiments when they meet the minimal quality expectations defined in the Test Strategy.
 
 ### Default Trade-off Rules
 
-- When in doubt between **shipping faster** and **polishing the design**, we usually: ship a small, well-tested increment that is easily revertible. Polishing is scheduled as a follow-up increment if not critical for user experience.
-- When in doubt between **adding a dependency** and **building it ourselves**, we usually: prefer the standard library or a small, well-maintained dependency with clear licensing. Add a dependency only if it meaningfully reduces code complexity or solves a non-trivial platform gap.
-- When in doubt between **adding tests now** and **moving on**, we usually: add at least a minimal, automated smoke test for critical user flows (build, launch, basic timer flow). Deeper unit tests follow as increments when logic complexity grows.
+- When in doubt between **shipping faster** and **polishing the design**, we usually:
+  - Ship a small, well-scoped change with automated tests for core logic and a clear release note. Defer cosmetic polishing to a follow-up if it can be done without user-visible regressions.
+- When in doubt between **adding a dependency** and **building it ourselves**, we usually:
+  - Prefer a small, actively maintained Go library that reduces risk or code surface area. Avoid large frameworks or dependencies that pull significant transitive noise.
+- When in doubt between **adding tests now** and **moving on**, we usually:
+  - Add at least unit tests for core logic and integration tests for non-trivial state transitions. For purely UI glue changes, rely on manual verification but add unit tests for any moved or extracted logic.
 
 ---
 
@@ -35,114 +39,112 @@ We prioritize delivering a small, reliable product quickly while avoiding long-t
 
 ### 1. Delivery Velocity
 
-- Desired iteration speed: small increments (single feature or fix per increment), frequent releases for users when changes are user-visible.
-- Typical increment size: a single feature, a bugfix, or a small UX improvement that can be implemented, tested, and released in a few hours to a couple of days.
-- Release cadence and acceptable risk per release: aim for frequent, small releases with low blast radius. Public releases require basic verification (build, smoke tests, signed binary if applicable).
+We aim for rapid, low-risk iterations that keep the app useful and small.
 
-**We optimize for:** rapid, low-risk shipping and quick rollback capability.
-**We accept the following risks:** small regressions that can be quickly fixed in subsequent increments.
-**We avoid:** large, multi-feature releases that increase risk and complicate rollbacks.
+- Desired iteration speed: short cycles (days to a couple of weeks) for small features and fixes; emergency fixes are allowed as patches.
+- Typical size of changes: single-concern PRs that implement one feature or fix and include tests for core behaviors.
+- Release cadence and acceptable risk per release: frequent single-binary releases are acceptable; each release must preserve core timer semantics and basic config compatibility unless a breaking change is explicitly documented.
+
+**We optimize for:**
+- Small, test-backed changes that deliver user-facing value quickly.
+
+**We accept the following risks:**
+- Minor, documented UI regressions that do not break timer semantics or user data.
+
+**We avoid:**
+- Large, multi-feature releases that increase regression risk without adequate testing.
 
 ### 2. Test Strategy
 
-- What must be tested: build and packaging, basic runtime startup, core timer flow (start/pause/reset/notification), and any platform integration (menu-bar behavior, notifications).
-- Coverage / confidence: focus on critical-path coverage rather than a high percentage target. Automated smoke tests + selective unit tests where logic is non-trivial.
-- Preferred shape: lean testing pyramid — smoke/integration tests for platform-level flows, unit tests for core time and state logic, minimal UI tests if reliable tooling exists.
+Testing focuses on ensuring core timer correctness and preventing regressions in state and configuration handling.
 
 **Minimum expectations:**
-- A reproducible build and packaging pipeline (local or CI).
-- One or more automated smoke checks that verify the app launches and the timer state transitions.
+- Unit tests covering timer logic (tick behavior, start/stop/reset semantics), configuration parsing, and any non-trivial state transitions.
+- A small integration test or smoke check that validates the main run loop and persistence (if present) in CI where practical.
+- Manual UI checks for menu-bar interactions, notifications, and platform behaviors before release.
 
-**When moving fast, we are allowed to:** temporarily skip non-critical unit tests if a compensating smoke test exists and the change is small.
-**We never skip tests for:** releases that change distribution, signing, or anything that affects user privacy or data handling.
+**When moving fast, we are allowed to:**
+- Rely on manual verification for superficial UI tweaks, provided core logic is covered by automated tests.
+
+**We never skip tests for:**
+- Changes that touch timer semantics, persistence, or configuration formats that affect user data or expected behavior.
 
 ### 3. Design Integrity
 
-- Structure: keep domain logic (timer, state machine, persistence) separated from platform glue (menu-bar UI, macOS notifications). This makes logic testable without macOS-specific tooling.
-- Good boundaries: a small core package with no macOS dependencies, and a thin platform adapter layer.
+Structure code to keep the domain (timer semantics and scheduling) independent from platform UI code.
 
-**We strive for:** clear separation between core timer behavior and UI/OS integration so core logic can be tested and reused.
-**We are okay with:** modest platform-specific code in the adapter layer to keep user experience native.
-**Red flags that trigger redesign or refactoring:** platform code leaking into core logic, duplicated state handling, or increasing complexity that prevents confident small changes.
+**We strive for:**
+- A small, testable core package that implements all timer rules and state transitions.
+- A thin platform adapter that implements menu-bar UI, notifications, and OS integration.
+
+**We are okay with:**
+- Some messiness in platform glue (menu-bar integration and macOS-specific bits) as long as boundaries between core logic and UI remain clear and covered by tests where feasible.
+
+**Red flags that trigger redesign or refactoring:**
+- Core logic depending on platform APIs or UI code.
+- Repeated, duplicated timer logic spread across UI adapters.
 
 ### 4. Simplicity First
 
-- Principle: implement the simplest thing that works, then iterate. Avoid premature abstractions.
-- Introduce patterns only when repetition or inconsistency shows a clear benefit.
+The app exists to provide a single, clear job: reliable Pomodoro timing. Complexity should only be introduced when it provides clear value.
 
-**We prefer:** readable, idiomatic code and explicitness over clever abstractions.
-**We add abstraction only when:** two or more concrete duplicates exist or when a pattern prevents classes of bugs.
-**We treat complexity as acceptable when:** it measurably improves user experience or reduces long-term maintenance cost.
+**We prefer:**
+- The simplest thing that could possibly work, then iterate.
+
+**We add abstraction only when:**
+- Multiple features or code paths duplicate the same logic, or when an abstraction significantly reduces risk or test surface.
+
+**We treat complexity as acceptable when:**
+- It is necessary for correctness, performance within the single-binary constraint, or significant developer productivity gains.
 
 ### 5. Technical Debt Boundaries
 
-- Acceptable shortcuts: small, documented compromises confined to a single increment with a clear owner and expiration.
-- Recording debt: all shortcuts must be recorded as issues tagged `technical-debt` and referenced in the increment that introduced them.
-- Paying debt: prioritize debt paydown during regular maintenance increments or when the debt blocks meaningful progress.
+Shortcuts are allowed when they are small, documented, and scheduled for repayment.
 
-**Allowed short-term shortcuts:** small UX omissions, temporarily limited platforms, developer-only flags.
-**Debt must be recorded when:** code is added that reduces long-term maintainability, or tests are skipped for release reasons.
-**We commit to paying down debt when:** it causes repeated manual work, leads to bugs, or slows iteration.
+**Allowed short-term shortcuts:**
+- Quick UI hacks for prototype or experimental behavior that are flagged in the issue tracker and bounded by scope.
+
+**Debt must be recorded when:**
+- A change sacrifices clarity, testability, or introduces duplicated logic to speed delivery.
+
+**We commit to paying down debt when:**
+- The debt interferes with adding features, causes repeated bugs, or when it accumulates past a small, agreed threshold (for example, more than two related debt items blocking core improvements). Payment should be scheduled into the next minor release or an explicit refactor sprint.
 
 ### 6. Dependency Discipline
 
-- How we choose dependencies: prefer stdlib, then small, well-maintained libraries with permissive licenses and minimal transitive dependencies.
-- Isolation: encapsulate third-party usage behind small adapter interfaces so the rest of the codebase can remain dependency-agnostic.
+Dependencies must be evaluated for size, transitive impact, maintenance, and security.
 
-**We add a new dependency only when:** it significantly reduces implementation or maintenance cost and has active maintenance and a permissive license.
-**We isolate dependencies by:** wrapping them in small adapters and limiting their surface area in the repo.
-**We avoid:** heavy frameworks or libraries that pull large transitive trees or force architectural decisions.
+**We add a new dependency only when:**
+- It materially reduces risk or work, has minimal transitive surface, and is actively maintained in the Go ecosystem.
 
----
+**We isolate dependencies by:**
+- Encapsulating third-party usage behind small adapters/interfaces so the core domain remains dependency-free and easy to test.
 
-## How 4dc Uses This Constitution
-
-### increment (WHAT)
-- Size: single purposeful changes that deliver user-visible value or remove a blocker.
-- Acceptance: increments must include a short acceptance checklist (build, smoke test, basic UX verification).
-- Pillars in scope: Delivery Velocity and Simplicity First dominate scope decisions.
-
-### design (HOW)
-- Early focus: separate core timer logic from platform adapters; sketch minimal UX flows.
-- ADRs: create an ADR for distribution strategy (Homebrew vs App Store vs GitHub Releases) and for any non-trivial dependency.
-
-### implement (DO)
-- Step size: small, isolated commits; each commit should build and ideally pass local smoke checks.
-- Tests: add smoke tests for every public release; add unit tests for non-trivial logic as part of the same or follow-up increment.
-- Shortcuts: allowed only with an explicit issue and timebox.
-
-### improve (GOOD / FAST)
-- When to refactor: when maintenance cost increases, tests become brittle, or user-facing bugs recur.
-- Debt paydown: schedule during quiet iterations or bundle into small maintenance increments.
+**We avoid:**
+- Adding large frameworks or cross-platform UI stacks that bloat the single-binary philosophy or leak framework concepts into the domain model.
 
 ---
+
+## How We Use This Constitution
+
+- How work is chosen and sliced: prefer small, user-visible increments that can be landed, tested, and released independently. Each change should map to a single user benefit and include a note if it introduces technical debt.
+- How designs are evaluated: any design should be measured by clarity, testability, and minimal impact on binary size and runtime behavior. Designs that obscure core semantics get rejected.
+- How implementation and testing decisions are made: core logic always requires automated tests; UI-only adjustments can be landed with manual verification but should be followed by refactors or tests if repeated.
+- When to refactor, pay down debt, or revisit architecture: refactor when duplicate logic or bugs indicate boundary erosion, or when new features force repeated changes across modules. Schedule debt repayment into the next minor release when practical.
 
 ## Amendments and Evolution
 
-- Updates: this CONSTITUTION is living. Propose changes via a small ADR or PR with a short rationale and a documented owner.
-- Revisit triggers: major platform change (new macOS requirements), sustained friction in workflows, or team growth beyond a small maintainer model.
-- Documentation: changes should be recorded in a dated section in this file or an accompanying ADR and referenced in release notes.
-
----
+- This CONSTITUTION should be revisited when there is a major product shift (for example, expanding beyond macOS), sustained team growth, or repeated friction in day-to-day work.
+- Amendments should be documented with a date, author, and short rationale. Use incremental versioning (e.g., `v1.0 — 2025-12-03`) and keep the document under source control at the project root.
 
 ## References and Inspirations
 
-- Kent Beck — "Make it work, make it right, make it fast"
-- Unix philosophy – small, composable tools
-- Clean Architecture patterns for separation of core logic and adapters
-- Go best practices: prefer stdlib, idiomatic error handling, small binaries
-
----
+- The Pomodoro Technique (timeboxing and focused work principles).
+- Unix philosophy and KISS (Keep It Simple, Stupid) for small, composable tools.
+- Design sensibilities of small macOS menu-bar utilities: minimal UI, quick discoverability, and low configuration.
 
 ## Open Questions
 
-1. Distribution channel: do we target `Homebrew`, `GitHub Releases` (signed binaries), or the Mac App Store?
-2. Code signing / notarization: is Apple notarization required for public releases?
-3. Minimum automated testing required for public releases: smoke only, or smoke + unit tests for core logic?
-4. Dependency policy: strict (stdlib-only unless justified) or pragmatic (allow vetted libraries)?
-5. Supported macOS versions and compatibility policy.
-6. Telemetry policy: allowed (opt-in) or disallowed by default?
-
----
-
-This CONSTITUTION should be used actively during each 4dc loop. When decisions feel misaligned with these rules, open an amendment PR or file an ADR so we can refine the guardrails.
+- Confirm pillar priorities: current default is `Simplicity First > Delivery Velocity ≈ Design Integrity > Test Strategy > Dependency Discipline > Technical Debt Boundaries`.
+- Packaging signatures and distribution channels: should we require notarization or Homebrew integration in the future?
+- Support expectations: what level of user support and incident response is expected for releases?

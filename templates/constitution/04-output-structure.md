@@ -1,5 +1,11 @@
 ## Output
 
+You MUST:
+
+- Output only the constitution document in Markdown using the structure below.
+- NOT include any meta commentary about what you could do next (for example, "If you'd like, I can also add...", "Next, I can create...", "I can generate a workflow").
+- NOT include suggestions for additional files, CI workflows, or other automation tasks inside the constitution. Those may be implied by principles, but not offered as actions by you.
+
 Return the result as **Markdown** with the following structure:
 
 ```markdown
@@ -8,8 +14,8 @@ Return the result as **Markdown** with the following structure:
 ## Purpose
 
 Explain in 2–4 sentences:
-- Why this CONSTITUTION exists.
-- How it should be used in everyday work and in the 4dc loop (increment → design → implement → improve).
+- Why this CONSTITUTION exists for this project.
+- How it should be used in everyday engineering work and decision-making.
 
 ## Context
 
@@ -45,7 +51,7 @@ Explain the team’s overall philosophy and how it relates to:
 
 Describe how the team thinks about:
 - Desired iteration speed.
-- Typical increment size.
+- Typical size of changes.
 - Release cadence and acceptable risk per release.
 
 Include:
@@ -61,8 +67,8 @@ Include:
 
 Describe:
 - What must be tested.
-- How much coverage / confidence is “enough” for this team.
-- Preferred testing pyramid (or hourglass) shape.
+- How much coverage / confidence is “enough” for this project.
+- Preferred testing strategies (e.g., unit vs integration vs end-to-end).
 
 Include:
 
@@ -77,7 +83,7 @@ Include:
 
 Describe:
 - How the team structures code and architecture.
-- What “good boundaries” mean.
+- What “good boundaries” mean in this project.
 - How to think about modules, responsibilities, and dependencies.
 
 Include:
@@ -137,26 +143,16 @@ Include:
 
 ---
 
-## How 4dc Uses This Constitution
+## How We Use This Constitution
 
-Describe how this CONSTITUTION should be applied in each phase:
+Explain briefly how this constitution should influence:
 
-### increment (WHAT)
-- How to size and shape increments.
-- How pillars constrain increment scopes and acceptance criteria.
+- How work is chosen and sliced.
+- How designs are evaluated.
+- How implementation and testing decisions are made.
+- When to refactor, pay down debt, or revisit architecture.
 
-### design (HOW)
-- Which pillars dominate early design decisions.
-- When to introduce or update ADRs.
-
-### implement (DO)
-- Expectations for step size, testing, and adherence to design.
-- How to decide when a shortcut is acceptable.
-
-### improve (GOOD / FAST)
-- When to refactor.
-- When to invest in performance, resilience, or deeper design changes.
-- How to prioritize technical debt paydown.
+Keep this section high-level and project-focused. Do not mention specific tooling, frameworks, or meta-processes used to apply the constitution (such as prompt systems, LLM workflows, or framework names).
 
 ---
 
@@ -173,9 +169,8 @@ Describe:
 
 List key references that influenced this CONSTITUTION, such as:
 
-- Kent Beck – "make it work, make it right, make it fast"
-- XP, Continuous Delivery, DORA, Clean Architecture, etc.
-- Any internal documents or practices.
+- Books, articles, or talks that inspired your engineering approach.
+- Internal documents or prior decisions that shaped these principles.
 
 ---
 

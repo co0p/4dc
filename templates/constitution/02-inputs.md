@@ -8,20 +8,30 @@ You have access to:
 
 The calling tool passes you a **project root path argument** (for example `"."` or `"examples/pomodoro"`).
 
-For the purpose of this prompt, the **project root folder** is defined as:
+You MUST apply the following rules to this argument:
 
-- The directory at that project root path argument.
-- Files that live **directly** in that directory, such as:
-  - `README.md`
-  - `CONSTITUTION.md`
-  - `LICENSE`
-  - Other top-level markdown or configuration files.
+1. **Definition of project root folder**
 
-> Important:
-> - You are writing the constitution for the **project located at this project root path**, not for the repository as a whole.
+   For the purpose of this prompt, the **project root folder** is defined as:
+
+   - The directory at that project root path argument.
+   - Files that live **directly** in that directory, such as:
+     - `README.md`
+     - `CONSTITUTION.md`
+     - `LICENSE`
+     - Other top-level markdown or configuration files.
+
+2. **Scope of the constitution**
+
+   - You are writing the constitution for the **project located at this project root path**, not for the repository as a whole.
+   - Files under this root path are the only files that may define the project’s product description and domain.
+   - Files outside this root path belong to other projects or tooling; they MUST NOT define the target project’s product description.
+
+> Critical constraints:
 > - All **subdirectories under this project root** (for example: `src/`, `docs/`, `.github/`, `examples/`, `templates/`, `tests/`, etc. inside this target root) are **not** considered part of the root folder for product description purposes.
 > - You MUST NOT use files from subdirectories to override or define the primary product description.
-> - Files **outside** this project root path (for example, the 4dc framework’s own README, prompts, or other example projects) may be used only to understand general engineering values and workflows, NOT as the subject project’s description.
+> - Files **outside** this project root path (for example, a parent framework repo’s README, prompts, or other example projects) may be used only to understand general engineering values and workflows, NOT as the subject project’s description.
+> - The generated constitution MUST NOT describe or name external framework repositories unless they are explicit runtime dependencies or architectural elements of the target project.
 
 When inferring context, you MUST respect this source hierarchy and scoping:
 
@@ -30,7 +40,7 @@ When inferring context, you MUST respect this source hierarchy and scoping:
    - Use this file as the **authoritative source** of:
      - Product description
      - Target users
-     - High-level goals
+     - High-level goals.
    - Do NOT:
      - Combine this with other READMEs from subdirectories under the project root.
      - Mix example or sample project descriptions from outside the project root into the main product description.
@@ -40,7 +50,7 @@ When inferring context, you MUST respect this source hierarchy and scoping:
    - You may use other files directly in the project root folder (e.g., `CONSTITUTION.md`, `ARCHITECTURE.md`) to refine:
      - High-level architecture
      - Existing principles
-     - Non-negotiable constraints
+     - Non-negotiable constraints.
    - These documents refine or extend the project root `README.md`; they do not describe separate products.
 
 3. **Subdirectories under the TARGET project root (NOT for primary product description)**
@@ -48,24 +58,24 @@ When inferring context, you MUST respect this source hierarchy and scoping:
      - Implementation details
      - Engineering practices
      - Internal tooling
-     - Examples or sample content
+     - Examples or sample content.
    - Use them ONLY to understand:
      - Engineering practices (tests, CI, workflows, scripts)
      - Code structure and architectural patterns
-     - Tooling and prompts used in this project
+     - Tooling and prompts used in this project.
    - You MUST NOT:
      - Treat docs, READMEs, or prompts under these subdirectories as the main product description.
      - Merge their text into the root product description.
 
 4. **Files outside the TARGET project root**
-   - Treat files that live **outside** the project root path (for example, the 4dc framework’s own `README.md`, `.github/prompts`, `templates/`, or other example projects) as:
+   - Treat files that live **outside** the project root path (for example, a parent framework repo’s `README.md`, `.github/prompts`, `templates/`, or other example projects) as:
      - Tooling, frameworks, and general engineering philosophy.
    - You may use them to:
-     - Infer preferred workflows (e.g., 4dc loop, ADR usage).
-     - Understand general engineering values (e.g., emphasis on small increments, pillars).
+     - Infer preferred workflows or general engineering values.
    - You MUST NOT:
      - Treat any of these as the target project’s product description.
      - Copy their text directly into the target project’s product narrative.
+     - Include their names in the constitution unless they are explicit runtime dependencies or architectural elements of the target project.
 
 From these sources, you MUST build and maintain the following **internal notes**. You may show them to the user for confirmation and refinement:
 
