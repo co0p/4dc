@@ -1,6 +1,6 @@
 ---
 name: increment
-argument-hint: path to the project root (e.g. ".") as well as the actual increment description
+argument-hint: path to the project root (for example: "examples/pomodoro") plus a short increment description
 ---
 
 # Prompt: Generate an Increment Definition

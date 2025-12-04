@@ -114,3 +114,191 @@ When you (the human author) or a meta-assistant edits templates:
   - Is self-contained and stop-gated (Rules 3–7).
   - Defines structure, persona, and goal/process cleanly (Rules 8–11).
   - Encourages focused clarifications and subject focus (Rules 12–14).
+
+---
+
+## 4dc Phases and Artifact Relationships
+
+In addition to the flat rules above, 4dc templates follow a shared model of **four main phases** and how their artifacts relate to the codebase and to each other.
+
+This section is for **prompt authors**; runtime prompts MUST NOT reference it.
+
+### 1. Phases and Artifacts
+
+4dc recognizes four main phases:
+
+1. **Increment** – define the next small, valuable change in product terms.
+2. **Design** – define the technical approach to realize that increment.
+3. **Implement** – define a concrete, ordered plan of steps to apply the design.
+4. **Improve** – analyze and improve the overall health of the codebase and delivery.
+
+Each phase has:
+
+- A distinct **persona**.
+- A clear **scope** (what part of the project it looks at).
+- A defined **artifact** it produces.
+
+Typical artifacts:
+
+- Increment: `increments/<slug>/increment.md`
+- Design:   `increments/<slug>/design.md`
+- Implement:`increments/<slug>/implement.md`
+- Improve:  `improve.md` (at a project or subproject root)
+
+### 2. Paths and Scope
+
+Prompts MUST treat the `path` argument as their **subject root**:
+
+- **Increment**:
+  - `path` points at a **project or subproject root** (e.g. `.` or `examples/pomodoro`).
+  - The prompt may read:
+    - `CONSTITUTION.md`.
+    - Readme / docs under that root.
+    - Existing increment, design, implement, improve docs under that root.
+  - It MUST NOT treat other repositories or parents as primary context.
+
+- **Design** and **Implement**:
+  - `path` points at an **increment folder**, for example:
+    - `<project>/increments/<slug>`
+  - They read:
+    - `increment.md` in that folder.
+    - `design.md` in that folder (for Implement).
+    - `CONSTITUTION.md`, ADRs, and other docs under the project root.
+    - Relevant code and tests under the project root.
+
+- **Improve**:
+  - `path` points at a **project or subproject root**.
+  - It may examine any code, tests, and docs under that root.
+  - It does not use slug folders for its own output, but may refer to them.
+
+Every prompt must:
+
+- Be explicit about where it expects `path` to point.
+- Constrain itself to files and folders under that `path` as its subject.
+
+### 3. Slug Folders for Increment, Design, and Implement
+
+Increments, designs, and implementation plans share a common directory structure under a project root:
+
+- `increments/<slug>/increment.md`
+- `increments/<slug>/design.md`
+- `increments/<slug>/implement.md`
+
+Where `<slug>` is derived from an increment title by:
+
+- Lowercasing.
+- Replacing any sequence of non-alphanumeric characters with a single `-`.
+- Collapsing repeated `-`s into one.
+- Trimming leading/trailing `-`.
+
+Rules for prompts:
+
+- The **Increment** prompt:
+  - Proposes a title and corresponding slug.
+  - Proposes the folder name `<slug>`.
+  - Produces `increment.md` in `increments/<slug>/`.
+- The **Design** prompt:
+  - Runs with `path` pointing at `increments/<slug>/`.
+  - Produces `design.md` in the same folder.
+- The **Implement** prompt:
+  - Runs with `path` pointing at `increments/<slug>/`.
+  - Produces `implement.md` in the same folder.
+
+The **Improve** prompt:
+
+- Does not create or depend on slug folders.
+- Treats its `path` as the analysis root.
+
+### 4. Responsibilities and Boundaries
+
+Prompts for each phase must keep clear responsibilities:
+
+- **Increment (WHAT, product)**:
+  - Defines **what outcome** should be true when the increment is complete.
+  - Operates in user/business language:
+    - Context, goal, non-goals, tasks, risks, success criteria, observability.
+  - Must NOT:
+    - Specify code-level details (files, functions, classes, schemas).
+    - Redesign architecture.
+    - Describe concrete implementation steps.
+
+- **Design (HOW, technical)**:
+  - Turns the increment’s WHAT into a **technical design** for this codebase.
+  - Grounded in:
+    - `increment.md`.
+    - `CONSTITUTION.md` and ADRs.
+    - The existing code and architecture.
+  - Describes:
+    - Components, modules, services, and their responsibilities.
+    - Interfaces, contracts, data models, and flows.
+    - Testing strategy, CI/CD and rollout, observability, and risks.
+  - Must NOT:
+    - Redefine the product goal or tasks.
+    - Contradict the increment’s non-goals without flagging it as a risk / follow-up.
+
+- **Implement (plan, ordered steps)**:
+  - Turns the combination of increment (WHAT) and design (HOW) into an **ordered plan of steps**.
+  - Produces `implement.md` as:
+    - Workstreams (e.g. backend, frontend, data, observability).
+    - Concrete steps within each workstream.
+    - Testing, CI/CD, rollout, and validation notes.
+  - Intended usage:
+    - Humans (and their coding tools) take steps from `implement.md` one at a time as small units of work.
+  - Must NOT:
+    - Silently redefine the design or increment.
+    - Claim to be performing code changes itself.
+
+- **Improve (system health)**:
+  - Analyzes the overall health of the system under `path`.
+  - Identifies:
+    - Architectural and design issues.
+    - Operational and observability gaps.
+    - Developer experience and delivery friction.
+  - Suggests:
+    - Refactorings, cleanups, and systemic improvements.
+    - Possible new increments to capture specific improvement work.
+  - Must NOT:
+    - Directly write or modify increment, design, or implement documents.
+    - Redefine the project’s constitution.
+
+### 5. Inputs vs. Behavioral Coupling
+
+Artifacts may be used as **inputs** by other prompts:
+
+- `increment.md` → input to Design and Implement.
+- `design.md`    → input to Implement.
+- Any of them    → input to Improve.
+
+However:
+
+- Prompts MUST NOT rely on other prompts’ **instructions** for their behavior.
+- Each prompt must define:
+  - Its own persona.
+  - Its own inputs, process (including STOP gates), and output structure.
+- Prompts must be executable in isolation given appropriate files under `path`.
+
+### 6. Execution Loop (How These Are Used)
+
+4dc is about authoring artifacts that guide real work. The intended loop is:
+
+1. **Increment**:
+   - At a project root, define a small, outcome-focused increment in `increments/<slug>/increment.md`.
+
+2. **Design**:
+   - In that increment folder, define a technical design in `design.md` grounded in the actual codebase.
+
+3. **Implement**:
+   - In that increment folder, define an implementation plan in `implement.md`:
+     - Workstreams and ordered steps.
+     - Testing, rollout, and validation hooks.
+
+4. **Improve**:
+   - At any time, analyze the codebase under a given root and suggest systemic improvements.
+
+Execution of code changes is **deliberately human-driven**:
+
+- Engineers (and their tools) use `implement.md` as a **backlog for the increment**.
+- They take steps one by one, make code/test changes, run checks, and keep reality aligned with the plan.
+- If the plan or design becomes out of date, new increments or updates can be created following the same phases.
+
+All templates under `templates/` for Increment, Design, Implement, and Improve must be aligned with this model.

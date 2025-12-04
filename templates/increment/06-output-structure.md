@@ -4,7 +4,8 @@ The generated increment definition MUST follow this structure and use these head
 
 1. Title
 
-- Format: `Increment: <Short, Product-Friendly Title>` as the first-level heading.
+- First-level heading in the form:
+  - `Increment: <Short, Product-Friendly Title>`
 - The title should be:
   - Short and descriptive.
   - Understandable by product, engineering, and stakeholders.
@@ -16,7 +17,7 @@ The generated increment definition MUST follow this structure and use these head
   - Existing behavior or limitations that motivate this increment.
   - Any important background such as related work, earlier attempts, or relevant documents within the project.
   - Key constraints or assumptions (for example: time, scope, risk tolerance, regulatory limits).
-- This section should give enough background that someone new to the increment understands why it matters.
+- This section should give enough background that someone new to the increment understands **why it matters**.
 
 3. Goal
 
@@ -31,7 +32,7 @@ The generated increment definition MUST follow this structure and use these head
 
 4. Tasks
 
-- Provide a product-level checklist of tasks. For each task, include:
+- Provide a **product-level** checklist of tasks. For each task, include:
   - `Task:` An outcome-level description of what should be true when the task is complete.
   - `User/Stakeholder Impact:` Who is affected and how their experience or workflow changes.
   - `Acceptance Clues:` Observable signs that the task is complete from a WHAT perspective (for example: a behavior is visible, a piece of information can be seen, or a simple check passes).
