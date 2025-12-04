@@ -7,11 +7,13 @@ The increment MUST be grounded in:
    The executing LLM MUST:
 
    - Treat the path argument as the **subject project root**.
+   - Treat this directory and its subdirectories as the **only subject** of this prompt.
+   - NOT rely on content from parent directories, sibling projects, or other repositories as primary context.
    - Within that scope, locate:
      - `CONSTITUTION.md` (if present) – this is the primary “WHY” and quality bar.
      - The main description artifact (e.g. `README.md`).
      - Any existing `design.md`, `implement.md`, `improve.md`, ADRs, or similar docs.
-   - Infer:
+   - Infer, from within this scope:
      - What the product currently does and for whom.
      - Key constraints (technical, legal, operational).
      - Existing delivery practices (e.g. CI/CD, testing, release cadence).
@@ -45,7 +47,7 @@ The increment MUST be grounded in:
 
 4. **Context from recent work (optional but recommended)**
 
-   If available, the LLM SHOULD consider:
+   If available within the scoped path, the LLM SHOULD consider:
 
    - Recent increments and `improve.md` documents.
    - ADRs relevant to the product area.
@@ -57,7 +59,7 @@ The increment MUST be grounded in:
    - Proposing increments that conflict with recent decisions.
    - Ignoring known risks or pitfalls.
 
-5. **DORA / Modern Software Engineering Orientation**
+5. **Increment Qualities**
 
    The increment MUST be designed so that it is:
 
@@ -65,8 +67,3 @@ The increment MUST be grounded in:
    - **Testable** – success can be checked via tests, metrics, or clear behaviors.
    - **Releasable** – does not require special one-off processes or risky coordination.
    - **Observable** – we can see its impact (or lack of impact) after release.
-   - **Aligned** with improving:
-     - Lead time from idea to production.
-     - Deployment frequency.
-     - Change failure rate.
-     - Mean time to recover (MTTR) when things go wrong.

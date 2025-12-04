@@ -12,7 +12,6 @@ The LLM MUST:
      - “Customers experience …”
      - “The support team can …”
      - “The business can see … in analytics.”
-
    - Where relevant, connect to system qualities:
      - Performance, reliability, usability, security, etc.
      - Still from an outcome perspective (e.g. “search feels fast enough under normal usage”).
@@ -35,7 +34,7 @@ The LLM MUST:
      - “We are not yet optimizing for edge case X.”
      - “We are not committing to full multi-region support yet.”
 
-4. **Tie to DORA-style success (at the outcome level)**
+4. **Explain Why This Is a Good Increment**
 
    Briefly explain why this is a good increment:
 

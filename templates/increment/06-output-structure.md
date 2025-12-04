@@ -1,73 +1,85 @@
 ## Output Structure
 
-The generated increment definition MUST follow this structure:
+The generated increment definition MUST follow this structure and use these headings in this order.
 
-```markdown
-# Increment: <Short, Product-Friendly Title>
+1. Title
 
-## Context
+- Format: `Increment: <Short, Product-Friendly Title>` as the first-level heading.
+- The title should be:
+  - Short and descriptive.
+  - Understandable by product, engineering, and stakeholders.
 
-- Brief description of the current situation or problem from a user/business perspective.
-- Any important background:
-  - Existing behavior or limitation.
-  - Links to relevant design docs, ADRs, or previous increments.
-- Key constraints or assumptions (time, scope, risk tolerance, etc.).
+2. Context
 
-## Goal
+- Explain the current situation or problem from a user or business perspective.
+- Include:
+  - Existing behavior or limitations that motivate this increment.
+  - Any important background such as related work, earlier attempts, or relevant documents within the project.
+  - Key constraints or assumptions (for example: time, scope, risk tolerance, regulatory limits).
+- This section should give enough background that someone new to the increment understands why it matters.
 
-- Outcome / hypothesis:
+3. Goal
+
+- Describe the outcome or hypothesis:
   - What will be different for users, customers, or the business after this increment?
-- Scope:
+- Clarify the scope:
   - What this increment will do.
-- Non-goals:
-  - What this increment explicitly will *not* address.
-- Why this is a good, small increment:
-  - Small, coherent, and evaluable.
+- Clarify the non-goals:
+  - What this increment explicitly will not address.
+- Briefly explain why this is a good, small increment:
+  - It is small, coherent, and can be evaluated in a reasonable time.
 
-## Tasks
+4. Tasks
 
-- A product-level checklist of tasks, each including:
-  - Task: outcome-level description (WHAT should be true).
-  - User/Stakeholder Impact: who is affected and how.
-  - Acceptance Clues: observable signs that this task is complete.
-- Tasks MUST describe **WHAT**, not technical HOW.
+- Provide a product-level checklist of tasks. For each task, include:
+  - `Task:` An outcome-level description of what should be true when the task is complete.
+  - `User/Stakeholder Impact:` Who is affected and how their experience or workflow changes.
+  - `Acceptance Clues:` Observable signs that the task is complete from a WHAT perspective (for example: a behavior is visible, a piece of information can be seen, or a simple check passes).
+- Tasks MUST describe WHAT should be true, not the technical HOW.
+- Avoid references to specific files, functions, branches, components, or implementation steps.
 
-## Risks & Assumptions
+5. Risks and Assumptions
 
-- Known risks (user impact, product fit, rollout concerns).
-- Key assumptions that, if wrong, could change the plan.
-- High-level mitigations where appropriate (still in outcome language).
+- List known risks, such as:
+  - Potential user impact.
+  - Product fit concerns.
+  - Rollout or timing concerns.
+- List key assumptions that, if wrong, could change the plan.
+- Optionally mention high-level mitigations, still in outcome language (for example: “If adoption is low, we may follow up with user interviews”).
 
-## Success Criteria & Observability
+6. Success Criteria and Observability
 
-- How we will know this increment is successful:
+- Describe how you will know this increment is successful:
   - Changes in metrics, events, or user behavior.
-  - Evidence we plan to look at after release.
-- What we will observe after release:
-  - Which dashboards, logs, or reports we’ll look at.
-  - Any simple checks in staging/production to confirm behavior.
+  - Evidence to look at after release.
+- Describe what will be observed after release:
+  - Which dashboards, logs, or reports will be checked.
+  - Any simple checks in staging or production to confirm behavior.
+- Keep this at the level of WHAT is observed, not HOW it is instrumented.
 
-## Process Notes
+7. Process Notes
 
-- High-level notes about **how this increment will move through the workflow**, without prescribing technical steps:
-  - It should be implemented via small, safe changes.
-  - It should go through the normal CI/CD pipeline.
+- Add high-level notes about how this increment should move through the workflow, without prescribing technical steps.
+- Examples:
+  - It should be implemented via small, safe changes over time.
+  - It should go through the normal build, test, and release process used by the project.
   - It should be rolled out in a way that allows quick recovery if needed.
-- Detailed technical planning and implementation belong in:
-  - `design.md` (technical approach).
-  - `implement.md` (execution plan).
+- Do not include concrete implementation instructions, code changes, or deployment commands.
 
-## Follow-up Increments (Optional)
+8. Follow-up Increments (Optional)
 
-- Brief descriptions of potential future increments that:
+- Briefly describe potential future increments that:
   - Extend this outcome.
   - Address related but out-of-scope work.
   - Further improve performance, reliability, or user experience.
-```
+- Each follow-up should be described as a possible future increment, not as part of the current one.
 
-The final output MUST:
+---
 
-- Use the headings above in this order.
-- Fill each section with project-specific content based on the provided context and increment description.
+The final increment definition MUST:
+
+- Use the sections above in this order.
+- Fill each section with project-specific content based on the scoped project and the increment description.
 - Avoid references to prompts, LLMs, or assistants.
-- Keep “Tasks” focused on WHAT, leaving the HOW to later phases.
+- Keep Tasks focused on WHAT, leaving the HOW to later phases and artifacts.
+- If any section starts to describe internal components, data models, services, functions, classes, files, or specific modules, rewrite it to focus on observable behavior, outcomes, and evidence instead.

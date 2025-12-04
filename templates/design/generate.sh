@@ -27,8 +27,6 @@ generate() {
   cat "${TEMPLATES_DIR}/04-acceptance.md"
   echo
   cat "${TEMPLATES_DIR}/05-output-and-examples.md"
-  echo
-  cat "${TEMPLATES_DIR}/06-glossary.md"
 }
 
 if [ "$WRITE_TO_STDOUT" = "1" ]; then
