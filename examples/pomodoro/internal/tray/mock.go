@@ -12,8 +12,12 @@ type MockTray struct {
 	started bool
 }
 
+// NewMockTray constructs a new in-process mock tray that calls the App
+// methods directly. Useful for tests that exercise UI wiring without a
+// real OS tray.
 func NewMockTray(a app.App) *MockTray { return &MockTray{App: a} }
 
+// Run starts the mock tray and blocks until the context is cancelled.
 func (m *MockTray) Run(ctx context.Context) error {
 	m.started = true
 	<-ctx.Done()
@@ -21,6 +25,7 @@ func (m *MockTray) Run(ctx context.Context) error {
 	return ctx.Err()
 }
 
+// Close requests the mock tray to stop. It is idempotent.
 func (m *MockTray) Close() error {
 	m.started = false
 	return nil

@@ -31,6 +31,7 @@ func (s *systrayImpl) Run(ctx context.Context) error {
 	// systray.Run must be called on the main OS thread on macOS. Call it
 	// directly in this goroutine so callers that invoke Run from main()
 	// satisfy that requirement.
+	var u *TitleUpdater
 	systray.Run(func() {
 		if len(s.icon) > 0 {
 			systray.SetIcon(s.icon)
@@ -64,8 +65,16 @@ func (s *systrayImpl) Run(ctx context.Context) error {
 			}
 		}()
 
-		// Start title updater helper. It subscribes to app state changes and
+		// Start title updater. It subscribes to app state changes and
 		// periodically queries Remaining() to update the tray title.
+		//
+		// Note: `systray.Run` runs the systray event loop on the OS thread.
+		// We construct the updater here and run it in a goroutine; the
+		// provided `setTitle`/`clearTitle` call `systray.SetTitle` which is
+		// implemented by the library and is safe to call from other
+		// goroutines in this usage. If the underlying systray backend
+		// requires main-thread calls for SetTitle, move `u.Run` onto the
+		// systray callback thread instead.
 		updaterCtx, cancel := context.WithCancel(context.Background())
 		updaterCancel = cancel
 		setTitle := func(t string) { systray.SetTitle(t) }
@@ -74,10 +83,18 @@ func (s *systrayImpl) Run(ctx context.Context) error {
 			t := time.NewTicker(d)
 			return t.C, func() { t.Stop() }
 		}
-		go ManageTitleUpdates(updaterCtx, s.app, setTitle, clearTitle, newTicker)
+		u = NewTitleUpdater(s.app, setTitle, clearTitle, newTicker)
+		go u.Run(updaterCtx)
 	}, func() {
 		if updaterCancel != nil {
 			updaterCancel()
+		}
+		// If we constructed a TitleUpdater above, ensure it is stopped so
+		// it detaches subscriptions and clears the title.
+		// Note: the updater was run in a goroutine; Stop() is safe to call
+		// concurrently.
+		if u != nil {
+			u.Stop()
 		}
 		close(done)
 	})

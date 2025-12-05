@@ -97,7 +97,7 @@ For each ADR candidate:
 
 - Describe the observation and why it matters.
 - Recommend whether an ADR should be created.
-- Use the ADR Output Template for any ADR the user chooses to record.
+- When the user agrees that an ADR is needed, generate its content using the **ADR template described in this prompt** (the “ADR Output Template” section), as a separate document.
 
 ADRs are independent artifacts and are **not** embedded into the improve document.
 

@@ -61,6 +61,13 @@ Testing & smoke
 - Unit tests: `go test ./...` (the example includes tests for `internal/app` and `internal/tray` mock).
 - Smoke run: `./bin/pomodoro --smoke` initializes subsystems and exits immediately (used for CI/local checks).
 
+Notes for contributors
+----------------------
+
+- We document a small set of code conventions and runtime constraints in `examples/pomodoro/docs/`.
+- See `ADR-2025-12-05-receiver-naming-and-docs.md` for preferred receiver naming and godoc comment style (short receiver names, godoc sentences starting with the symbol name).
+- There is also a short note about systray threading in `internal/tray/doc.go`; `systray.Run` must be called on the main OS thread on macOS. The `internal/tray` package wires the `TitleUpdater` but keep thread-safety in mind when moving calls that interact with the OS.
+
 PR / branch
 
 If you want me to open a focused PR with these example changes I will create branch `examples/pomodoro-demo` and push the `examples/pomodoro` changes.
