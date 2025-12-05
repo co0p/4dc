@@ -23,13 +23,13 @@ generate() {
   echo
   cat "${TEMPLATES_DIR}/01-persona.md"
   echo
-  cat "${TEMPLATES_DIR}/02-lenses.md"
+  cat "${TEMPLATES_DIR}/02-goal.md"
   echo
-  cat "${TEMPLATES_DIR}/03-process.md"
+  cat "${TEMPLATES_DIR}/03-lenses.md"
   echo
-  cat "${TEMPLATES_DIR}/04-interaction.md"
+  cat "${TEMPLATES_DIR}/04-output.md"
   echo
-  cat "${TEMPLATES_DIR}/05-output.md"
+  cat "${TEMPLATES_DIR}/05-process.md"
   echo
   cat "${TEMPLATES_DIR}/06-adr.md"
   echo
