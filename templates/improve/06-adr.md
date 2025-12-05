@@ -24,23 +24,17 @@ State the architectural decision clearly and concisely.
 
 ---
 
-**Example:**
+Example (conceptual; not for copy-paste into artifacts):
 
-```markdown
-# ADR: Centralize Error Handling in Catalog Module
-
-## Context
-Error handling was previously scattered across multiple components, leading to inconsistent behavior and duplicated logic.
-
-## Decision
-Centralize all error handling for catalog features in a dedicated module, with standardized error messages and handling routines.
-
-## Consequences
-- Improved consistency and maintainability
-- Easier to test and extend error handling
-- Minor refactoring required for existing components
-
-## Alternatives Considered
-- Keep error handling decentralized: Simpler now, but harder to maintain
-- Use a third-party error handling library: Adds complexity and dependencies
-```
+- Heading: `# ADR: Centralize Error Handling in Catalog Module`
+- Section `## Context`:
+  - “Error handling was previously scattered across multiple components, leading to inconsistent behavior and duplicated logic.”
+- Section `## Decision`:
+  - “Centralize all error handling for catalog features in a dedicated module, with standardized error messages and handling routines.”
+- Section `## Consequences`:
+  - “Improved consistency and maintainability”
+  - “Easier to test and extend error handling”
+  - “Minor refactoring required for existing components”
+- Section `## Alternatives Considered`:
+  - “Keep error handling decentralized: simpler now, but harder to maintain”
+  - “Use a third-party error handling library: adds complexity and dependencies”

@@ -21,6 +21,11 @@ The plan MUST follow this structure:
   - `design.md`
   - `CONSTITUTION.md` (by filename only; no absolute paths).
 
+Optionally, you MAY include a simple status line such as:
+
+- `Status: Not started / In progress / Done`
+- `Next step: Step N – <short title>`
+
 3. Workstreams
 
 - A short list of named workstreams, for example:
@@ -32,32 +37,39 @@ The plan MUST follow this structure:
   - `Workstream C – Tests and fixtures`  
   - `Workstream D – Observability and metrics`
 
-4. Steps (XP-style Tasks)
+4. Steps (XP-style Tasks, with optional checkboxes)
 
-Each step is a small, concrete work item. Use a structure like this (shown here as plain text, not a fenced code block):
+Each step is a small, concrete work item. Use a structure like this (shown as plain text, not a fenced code block):
 
 - Section heading: `## 2. Steps`
-- For each step:
 
-  - `### Step 1: [Short actionable task title]`  
-    - `Workstream:` [A/B/C/D]  
-    - `Based on Design:` [Reference to design section/decision, e.g. "Design §5: Architecture and Boundaries – Catalog list API"]  
-    - `Files:` `path/to/file.go`, `another/path/file_test.go`  
-    - `Actions:`  
-      - [Concrete code-level action 1]  
-      - [Concrete code-level action 2]  
-    - `Tests:`  
-      - [Tests to add/update]  
-      - [CI commands to run, e.g. `npm test`, `go test ./...`]  
+You MAY use markdown checkboxes to track progress, for example:
 
-  - `### Step 2: [Short actionable task title]`  
-    - `Workstream:` […]  
-    - `Based on Design:` […]  
-    - `Files:` […]  
-    - `Actions:`  
-      - […]  
-    - `Tests:`  
-      - […]  
+- `- [ ] Step 1: Initialize backend package and scripts`  
+- `- [ ] Step 2: Add DB wrapper and unit tests`  
+- `- [ ] Step 3: Add Express bootstrap and logger`  
+
+For each step, provide details as nested content:
+
+- `### Step 1: [Short actionable task title]`  
+  - `Workstream:` [A/B/C/D]  
+  - `Based on Design:` [Reference to design section/decision, e.g. "Design §5: Architecture and Boundaries – Catalog list API"]  
+  - `Files:` `path/to/file.go`, `another/path/file_test.go`  
+  - `Actions:`  
+    - [Concrete code-level action 1]  
+    - [Concrete code-level action 2]  
+  - `Tests:`  
+    - [Tests to add/update]  
+    - [CI commands to run, e.g. \`npm test\`, \`go test ./...\`]  
+
+- `### Step 2: [Short actionable task title]`  
+  - `Workstream:` […]  
+  - `Based on Design:` […]  
+  - `Files:` […]  
+  - `Actions:`  
+    - […]  
+  - `Tests:`  
+    - […]  
 
 You MAY group related steps into **phases** if helpful (for example, “Phase 1: Data and domain”, “Phase 2: Route wiring and tests”), but each step must remain small and traceable.
 

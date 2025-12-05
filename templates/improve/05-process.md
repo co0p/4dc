@@ -1,4 +1,3 @@
- 
 # Process
 
 This section defines **how** to run the improve analysis and generate a dated improvement document for the project rooted at `path`.
@@ -12,6 +11,9 @@ This section defines **how** to run the improve analysis and generate a dated im
   - Code and tests under `path`.
 - Do **not** treat parent directories, sibling projects, or other repositories as your subject.
 - Your goal is to analyze the health of the system under `path` and propose improvements; you do **not** implement changes yourself.
+- When `CONSTITUTION.md` defines a `constitution-mode`, use it to scale:
+  - How many improvements you propose.
+  - How ambitious they are (still favoring small, safe refactorings across all modes).
 
 ---
 
@@ -38,7 +40,7 @@ Review key project context under `path`:
 
 ### Assessment Tasks
 
-- **Evaluate vs. Constitution:** Assess how well the implementation adheres to the project's core principles and constraints. Prepare to summarize this as per-principle **1–5 star ratings** with brief rationales in the Assessment section.
+- **Evaluate vs. Constitution:** Assess how well the implementation adheres to the project's core principles and constraints. Prepare to summarize this as per-principle **1–5 star ratings** with short rationales.
 - **Evaluate vs. Design Goals:** Assess whether the implementation meets the intended design approach, component boundaries, and data flow.
 - **Quality Evaluation:** Assess code quality, readability, maintainability, and testability.
 - **Identify Risks:** List technical debt, potential bugs, performance concerns, or security issues.
@@ -52,6 +54,7 @@ After context analysis and assessment:
    - The project’s purpose and main capabilities as seen under `path`.
    - Tech stack and notable architectural choices.
    - A concise initial assessment (constitution/design alignment, quality, key risks).
+   - The detected `constitution-mode` (if present), and what that implies about how heavy or light the improvements should be.
 
 2. Ask the user to:
    - Confirm or correct your understanding of the context.
@@ -78,6 +81,7 @@ After STOP 1 and any clarifications:
   - Reference the relevant lens group.
   - Provide a clear rationale inspired by industry best practices.
   - Ground your rationale in specific observations from files under `path`.
+  - Prefer proposals that can be implemented as **small, safe refactorings** rather than risky “big bang” changes.
 
 Do **not** ask the user what to look for; use your analysis and the lenses to recommend improvements.
 
@@ -123,11 +127,12 @@ Based on findings and lessons:
        - Lens.
        - Rough priority (H/M/L).
        - Likely file(s) to touch.
+       - A sense of effort aligned to the project’s mode (e.g. quick wins in `lite`, some deeper refactors in `heavy`).
 
 2. Ensure each proposal is:
    - Concrete enough to be turned into an increment.
    - Grounded in specific findings.
-   - Appropriately sized (small to medium chunks of work).
+   - Appropriately sized (small to medium chunks of work), favoring incremental refactorings.
 
 ### STOP 2 – Outline Approval
 
@@ -139,7 +144,7 @@ Based on findings and lessons:
 
 If the user requests changes:
 
-- Update the outline (e.g., re-order, drop, or refine proposals).
+- Update the outline (e.g., re-order, drop, refine proposals, or adjust ambition to better fit `constitution-mode`).
 - Reconfirm before moving on.
 
 Do **not** generate or overwrite the final improve content until the user explicitly says “yes” (or equivalent).
@@ -165,7 +170,7 @@ Once the user explicitly approves the outline:
      - Effort estimate (e.g., “30 min”, “2–3 h”).
      - Explicit file paths under `path`.
      - A specific, actionable change description.
-     - Optional Increment Hint.
+     - Optional Increment Hint, phrased so it could be used directly as the short description for a future increment.
 
 2. Ensure the text:
 
@@ -197,6 +202,7 @@ Before presenting the final improve document content:
   - Optional Increment Hint, if helpful.
 - ADR candidates, if any, are proposed separately and not embedded in the improve file.
 - The document contains no references to prompts, LLMs, or assistants.
+- The **number and ambition** of improvements feel appropriate for the project’s `constitution-mode` (for example, a handful of quick, high-value refactors in `lite`).
 
 If any of these items are missing or unclear, revise the plan or ask the user focused clarifying questions before treating the artifact as complete.
 
@@ -204,4 +210,4 @@ Finally, present the improve document as the complete content for a new file at:
 
 - `docs/improve/<YYYY-MM-DD>-improve.md`
 
-where `<YYYY-MM-DD>` is the date of this analysis (ISO 8601). Do **not** assume you are physically writing the file; generate the complete document content so that the host environment or user can create the file at that path.
+where `<YYYY-MM-DD>` is the date of this analysis (ISO 8601). Do **not** assume you are physically writing the file; generate the complete document content so that the host environment or user can create or update the file.

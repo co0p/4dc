@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Electric Drill",
+    "available": 1
+  },
+  {
+    "id": 2,
+    "name": "Ladder",
+    "available": 0
+  },
+  {
+    "id": 3,
+    "name": "Folding Chair",
+    "available": 1
+  }
+]
