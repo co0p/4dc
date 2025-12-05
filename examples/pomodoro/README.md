@@ -20,6 +20,18 @@ Smoke test (CI / local quick check):
 ./bin/pomodoro --smoke
 ```
 
+Note about build artifacts
+-------------------------
+
+- **Do not commit build artifacts.** The `bin/` directory is used for local build outputs; avoid committing compiled binaries into the repository. To reproduce the demo locally, build the binary as shown above. For published release artifacts prefer placing them in a `releases/` directory or attaching them to a release.
+
+Recommended quick build command:
+
+```
+cd examples/pomodoro
+go build -o bin/pomodoro ./cmd/pomodoro
+```
+
 Acceptance (manual):
 
 - The tray/menu shows `Pomodoro`, `Break`, and `Quit`.

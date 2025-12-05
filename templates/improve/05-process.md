@@ -65,7 +65,7 @@ After context analysis and assessment:
 
 After STOP 1 and any clarifications:
 
-- Analyze the codebase under `path` using the context-based lenses described in `lenses.md`:
+- Analyze the codebase under `path` using the context-based lenses described in the **Lenses** section:
   - Naming & Clarity
   - Modularity & Separation
   - Architecture & Patterns
