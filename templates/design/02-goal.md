@@ -55,3 +55,13 @@ The design MUST:
    - If deeper or broader changes are uncovered, call them out explicitly as:
      - Risks and/or
      - Candidates for **follow-up increments** or separate design work.
+
+7. Stay at the Design Level, Not Implementation Tasks
+
+   - The design MUST NOT be an implementation task list.
+   - Do **not** describe step-by-step edit sequences, git operations, or a chronological plan.
+   - Focus on:
+     - Components and responsibilities.
+     - Interfaces and data flows.
+     - Test, CI/CD, and observability strategies.
+   - Leave **concrete work steps** to the Implement phase.

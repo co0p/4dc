@@ -2,7 +2,7 @@
 
 Follow this process to produce a `design.md` that is aligned with the constitution and the current increment, grounded in the existing codebase, and that keeps a human in the loop.
 
-The `path` argument for this prompt points at an **increment folder** (for example: `.../increments/<slug>`). The increment folder contains `increment.md`. The **project codebase** and other documentation live above this folder under the project root.
+The `path` argument for this prompt points at an **increment folder** (for example: `.../increments/<slug>`). The increment folder contains `increment.md`. The **project codebase** and other documents (such as `CONSTITUTION.md`, ADRs, and prior designs) live under the project root.
 
 ### Phase 1 – Gather and Summarize (STOP 1)
 
@@ -72,6 +72,8 @@ The `path` argument for this prompt points at an **increment folder** (for examp
      - As simple as possible.
      - Constrained to the increment’s scope and non-goals.
      - Implementable in **small, safe steps**.
+   - **Do not** turn this into a chronological list of code edits or tasks.  
+     Focus on *structure and behavior*, not on “Step 1/Step 2” sequences.
 
 7. Define Contracts and Interfaces
 
@@ -145,6 +147,7 @@ The `path` argument for this prompt points at an **increment folder** (for examp
         - Implements the agreed outline, including any adjustments from user feedback.
     - While writing:
       - Do not introduce new, major decisions that were not in the approved outline.
+      - Do not introduce step-by-step implementation instructions or task lists.
       - Do not mention prompts, LLMs, or this process.
       - Keep the document clear, concise, and directly traceable to:
         - `CONSTITUTION.md`.

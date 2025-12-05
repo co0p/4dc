@@ -235,9 +235,10 @@ Prompts for each phase must keep clear responsibilities:
   - Must NOT:
     - Redefine the product goal or tasks.
     - Contradict the increment’s non-goals without flagging it as a risk / follow-up.
+    - Turn into an implementation task list or step-by-step sequence of edits.
 
 - **Implement (plan, ordered steps)**:
-  - Turns the combination of increment (WHAT) and design (HOW) into an **ordered plan of steps**.
+  - Turns the combination of increment (WHAT) and design (HOW) into an **ordered plan of small, testable work items**.
   - Produces `implement.md` as:
     - Workstreams (e.g. backend, frontend, data, observability).
     - Concrete steps within each workstream.
@@ -246,8 +247,9 @@ Prompts for each phase must keep clear responsibilities:
     - Humans (and their coding tools) take steps from `implement.md` one at a time as small units of work.
   - Must NOT:
     - Silently redefine the design or increment.
+    - Introduce new architectural concepts or contracts not described in `design.md`.
     - Claim to be performing code changes itself.
-
+    
 - **Improve (system health)**:
   - Analyzes the overall health of the system under `path`.
   - Identifies:
