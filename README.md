@@ -10,8 +10,6 @@
 
 ---
 
-## Getting started
-
 4dc is a set of **LLM‑friendly prompt files** you add to your project so that you and your AI tools work in **small, incremental, evolutionary steps** instead of big risky changes.
 
 You describe **what and why** in an increment, get a **design** for how the system will change, break it down into **concrete implementation steps**, and periodically run **improve passes** that feed back into future increments.
@@ -56,12 +54,12 @@ Point Copilot Chat or your LLM at these prompt files as sources, and you’re re
 4dc keeps four kinds of artifacts separate so humans and tools don’t blur concerns. In practice, the cascade looks like this:
 
 ```text
-          ┌────────────────────────────────────┐
-          │          CONSTITUTION              │
-          │  values, expectations, layout      │
-          └────────────────────────────────────┘
-            ↑        ↑        ↑        ↑
-            │        │        │        │
+      ┌──────────────────────────────────────────┐
+      │          CONSTITUTION                    │
+      │  values, expectations, layout            │
+      └──────────────────────────────────────────┘
+       ↑            ↑            ↑            ↑
+       │            │            │            │
 [Increment]  →  [Design]  →  [Implement]  →  [Improve]
   WHAT & WHY     TECH HOW     STEPS          LEARN
 
