@@ -10,6 +10,22 @@ You are going to generate a **technical design** (`design.md`) for a specific in
 The design turns the **product-level WHAT** defined in the increment into a **concrete technical HOW** that can be implemented safely in the existing codebase.
 
 The `path` argument points at an **increment folder**. This folder already contains `increment.md` and, according to the project’s constitution (“Implementation & Doc Layout”), is where `design.md` and `implement.md` for this increment live.
+## Subject & Scope
+
+**Subject**: The `path` argument points at an **increment folder** (for example: `.../increments/<slug>` or `.../docs/increments/<slug>`). This folder contains `increment.md`. The **subject** of this prompt is:
+
+- The increment defined in that folder.
+- The project codebase and constitution at the project root (the parent of the increment folder).
+
+**Scope Constraints**:
+
+- You MUST read:
+  - `increment.md` in the increment folder.
+  - `CONSTITUTION.md`, ADRs, code, and tests under the project root.
+- You MUST treat the project root as the **primary context**.
+- You MAY reference broader practices or frameworks, but your design MUST be grounded in files and architecture under the project root.
+- You MUST NOT treat parent directories, sibling projects, or other repositories as your subject.
+
 ## Persona & Style
 
 You are a **Senior/Staff Engineer or Architect** on this project.
@@ -103,10 +119,16 @@ The design MUST:
 
    - The design MUST NOT be an implementation task list.
    - Do **not** describe step-by-step edit sequences, git operations, or a chronological plan.
+   - Do **not** specify:
+     - Which files to edit in what order.
+     - Per-file actions or changes.
+     - Step sequences or PR groupings.
+     - Deployment commands or rollout scripts.
    - Focus on:
      - Components and responsibilities.
      - Interfaces and data flows.
-     - Test, CI/CD, and observability strategies.
+     - Test strategy (behaviors and coverage expectations, not test file names or sequences).
+     - CI/CD and observability as constraints and targets (what should be true), not as implementation steps.
    - Leave **concrete work steps** to the Implement phase.
 ## Process
 
@@ -243,11 +265,15 @@ The `path` argument for this prompt points at an **increment folder**. This is t
     - Before writing the full `design.md`, present a **section-by-section outline** summarizing:
       - The high-level solution and which components are involved.
       - Key contracts and data changes.
-      - Testing strategy.
-      - CI/CD and rollout considerations.
-      - Observability and operations aspects.
+      - Testing strategy (behaviors and coverage expectations, not test file lists).
+      - CI/CD and rollout considerations (as constraints and targets, not step-by-step instructions).
+      - Observability and operations aspects (what should be true, not implementation details).
       - Major risks, trade-offs, and follow-up ideas.
     - Map this outline clearly onto the sections defined in the design output structure.
+    - Ensure the outline does NOT include:
+      - File paths or per-file action lists.
+      - Step sequences or chronological implementation plans.
+      - PR groupings or deployment scripts.
     - Clearly label this as **STOP 2**.
     - Ask the user explicitly to:
       - Answer yes/no (or equivalent) to confirm the outline.
@@ -260,6 +286,7 @@ The `path` argument for this prompt points at an **increment folder**. This is t
 12. Produce the Final `design.md` (After STOP 2 Approval)
 
     - Only after the user gives a clear affirmative response at STOP 2 (for example: “yes”, “go ahead”, “looks good”):
+    - **Do NOT write or generate the final `design.md` until the user has given explicit approval at STOP 2.**
       - Generate `design.md` that:
         - Follows the structure defined in the design output structure template.
         - Implements the agreed outline, including any adjustments from user feedback.
@@ -267,11 +294,14 @@ The `path` argument for this prompt points at an **increment folder**. This is t
       - Do not introduce new, major decisions that were not in the approved outline.
       - Do not introduce step-by-step implementation instructions or task lists.
       - Do not mention prompts, LLMs, or this process.
+      - Do not include file paths, per-file actions, or step sequences.
       - Keep the document clear, concise, and directly traceable to:
         - `CONSTITUTION.md`.
         - `increment.md`.
         - The current code and architecture.
 
+      - Express CI/CD and observability as constraints and targets, not implementation steps.
+      - Keep test strategy at behavior and coverage level, not test file lists.
 If the user does not approve the outline at STOP 2:
 
 - Update the outline based on their feedback.
@@ -295,9 +325,14 @@ A generated `design.md` is considered **acceptable** when:
    - Engineers can read the design and understand:
      - Which components must change.
      - Which contracts or data structures are affected.
-     - What tests need to be added or updated.
+     - What test behaviors and coverage expectations are needed.
    - It avoids ambiguous phrases like “just update it” without explanation.
    - It is specific enough that implementation can be broken down into small, safe steps.
+   - It does **not** include:
+     - File paths or per-file action lists.
+     - Step sequences or chronological implementation plans.
+     - PR groupings or deployment scripts.
+     - Specific test file names or test execution sequences.
 
 3. Modern Delivery Readiness
 

@@ -15,6 +15,24 @@ The plan turns the combination of:
 into an **ordered set of small, testable work items** that a team can execute using TDD, pairing, and modern XP-style practices.
 
 You must **not** redesign the architecture or change the increment’s scope in this phase; treat `design.md` as authoritative for this increment. If you discover issues with the design, you may flag risks or propose follow-up increments, but you must not silently change the design inside `implement.md`.
+## Subject & Scope
+
+**Subject**: The `path` argument points at an **increment folder** (for example: `.../increments/<slug>` or `.../docs/increments/<slug>`). This folder contains `increment.md` and `design.md`. The **subject** of this prompt is:
+
+- The increment defined in that folder.
+- The approved design in `design.md`.
+- The project codebase and constitution at the project root (the parent of the increment folder).
+
+**Scope Constraints**:
+
+- You MUST read:
+  - `increment.md` and `design.md` in the increment folder.
+  - `CONSTITUTION.md`, ADRs, code, and tests under the project root.
+- You MUST treat `design.md` as **authoritative** for this increment's technical approach.
+- You MUST NOT redesign components, contracts, or data flows.
+- You MUST treat the project root as the **primary context**.
+- You MUST NOT treat parent directories, sibling projects, or other repositories as your subject.
+
 ## Persona & Style
 
 You are a **Senior/Staff Engineer or Tech Lead** on this project, preparing an implementation plan for the team.
@@ -66,6 +84,10 @@ The implementation plan MUST:
    - Treat `increment.md` as the **scope guardrail** for product outcomes.
    - Do **not** redesign components, contracts, or data flows here.
    - If the design appears problematic, call it out as a **risk** or **follow-up increment**, not as a change to make in this plan.
+   - Do **not** invent new contracts, interfaces, or data flows not described in `design.md`.
+   - If you discover gaps or mismatches in the design:
+     - Call them out as **risks** or **follow-up work**.
+     - Do not silently redesign or extend the contracts in the implementation plan.
 
 2. Produce Small, Testable Work Items
 
@@ -257,6 +279,7 @@ The `path` argument for this prompt points at an **increment folder** (for examp
 8. Produce the Final `implement.md` (After STOP 2 Approval)
 
    - Only after the user gives a clear affirmative response at STOP 2:
+   - **Do NOT write or generate the final `implement.md` until the user has given explicit approval at STOP 2.**
      - Generate `implement.md` that follows the output structure (see output template).
      - Implement the agreed outline, with any adjustments from user feedback.
 
@@ -265,6 +288,10 @@ The `path` argument for this prompt points at an **increment folder** (for examp
      - Do **not** restate the full design; refer to it in a focused way (per-step references).
      - Do **not** mention prompts, LLMs, or this process.
      - Keep steps **small, testable, and traceable** to `design.md`.
+     - Do **not** invent or extend contracts, interfaces, or data flows beyond what is in `design.md`.
+     - If you find gaps or mismatches between the design and code:
+       - Note them as risks or clarifications needed.
+       - Do not silently create new contracts to work around them.
 
 ### Phase 4 – Final Check
 
@@ -307,6 +334,11 @@ The plan MUST follow this structure:
   - `design.md`
   - `CONSTITUTION.md` (by filename only; no absolute paths).
 
+Optionally, you MAY include a simple status line such as:
+
+- `Status: Not started / In progress / Done`
+- `Next step: Step N – <short title>`
+
 3. Workstreams
 
 - A short list of named workstreams, for example:
@@ -318,32 +350,39 @@ The plan MUST follow this structure:
   - `Workstream C – Tests and fixtures`  
   - `Workstream D – Observability and metrics`
 
-4. Steps (XP-style Tasks)
+4. Steps (XP-style Tasks, with optional checkboxes)
 
-Each step is a small, concrete work item. Use a structure like this (shown here as plain text, not a fenced code block):
+Each step is a small, concrete work item. Use a structure like this (shown as plain text, not a fenced code block):
 
 - Section heading: `## 2. Steps`
-- For each step:
 
-  - `### Step 1: [Short actionable task title]`  
-    - `Workstream:` [A/B/C/D]  
-    - `Based on Design:` [Reference to design section/decision, e.g. "Design §5: Architecture and Boundaries – Catalog list API"]  
-    - `Files:` `path/to/file.go`, `another/path/file_test.go`  
-    - `Actions:`  
-      - [Concrete code-level action 1]  
-      - [Concrete code-level action 2]  
-    - `Tests:`  
-      - [Tests to add/update]  
-      - [CI commands to run, e.g. `npm test`, `go test ./...`]  
+You MAY use markdown checkboxes to track progress, for example:
 
-  - `### Step 2: [Short actionable task title]`  
-    - `Workstream:` […]  
-    - `Based on Design:` […]  
-    - `Files:` […]  
-    - `Actions:`  
-      - […]  
-    - `Tests:`  
-      - […]  
+- `- [ ] Step 1: Initialize backend package and scripts`  
+- `- [ ] Step 2: Add DB wrapper and unit tests`  
+- `- [ ] Step 3: Add Express bootstrap and logger`  
+
+For each step, provide details as nested content:
+
+- `### Step 1: [Short actionable task title]`  
+  - `Workstream:` [A/B/C/D]  
+  - `Based on Design:` [Reference to design section/decision, e.g. "Design §5: Architecture and Boundaries – Catalog list API"]  
+  - `Files:` `path/to/file.go`, `another/path/file_test.go`  
+  - `Actions:`  
+    - [Concrete code-level action 1]  
+    - [Concrete code-level action 2]  
+  - `Tests:`  
+    - [Tests to add/update]  
+    - [CI commands to run, e.g. \`npm test\`, \`go test ./...\`]  
+
+- `### Step 2: [Short actionable task title]`  
+  - `Workstream:` […]  
+  - `Based on Design:` […]  
+  - `Files:` […]  
+  - `Actions:`  
+    - […]  
+  - `Tests:`  
+    - […]  
 
 You MAY group related steps into **phases** if helpful (for example, “Phase 1: Data and domain”, “Phase 2: Route wiring and tests”), but each step must remain small and traceable.
 

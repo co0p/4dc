@@ -17,9 +17,14 @@ A generated `design.md` is considered **acceptable** when:
    - Engineers can read the design and understand:
      - Which components must change.
      - Which contracts or data structures are affected.
-     - What tests need to be added or updated.
+     - What test behaviors and coverage expectations are needed.
    - It avoids ambiguous phrases like “just update it” without explanation.
    - It is specific enough that implementation can be broken down into small, safe steps.
+   - It does **not** include:
+     - File paths or per-file action lists.
+     - Step sequences or chronological implementation plans.
+     - PR groupings or deployment scripts.
+     - Specific test file names or test execution sequences.
 
 3. Modern Delivery Readiness
 

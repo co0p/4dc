@@ -112,6 +112,7 @@ The LLM MUST follow these steps in order, with explicit STOP points.
 7. Generate Increment Definition (After STOP 2 Approval)
 
    - Only after the user gives a clear affirmative at STOP 2 (for example: “yes”, “go ahead”, “looks good”):
+   - **Do NOT write or generate the final increment document until the user has given explicit approval at STOP 2.**
      - Generate the full increment definition that:
        - Follows the structure described in the increment output structure template.
        - Implements the agreed outline, incorporating any user adjustments.
