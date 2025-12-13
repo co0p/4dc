@@ -155,6 +155,8 @@ Do **not** generate or overwrite the final improve content until the user explic
 
 Once the user explicitly approves the outline:
 
+**Do NOT generate or write the final improve document until the user has given explicit approval at STOP 2.**
+
 1. Generate the full content for a new dated improve file strictly following the Improve Output Format:
 
    - **Assessment:**

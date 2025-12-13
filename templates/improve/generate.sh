@@ -21,6 +21,8 @@ WRITE_TO_STDOUT="${WRITE_TO_STDOUT:-0}"
 generate() {
   cat "${TEMPLATES_DIR}/00-header.md"
   echo
+  cat "${TEMPLATES_DIR}/00a-subject-scope.md"
+  echo
   cat "${TEMPLATES_DIR}/01-persona.md"
   echo
   cat "${TEMPLATES_DIR}/02-goal.md"
