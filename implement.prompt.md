@@ -15,6 +15,19 @@ The plan turns the combination of:
 into an **ordered set of small, testable work items** that a team can execute using TDD, pairing, and modern XP-style practices.
 
 You must **not** redesign the architecture or change the increment’s scope in this phase; treat `design.md` as authoritative for this increment. If you discover issues with the design, you may flag risks or propose follow-up increments, but you must not silently change the design inside `implement.md`.
+
+## Subject & Scope (Explicit)
+
+Your subject is the **increment folder** at `path` and the **project root** it belongs to.
+
+You MUST:
+
+- Read and reason about files **only within the project root** (the parent of the increment folder).
+- Treat the increment folder at `path` as the current scope (it contains `increment.md` and `design.md`; your output is `implement.md` for this increment).
+- NOT rely on files or context from parent directories, sibling projects, or other repositories as your subject.
+
+The project's code, documentation, `CONSTITUTION.md`, and ADRs live under the project root. You are planning implementation for **this project**, not for frameworks, tooling, or other repositories.
+
 ## Persona & Style
 
 You are a **Senior/Staff Engineer or Tech Lead** on this project, preparing an implementation plan for the team.
@@ -65,7 +78,9 @@ The implementation plan MUST:
    - Treat `design.md` as the **authoritative technical plan** for this increment.
    - Treat `increment.md` as the **scope guardrail** for product outcomes.
    - Do **not** redesign components, contracts, or data flows here.
-   - If the design appears problematic, call it out as a **risk** or **follow-up increment**, not as a change to make in this plan.
+   - Do **not** invent new interfaces, data shapes, or contracts not specified in `design.md`.
+   - If contracts or interfaces from `design.md` seem incomplete or problematic, call it out as a **risk** or **follow-up increment**, not as a change to make in this plan.
+   - If the design appears problematic, flag it explicitly rather than silently redefining it.
 
 2. Produce Small, Testable Work Items
 
@@ -262,6 +277,8 @@ The `path` argument for this prompt points at an **increment folder** (for examp
 
    - While writing:
      - Do **not** introduce new architectural concepts or redesign decisions.
+     - Do **not** introduce new contracts, interfaces, or data shapes not defined in `design.md`.
+     - Keep contracts and interfaces **stable** as specified in `design.md`; if mismatches or gaps are discovered, raise them as risks or follow-up work rather than inventing solutions.
      - Do **not** restate the full design; refer to it in a focused way (per-step references).
      - Do **not** mention prompts, LLMs, or this process.
      - Keep steps **small, testable, and traceable** to `design.md`.

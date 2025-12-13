@@ -476,6 +476,8 @@ If the user requests changes:
 
 Do **not** generate or overwrite the final improve content until the user explicitly says “yes” (or equivalent).
 
+Do **not** generate the final `improve.md` artifact before explicit YES at STOP 2.
+
 ---
 
 ## 5. Generate the Dated Improve Document (After STOP 2 Approval)

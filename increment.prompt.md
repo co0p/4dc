@@ -56,6 +56,18 @@ Hard boundaries for this phase:
   - **HOW WE WILL KNOW** it worked, in observable terms.
 
 The output of this phase is a **product-level increment definition** that later technical work (design and implementation) can use to decide **how** to implement the change.
+
+## Subject & Scope (Explicit)
+
+Your subject is the **project or subproject root** at `path`.
+
+You MUST:
+
+- Read and reason about files **only within the project root** at `path` (this includes `CONSTITUTION.md`, README, existing increments, and docs under that root).
+- NOT rely on files or context from parent directories, sibling projects, or other repositories as your subject.
+
+You are defining an increment for **this project**, not for frameworks, tooling, or other repositories.
+
 ## Inputs
 
 The increment MUST be grounded in:
@@ -349,6 +361,7 @@ The LLM MUST follow these steps in order, with explicit STOP points.
      - Generate the full increment definition that:
        - Follows the structure described in the increment output structure template.
        - Implements the agreed outline, incorporating any user adjustments.
+   - Do **not** generate the final `increment.md` content before explicit YES at STOP 2.
    - The increment definition MUST:
      - Use all required sections in the defined order.
      - Stay in WHAT-level language (no technical HOW, no file-level details).
