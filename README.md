@@ -75,10 +75,12 @@ In words:
    You define the outcome you want and why it matters, without jumping into solutions or task lists.
 
 2. **Design – HOW (technically)**  
-   You describe how the system will change to achieve that increment: components, data flows, interfaces, and trade‑offs.
+   You describe how the system will change to achieve that increment: components, data flows, interfaces, and trade‑offs.  
+   Design stays at the **architecture and contract level**: it defines what components/modules do, how they interact, and what data/interface shapes they use. It specifies testing/CI/observability as **constraints and targets** (e.g., "must have integration tests covering this flow", "must log request IDs"), not as step-by-step instructions. Design **does not** list file paths, per-file actions, chronological sequences, or task lists; those belong in Implement.
 
 3. **Implement – STEPS (concrete tasks)**  
-   You break the design into small, testable tasks and suggested PR groupings you can actually execute.
+   You break the design into small, testable tasks and suggested PR groupings you can actually execute.  
+   Implement **consumes** the design's contracts, interfaces, and data shapes without redefining them. It turns the design into **ordered, file-specific work items** that name modules, functions, and tests to add or change. If the design seems incomplete or problematic, Implement flags gaps as risks or follow-up increments rather than silently inventing new contracts.
 
 4. **Improve – LEARN & REFINE (codebase‑wide)**  
    You periodically scan the codebase against your constitution, capture lessons, and propose refactors and ADRs that become future increments.
