@@ -76,7 +76,9 @@ In words:
 
 2. **Design – HOW (technically)**  
    You describe how the system will change to achieve that increment: components, data flows, interfaces, and trade‑offs.  
-   Design stays at the **architecture and contract level**: it defines what components/modules do, how they interact, and what data/interface shapes they use. It specifies testing/CI/observability as **constraints and targets** (e.g., "must have integration tests covering this flow", "must log request IDs"), not as step-by-step instructions. Design **does not** list file paths, per-file actions, chronological sequences, or task lists; those belong in Implement.
+   Design stays at the **architecture and contract level**: it defines what components/modules do, how they interact, and what data/interface shapes they use.  
+   It specifies testing/CI/observability as **constraints and targets** (e.g., "must have integration tests covering this flow", "must log request IDs"), not as step-by-step instructions.  
+   Design **does not** list file paths, per-file actions, chronological sequences, or task lists; those belong in Implement.
 
 3. **Implement – STEPS (concrete tasks)**  
    You break the design into small, testable tasks and suggested PR groupings you can actually execute.  
