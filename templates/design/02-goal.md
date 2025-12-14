@@ -62,8 +62,14 @@ The design MUST:
 
    - The design MUST NOT be an implementation task list.
    - Do **not** describe step-by-step edit sequences, git operations, or a chronological plan.
+   - Do **not** specify:
+     - Which files to edit in what order.
+     - Per-file actions or changes.
+     - Step sequences or PR groupings.
+     - Deployment commands or rollout scripts.
    - Focus on:
      - Components and responsibilities.
      - Interfaces and data flows.
-     - Test, CI/CD, and observability strategies.
+     - Test strategy (behaviors and coverage expectations, not test file names or sequences).
+     - CI/CD and observability as constraints and targets (what should be true), not as implementation steps.
    - Leave **concrete work steps** to the Implement phase.

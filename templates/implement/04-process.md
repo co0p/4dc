@@ -98,6 +98,7 @@ The `path` argument for this prompt points at an **increment folder** (for examp
 8. Produce the Final `implement.md` (After STOP 2 Approval)
 
    - Only after the user gives a clear affirmative response at STOP 2:
+   - **Do NOT write or generate the final `implement.md` until the user has given explicit approval at STOP 2.**
      - Generate `implement.md` that follows the output structure (see output template).
      - Implement the agreed outline, with any adjustments from user feedback.
 
@@ -106,6 +107,10 @@ The `path` argument for this prompt points at an **increment folder** (for examp
      - Do **not** restate the full design; refer to it in a focused way (per-step references).
      - Do **not** mention prompts, LLMs, or this process.
      - Keep steps **small, testable, and traceable** to `design.md`.
+     - Do **not** invent or extend contracts, interfaces, or data flows beyond what is in `design.md`.
+     - If you find gaps or mismatches between the design and code:
+       - Note them as risks or clarifications needed.
+       - Do not silently create new contracts to work around them.
 
 ### Phase 4 – Final Check
 

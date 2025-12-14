@@ -16,6 +16,10 @@ The implementation plan MUST:
    - Treat `increment.md` as the **scope guardrail** for product outcomes.
    - Do **not** redesign components, contracts, or data flows here.
    - If the design appears problematic, call it out as a **risk** or **follow-up increment**, not as a change to make in this plan.
+   - Do **not** invent new contracts, interfaces, or data flows not described in `design.md`.
+   - If you discover gaps or mismatches in the design:
+     - Call them out as **risks** or **follow-up work**.
+     - Do not silently redesign or extend the contracts in the implementation plan.
 
 2. Produce Small, Testable Work Items
 

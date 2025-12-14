@@ -133,11 +133,15 @@ The `path` argument for this prompt points at an **increment folder**. This is t
     - Before writing the full `design.md`, present a **section-by-section outline** summarizing:
       - The high-level solution and which components are involved.
       - Key contracts and data changes.
-      - Testing strategy.
-      - CI/CD and rollout considerations.
-      - Observability and operations aspects.
+      - Testing strategy (behaviors and coverage expectations, not test file lists).
+      - CI/CD and rollout considerations (as constraints and targets, not step-by-step instructions).
+      - Observability and operations aspects (what should be true, not implementation details).
       - Major risks, trade-offs, and follow-up ideas.
     - Map this outline clearly onto the sections defined in the design output structure.
+    - Ensure the outline does NOT include:
+      - File paths or per-file action lists.
+      - Step sequences or chronological implementation plans.
+      - PR groupings or deployment scripts.
     - Clearly label this as **STOP 2**.
     - Ask the user explicitly to:
       - Answer yes/no (or equivalent) to confirm the outline.
@@ -150,6 +154,7 @@ The `path` argument for this prompt points at an **increment folder**. This is t
 12. Produce the Final `design.md` (After STOP 2 Approval)
 
     - Only after the user gives a clear affirmative response at STOP 2 (for example: “yes”, “go ahead”, “looks good”):
+    - **Do NOT write or generate the final `design.md` until the user has given explicit approval at STOP 2.**
       - Generate `design.md` that:
         - Follows the structure defined in the design output structure template.
         - Implements the agreed outline, including any adjustments from user feedback.
@@ -157,11 +162,14 @@ The `path` argument for this prompt points at an **increment folder**. This is t
       - Do not introduce new, major decisions that were not in the approved outline.
       - Do not introduce step-by-step implementation instructions or task lists.
       - Do not mention prompts, LLMs, or this process.
+      - Do not include file paths, per-file actions, or step sequences.
       - Keep the document clear, concise, and directly traceable to:
         - `CONSTITUTION.md`.
         - `increment.md`.
         - The current code and architecture.
 
+      - Express CI/CD and observability as constraints and targets, not implementation steps.
+      - Keep test strategy at behavior and coverage level, not test file lists.
 If the user does not approve the outline at STOP 2:
 
 - Update the outline based on their feedback.

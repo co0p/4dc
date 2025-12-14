@@ -154,6 +154,7 @@ Do **not** generate or overwrite the final improve content until the user explic
 ## 5. Generate the Dated Improve Document (After STOP 2 Approval)
 
 Once the user explicitly approves the outline:
+**Do NOT generate or write the final improve document until the user has given explicit approval at STOP 2.**
 
 1. Generate the full content for a new dated improve file strictly following the Improve Output Format:
 
