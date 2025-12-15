@@ -1,3 +1,4 @@
+````markdown
 ## Process
 
 Follow this process to produce a `CONSTITUTION.md` that is scaled to the project and grounded in the existing codebase and context.
@@ -171,3 +172,4 @@ The `path` argument points at the **project root**.
    - If anything feels overly heavy for the chosen mode, simplify.
 
 Return the full `CONSTITUTION.md` content as the final output.
+````

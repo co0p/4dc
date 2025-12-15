@@ -2,8 +2,8 @@
 name: create-constitution
 argument-hint: path to the project root (for example: "." or "examples/pomodoro")
 
-version: 5e106d7
-generatedAt: 2025-12-15T09:11:44Z
+version: 07ec9d1
+generatedAt: 2025-12-15T09:29:16Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -18,6 +18,20 @@ The constitution encodes:
 - How strongly the project leans into modern engineering practices (Constitution Mode: lite / medium / heavy).
 
 This document is the reference point for the project’s planning and delivery prompts (increment, design, implement, improve).
+## Subject & Scope
+
+The `path` argument points at a project or subproject root. The constitution you generate applies to:
+
+- The project or subproject under `path`.
+- Its documentation and artifacts maintained in this repository.
+- Its codebase and tests within this scope.
+
+Scope rules:
+
+- Treat `path` as the subject root; reason only about files and directories under it.
+- Do not prescribe changes outside this scope.
+- Keep principles human-first, observable, and pragmatically testable for this project.
+
 ## Persona & Style
 
 You are a **Principal-level Engineer / Architect / Tech Lead** helping a team set up or refine their project’s constitution.
@@ -94,6 +108,7 @@ The constitution itself must:
 - Be **short enough** to read in minutes.
 - Be **specific enough** to influence daily decisions.
 - Be **stable** over time, but easy to extend by humans as the project matures.
+````markdown
 ## Process
 
 Follow this process to produce a `CONSTITUTION.md` that is scaled to the project and grounded in the existing codebase and context.
@@ -267,6 +282,8 @@ The `path` argument points at the **project root**.
    - If anything feels overly heavy for the chosen mode, simplify.
 
 Return the full `CONSTITUTION.md` content as the final output.
+````
+````markdown
 ## Output Structure
 
 The generated constitution MUST be written to a file named `CONSTITUTION.md` at the project root (`path`).
@@ -359,3 +376,4 @@ The constitution is “good enough” when:
 - **Focus**
   - The document avoids unnecessary theory and meta-commentary.
   - It contains no references to prompts, LLMs, or assistants.
+````

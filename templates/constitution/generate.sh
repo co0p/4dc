@@ -30,13 +30,15 @@ render() {
 generate() {
   render < "${TEMPLATES_DIR}/00-header.md"
   echo
-  render < "${TEMPLATES_DIR}/01-persona.md"
+  render < "${TEMPLATES_DIR}/01-subject-scope.md"
   echo
-  render < "${TEMPLATES_DIR}/02-goal.md"
+  render < "${TEMPLATES_DIR}/02-persona.md"
   echo
-  render < "${TEMPLATES_DIR}/03-process.md"
+  render < "${TEMPLATES_DIR}/03-goal.md"
   echo
-  render < "${TEMPLATES_DIR}/04-output.md"
+  render < "${TEMPLATES_DIR}/04-process.md"
+  echo
+  render < "${TEMPLATES_DIR}/05-output.md"
   echo
 }
 

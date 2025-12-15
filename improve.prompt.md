@@ -4,8 +4,8 @@ title: Improve – System Health and Refactoring Proposals
 description: Analyze a project root and generate a dated improvement and architectural learning artifact
 argument-hint: path to project or subproject root (e.g. . or examples/pomodoro)
 
-version: 5e106d7
-generatedAt: 2025-12-15T09:11:44Z
+version: 07ec9d1
+generatedAt: 2025-12-15T09:29:17Z
 source: https://github.com/co0p/4dc
 ---
 

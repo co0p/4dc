@@ -1,3 +1,4 @@
+````markdown
 ## Output Structure
 
 The generated constitution MUST be written to a file named `CONSTITUTION.md` at the project root (`path`).
@@ -90,3 +91,4 @@ The constitution is “good enough” when:
 - **Focus**
   - The document avoids unnecessary theory and meta-commentary.
   - It contains no references to prompts, LLMs, or assistants.
+````
