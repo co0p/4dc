@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_DIR=".github/prompts/4dc"
+TARGET_DIR=".github/prompts"
+PREFIX="4dc"
 REPO="https://github.com/co0p/4dc"
 BRANCH="main"
 
@@ -33,12 +34,12 @@ PROMPT_FILES=(
 for file in "${PROMPT_FILES[@]}"; do
   SRC="$REPO_ROOT/$file"
   if [ -f "$SRC" ]; then
-    echo "   - copying $file -> $TARGET_DIR/$file"
-    cp "$SRC" "$TARGET_DIR/$file"
+    echo "   - copying $file -> $TARGET_DIR/$PREFIX-$file"
+    cp "$SRC" "$TARGET_DIR/$PREFIX-$file"
   else
     echo "   - warning: $file not found in repo root; skipping"
   fi
 done
 
 echo ">> 4dc: prompt files installed into $TARGET_DIR"
-echo "   Configure your LLM / Copilot Chat to use these .prompt.md files."
+echo "   Configure your LLM / Copilot Chat to use these *$PREFIX*.prompt.md files."
