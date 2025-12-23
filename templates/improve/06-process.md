@@ -7,6 +7,7 @@ This section defines **how** to run the improve analysis and generate a dated im
 - Treat the given `path` as the **subject root**.
 - You may read:
   - `CONSTITUTION.md`, README, and other docs under `path`.
+  - `ARCHITECTURE.md` or other architecture documents under `path`, including any Mermaid C4 diagrams they contain.
   - Existing increment, design, implement, and improve documents under `path`.
   - Code and tests under `path`.
 - Do **not** treat parent directories, sibling projects, or other repositories as your subject.
@@ -35,6 +36,7 @@ Review key project context under `path`:
 
 - `CONSTITUTION.md` and similar guiding documents.
 - Readme / high-level docs and onboarding material under `path`.
+- Architecture documentation such as `ARCHITECTURE.md`, including its Mermaid C4 level 2 (containers) and level 3 (components) diagrams, if present.
 - Recent increments/designs/implements/improves under `path`.
 - Representative code and tests (especially around recent changes).
 
@@ -42,6 +44,7 @@ Review key project context under `path`:
 
 - **Evaluate vs. Constitution:** Assess how well the implementation adheres to the project's core principles and constraints. Prepare to summarize this as per-principle **1–5 star ratings** with short rationales.
 - **Evaluate vs. Design Goals:** Assess whether the implementation meets the intended design approach, component boundaries, and data flow.
+- **Evaluate vs. Architecture Documentation:** Compare the current implementation and deployment topology against architecture docs (for example `ARCHITECTURE.md`) and their Mermaid C4 container/component diagrams; note any mismatches or missing views.
 - **Quality Evaluation:** Assess code quality, readability, maintainability, and testability.
 - **Identify Risks:** List technical debt, potential bugs, performance concerns, or security issues.
 - **Identify Architectural Opportunities:** Note opportunities for improved structure, patterns, or abstractions.
@@ -71,7 +74,7 @@ After STOP 1 and any clarifications:
 - Analyze the codebase under `path` using the context-based lenses described in the **Lenses** section:
   - Naming & Clarity
   - Modularity & Separation
-  - Architecture & Patterns
+  - Architecture & Patterns (including alignment with and updates to `ARCHITECTURE.md` and C4 diagrams)
   - Testing & Reliability
   - Duplication & Simplicity
   - Documentation & Communication

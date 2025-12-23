@@ -2,8 +2,8 @@
 name: increment
 argument-hint: path to the project root (for example: "examples/pomodoro") plus a short increment description
 
-version: 07ec9d1
-generatedAt: 2025-12-15T09:29:16Z
+version: 7842815
+generatedAt: 2025-12-23T11:30:29Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -89,11 +89,14 @@ The increment MUST be grounded in:
    - Treat this directory and its subdirectories as the **only subject** of this prompt.
    - Not rely on content from parent directories, sibling projects, or other repositories as primary context.
 
-   Within this scope, it should locate and use:
+    Within this scope, it should locate and use:
 
-   - `CONSTITUTION.md` (if present) – the primary source of project values and guardrails.
-   - The main description artifact (for example: `README.md` or similar).
-   - Any existing increment, design, implement, or improve documents under this root, as background.
+    - `CONSTITUTION.md` (if present) – the primary source of project values and guardrails.
+    - The main description artifact (for example: `README.md` or similar).
+    - `docs/PRD.md` (if present) – the primary product requirements document, including:
+       - The list of past and current increments.
+       - User stories and acceptance criteria associated with those increments.
+       - Stable increment identifiers and links to increment folders.
 
 2. The increment description from the user
 
@@ -128,7 +131,7 @@ The increment MUST be grounded in:
 
    If available within the scoped path, the LLM SHOULD consider:
 
-   - Recent increments, designs, implementations, and improve documents.
+   - The "Increments" (or similar) section of `docs/PRD.md`, including past user stories and acceptance criteria.
    - ADRs relevant to the product area.
    - Open issues or TODOs in the repo.
 
@@ -285,8 +288,8 @@ The LLM MUST follow these steps in order, with explicit STOP points.
 
 2. Receive Initial Prompt
 
-   - Parse the user’s increment description as **product intent**, not a fixed technical solution.
-   - Note any obvious ambiguities or breadth that might need narrowing.
+  - Parse the user’s increment description as a **user story** (or small set of stories) and as **product intent**, not a fixed technical solution.
+  - Note any obvious ambiguities or breadth that might need narrowing.
 
 3. Analyze Constitution and Context
 
@@ -325,10 +328,42 @@ The LLM MUST follow these steps in order, with explicit STOP points.
    - Avoid long questionnaires; keep questions minimal.
    - Incorporate the user’s answers into your internal understanding.
 
-6. Suggest Increment Outline and Folder Name → STOP 2
+6. Align on a Single Primary User Story
+
+   - If the initial description contains multiple user stories or outcomes, help the user select **one primary user story** for this increment.
+   - Propose a concise user story in a form familiar to the project (for example: “As a …, I want …, so that …”).
+   - Ask the user to confirm or refine this user story until there is **one clear, agreed primary story**.
+   - Defer additional stories or outcomes as candidates for **Follow-up Increments**.
+
+7. Propose and Refine Acceptance Criteria → STOP AC
+
+   - Based on the agreed user story, project constitution, past increments, and `docs/PRD.md` (if present), propose a short list of **acceptance criteria**:
+     - Each criterion should describe observable behavior or evidence that the story is satisfied.
+     - Where helpful, reuse patterns from prior increments in `docs/PRD.md` so terminology and structure stay consistent.
+   - Present the criteria clearly labeled as **Draft Acceptance Criteria** and label this interaction as **STOP AC**.
+   - Ask the user to:
+     - Add, remove, or adjust criteria.
+     - Confirm when the list is **complete enough** for this increment.
+   - Do not proceed to the use case until the user has explicitly confirmed the acceptance criteria.
+
+8. Develop a Detailed Use Case
+
+   - Using the agreed user story and acceptance criteria, draft a **detailed use case** for this increment.
+   - Structure the use case along these lines:
+     - **Actors**
+     - **Preconditions**
+     - **Main Flow** (numbered steps)
+     - **Alternate / Exception Flows** (only those relevant to this increment)
+   - Present the use case and ask the user for corrections or additions.
+   - Iterate briefly until there is a shared, concrete use case that will be documented in `increment.md`.
+
+9. Suggest Increment Outline and Folder Name → STOP 2
 
    - Propose a **high-level increment outline** that includes:
      - A working title for the increment.
+     - The agreed primary user story.
+     - The agreed acceptance criteria.
+     - A summary of the detailed use case (actors, main flow, key alternate flows).
      - A brief context summary.
      - A draft goal (outcome, scope, non-goals).
      - A rough list of tasks (WHAT-level items, not technical HOW).
@@ -358,11 +393,12 @@ The LLM MUST follow these steps in order, with explicit STOP points.
    - Ask the user explicitly to:
      - Confirm or adjust the slug and folder name.
      - Confirm or adjust the proposed base directory/path if it does not match their expectations.
+     - Confirm that the user story, acceptance criteria, and use case summary in the outline are correct.
      - Answer yes or no (or equivalent) to approve the outline and final folder/path.
 
-   Do not generate the full increment document until the user has approved the outline, the `<slug>` folder name, and the target path at STOP 2.
+   Do not generate the full increment document until the user has approved the outline, the `<slug>` folder name, the target path at STOP 2, **and** confirmed the user story, acceptance criteria, and use case summary.
 
-7. Generate Increment Definition (After STOP 2 Approval)
+10. Generate Increment Definition (After STOP 2 Approval)
 
    - Only after the user gives a clear affirmative at STOP 2 (for example: “yes”, “go ahead”, “looks good”):
    - **Do NOT write or generate the final increment document until the user has given explicit approval at STOP 2.**
@@ -374,7 +410,7 @@ The LLM MUST follow these steps in order, with explicit STOP points.
      - Stay in WHAT-level language (no technical HOW, no file-level details).
      - Avoid any mention of prompts, LLMs, or this process.
 
-8. Save or Present Increment in the Approved Folder
+11. Save or Present Increment in the Approved Folder
 
    - Use the user-approved folder name `<slug>` under the chosen increment base directory within the target project path.
    - The increment definition MUST be stored or intended at:
@@ -386,7 +422,7 @@ The LLM MUST follow these steps in order, with explicit STOP points.
      - Present the full path and content so the user can create the folder and file manually.
    - Confirm to the user the final path used or suggested.
 
-9. Final Validation
+12. Final Validation
 
    - Optionally recap:
      - The increment title.
@@ -404,7 +440,30 @@ The generated increment definition MUST follow this structure and use these head
    - Short and descriptive.
    - Understandable by product, engineering, and stakeholders.
 
-2. Context
+2. User Story
+
+- Capture the **primary user story** for this increment, in a form familiar to the project (for example: `As a <role>, I want <capability>, so that <benefit>.`).
+- Ensure the story reflects the agreed scope of this increment, not a broader roadmap.
+- If additional stories were identified but deferred, mention them only briefly as candidates for future increments (not as part of this increment).
+
+3. Acceptance Criteria
+
+- List the **agreed acceptance criteria** that must hold true for this user story to be considered satisfied.
+- Each criterion should:
+   - Describe observable behavior or evidence (WHAT happens, or what can be seen/measured).
+   - Be phrased in clear, testable language (for example: “When X, then Y is visible/recorded/blocked.”).
+- Where helpful, reuse structures and terminology from past increments in `docs/PRD.md` so the criteria stay consistent across the product.
+
+4. Use Case
+
+- Provide a **detailed use case** for the primary user story, structured along these lines:
+   - **Actors:** Who is involved (users, systems, services).
+   - **Preconditions:** What must already be true before the scenario starts.
+   - **Main Flow:** A numbered sequence of steps that describes the typical successful path.
+   - **Alternate / Exception Flows:** Short descriptions of only those alternate or error paths that are relevant to this increment.
+- Keep the use case focused on behavior and interactions, not internal implementation details.
+
+5. Context
 
 - Explain the current situation or problem from a user or business perspective.
 - Include:
@@ -413,7 +472,7 @@ The generated increment definition MUST follow this structure and use these head
    - Key constraints or assumptions (for example: time, scope, risk tolerance, regulatory limits).
 - This section should give enough background that someone new to the increment understands **why it matters**.
 
-3. Goal
+6. Goal
 
 - Describe the outcome or hypothesis:
    - What will be different for users, customers, or the business after this increment?
@@ -424,7 +483,7 @@ The generated increment definition MUST follow this structure and use these head
 - Briefly explain why this is a good, small increment:
    - It is small, coherent, and can be evaluated in a reasonable time.
 
-4. Tasks
+7. Tasks
 
 - Provide a **product-level** checklist of tasks. For each task, include:
    - `Task:` An outcome-level description of what should be true when the task is complete.
@@ -433,7 +492,7 @@ The generated increment definition MUST follow this structure and use these head
 - Tasks MUST describe WHAT should be true, not the technical HOW.
 - Avoid references to specific files, functions, branches, components, or implementation steps.
 
-5. Risks and Assumptions
+8. Risks and Assumptions
 
 - List known risks, such as:
    - Potential user impact.
@@ -442,7 +501,7 @@ The generated increment definition MUST follow this structure and use these head
 - List key assumptions that, if wrong, could change the plan.
 - Optionally mention high-level mitigations, still in outcome language (for example: “If adoption is low, we may follow up with user interviews”).
 
-6. Success Criteria and Observability
+9. Success Criteria and Observability
 
 - Describe how you will know this increment is successful:
    - Changes in metrics, events, or user behavior.
@@ -452,7 +511,7 @@ The generated increment definition MUST follow this structure and use these head
    - Any simple checks in staging or production to confirm behavior.
 - Keep this at the level of WHAT is observed, not HOW it is instrumented.
 
-7. Process Notes
+10. Process Notes
 
 - Add high-level notes about how this increment should move through the workflow, without prescribing technical steps.
 - Examples:
@@ -461,13 +520,30 @@ The generated increment definition MUST follow this structure and use these head
    - It should be rolled out in a way that allows quick recovery if needed.
 - Do not include concrete implementation instructions, code changes, or deployment commands.
 
-8. Follow-up Increments (Optional)
+11. Follow-up Increments (Optional)
 
 - Briefly describe potential future increments that:
    - Extend this outcome.
    - Address related but out-of-scope work.
    - Further improve performance, reliability, or user experience.
 - Each follow-up should be described as a possible future increment, not as part of the current one.
+
+12. PRD Entry (for docs/PRD.md)
+
+- Provide a concise **PRD entry** so this increment can be recorded in `docs/PRD.md` under the appropriate heading.
+- Use a simple, stable structure such as:
+
+   - `Increment ID:` The slug for this increment (for example: `short-and-long-break-actions`).
+   - `Title:` The same short, product-friendly title used in the heading.
+   - `Status:` An initial status such as `Proposed`, `In Progress`, or `Done` (the project may update this over time).
+   - `Increment Folder:` The relative path to this increment’s folder from the project root (for example: `docs/increments/short-and-long-break-actions/`).
+   - `User Story:` The primary user story (short form).
+   - `Acceptance Criteria:` A short bullet list summarizing the agreed acceptance criteria.
+   - `Use Case Summary:` A brief summary of the main flow from the detailed use case.
+
+- This section is intended to be **copied into or synchronized with** `docs/PRD.md` and MUST:
+   - Avoid references to prompts, LLMs, or assistants.
+   - Use clear, product-oriented language.
 
 ---
 

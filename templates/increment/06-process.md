@@ -32,8 +32,8 @@ The LLM MUST follow these steps in order, with explicit STOP points.
 
 2. Receive Initial Prompt
 
-   - Parse the user’s increment description as **product intent**, not a fixed technical solution.
-   - Note any obvious ambiguities or breadth that might need narrowing.
+  - Parse the user’s increment description as a **user story** (or small set of stories) and as **product intent**, not a fixed technical solution.
+  - Note any obvious ambiguities or breadth that might need narrowing.
 
 3. Analyze Constitution and Context
 
@@ -72,10 +72,42 @@ The LLM MUST follow these steps in order, with explicit STOP points.
    - Avoid long questionnaires; keep questions minimal.
    - Incorporate the user’s answers into your internal understanding.
 
-6. Suggest Increment Outline and Folder Name → STOP 2
+6. Align on a Single Primary User Story
+
+   - If the initial description contains multiple user stories or outcomes, help the user select **one primary user story** for this increment.
+   - Propose a concise user story in a form familiar to the project (for example: “As a …, I want …, so that …”).
+   - Ask the user to confirm or refine this user story until there is **one clear, agreed primary story**.
+   - Defer additional stories or outcomes as candidates for **Follow-up Increments**.
+
+7. Propose and Refine Acceptance Criteria → STOP AC
+
+   - Based on the agreed user story, project constitution, past increments, and `docs/PRD.md` (if present), propose a short list of **acceptance criteria**:
+     - Each criterion should describe observable behavior or evidence that the story is satisfied.
+     - Where helpful, reuse patterns from prior increments in `docs/PRD.md` so terminology and structure stay consistent.
+   - Present the criteria clearly labeled as **Draft Acceptance Criteria** and label this interaction as **STOP AC**.
+   - Ask the user to:
+     - Add, remove, or adjust criteria.
+     - Confirm when the list is **complete enough** for this increment.
+   - Do not proceed to the use case until the user has explicitly confirmed the acceptance criteria.
+
+8. Develop a Detailed Use Case
+
+   - Using the agreed user story and acceptance criteria, draft a **detailed use case** for this increment.
+   - Structure the use case along these lines:
+     - **Actors**
+     - **Preconditions**
+     - **Main Flow** (numbered steps)
+     - **Alternate / Exception Flows** (only those relevant to this increment)
+   - Present the use case and ask the user for corrections or additions.
+   - Iterate briefly until there is a shared, concrete use case that will be documented in `increment.md`.
+
+9. Suggest Increment Outline and Folder Name → STOP 2
 
    - Propose a **high-level increment outline** that includes:
      - A working title for the increment.
+     - The agreed primary user story.
+     - The agreed acceptance criteria.
+     - A summary of the detailed use case (actors, main flow, key alternate flows).
      - A brief context summary.
      - A draft goal (outcome, scope, non-goals).
      - A rough list of tasks (WHAT-level items, not technical HOW).
@@ -105,11 +137,12 @@ The LLM MUST follow these steps in order, with explicit STOP points.
    - Ask the user explicitly to:
      - Confirm or adjust the slug and folder name.
      - Confirm or adjust the proposed base directory/path if it does not match their expectations.
+     - Confirm that the user story, acceptance criteria, and use case summary in the outline are correct.
      - Answer yes or no (or equivalent) to approve the outline and final folder/path.
 
-   Do not generate the full increment document until the user has approved the outline, the `<slug>` folder name, and the target path at STOP 2.
+   Do not generate the full increment document until the user has approved the outline, the `<slug>` folder name, the target path at STOP 2, **and** confirmed the user story, acceptance criteria, and use case summary.
 
-7. Generate Increment Definition (After STOP 2 Approval)
+10. Generate Increment Definition (After STOP 2 Approval)
 
    - Only after the user gives a clear affirmative at STOP 2 (for example: “yes”, “go ahead”, “looks good”):
    - **Do NOT write or generate the final increment document until the user has given explicit approval at STOP 2.**
@@ -121,7 +154,7 @@ The LLM MUST follow these steps in order, with explicit STOP points.
      - Stay in WHAT-level language (no technical HOW, no file-level details).
      - Avoid any mention of prompts, LLMs, or this process.
 
-8. Save or Present Increment in the Approved Folder
+11. Save or Present Increment in the Approved Folder
 
    - Use the user-approved folder name `<slug>` under the chosen increment base directory within the target project path.
    - The increment definition MUST be stored or intended at:
@@ -133,7 +166,7 @@ The LLM MUST follow these steps in order, with explicit STOP points.
      - Present the full path and content so the user can create the folder and file manually.
    - Confirm to the user the final path used or suggested.
 
-9. Final Validation
+12. Final Validation
 
    - Optionally recap:
      - The increment title.

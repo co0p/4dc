@@ -52,11 +52,22 @@ When `CONSTITUTION.md` defines modes or different “levels of rigor”, scale h
 - Refactor for testability (Beck, Feathers).
 - Apply Domain-Driven Design principles (Evans).
 - Document architectural decisions and rationale where they affect many changes.
+- Keep architectural **documentation** (for example, `ARCHITECTURE.md`) accurate and useful, including high-level and mid-level diagrams.
+
+When an `ARCHITECTURE.md` (or similarly named architecture document) exists or is required by the constitution:
+
+- Verify that it includes at least:
+  - A **C4 Container (Level 2)** view describing key containers and their relationships.
+  - One or more **C4 Component (Level 3)** views for important containers.
+- Check that Mermaid diagrams in this document accurately reflect:
+  - The current services, modules, and data stores under `path`.
+  - The actual communication paths and dependencies observed in the code and configuration.
+- Identify and propose small, incremental updates to keep diagrams and narrative synchronized with the implementation.
 
 **Mode guidance:**
 
-- **Lighter passes:** Highlight a small number of architectural inconsistencies or hacks and propose targeted, low-risk cleanups.
-- **Deeper passes:** Propose more systematic alignment of patterns (for example, a consistent error-handling approach), potentially leading to ADRs and multiple future increments.
+- **Lighter passes:** Highlight a small number of architectural inconsistencies or hacks, plus any obviously outdated diagrams, and propose targeted, low-risk cleanups (including concrete diagram tweaks).
+- **Deeper passes:** Propose more systematic alignment of patterns (for example, a consistent error-handling approach) and more comprehensive updates to architecture documentation and C4 diagrams, potentially leading to ADRs and multiple future increments.
 
 ## Testing & Reliability (Beck, Feathers)
 

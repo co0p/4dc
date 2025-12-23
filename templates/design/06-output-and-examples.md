@@ -132,6 +132,42 @@ The design document MUST follow this structure:
   - Relevant tickets/issues.
   - Other designs or documents that influenced this one.
 
+13. Machine-Readable Artifacts (when applicable)
+
+- When the increment introduces or changes **APIs, events, or schemas**, the design MUST include clearly delimited, machine-readable artifacts such as:
+  - OpenAPI or JSON/YAML snippets for HTTP or RPC APIs.
+  - JSON Schema or equivalent definitions for key payloads.
+  - Event or message schemas for pub/sub or queue-based integrations.
+- These artifacts SHOULD be presented as fenced code blocks, labeled with their intended purpose and (optionally) target file path, for example:
+
+  - `# API Contract: POST /widgets (intended file: api/contracts/widgets-openapi.yaml)`
+    ```yaml
+    # OpenAPI fragment
+    openapi: 3.0.0
+    ...
+    ```
+
+- When the increment affects **system structure or architecture**, the design SHOULD also include updated **Mermaid-based C4 diagrams** that can be applied to `ARCHITECTURE.md` or the project’s architecture docs:
+  - At least one **C4 Container (Level 2)** diagram for the relevant part of the system.
+  - One or more **C4 Component (Level 3)** diagrams for key containers impacted by this increment.
+- These diagrams SHOULD be presented as fenced `mermaid` code blocks with a short caption indicating where they belong, for example:
+
+  - `# Architecture Diagram (C4 Container L2, intended for ARCHITECTURE.md)`
+    ```mermaid
+    %% Mermaid C4 container view here
+    ```
+
+  - `# Architecture Diagram (C4 Component L3 for <Container>, intended for ARCHITECTURE.md)`
+    ```mermaid
+    %% Mermaid C4 component view here
+    ```
+
+- Machine-readable artifacts MUST remain consistent with the narrative in:
+  - Proposed Solution.
+  - Architecture and Boundaries.
+  - Contracts and Data.
+  - Testing and Safety Net.
+
 ---
 
 ### Examples (Conceptual)

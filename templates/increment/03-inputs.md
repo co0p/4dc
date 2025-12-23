@@ -12,11 +12,14 @@ The increment MUST be grounded in:
    - Treat this directory and its subdirectories as the **only subject** of this prompt.
    - Not rely on content from parent directories, sibling projects, or other repositories as primary context.
 
-   Within this scope, it should locate and use:
+    Within this scope, it should locate and use:
 
-   - `CONSTITUTION.md` (if present) – the primary source of project values and guardrails.
-   - The main description artifact (for example: `README.md` or similar).
-   - Any existing increment, design, implement, or improve documents under this root, as background.
+    - `CONSTITUTION.md` (if present) – the primary source of project values and guardrails.
+    - The main description artifact (for example: `README.md` or similar).
+    - `docs/PRD.md` (if present) – the primary product requirements document, including:
+       - The list of past and current increments.
+       - User stories and acceptance criteria associated with those increments.
+       - Stable increment identifiers and links to increment folders.
 
 2. The increment description from the user
 
@@ -51,7 +54,7 @@ The increment MUST be grounded in:
 
    If available within the scoped path, the LLM SHOULD consider:
 
-   - Recent increments, designs, implementations, and improve documents.
+   - The "Increments" (or similar) section of `docs/PRD.md`, including past user stories and acceptance criteria.
    - ADRs relevant to the product area.
    - Open issues or TODOs in the repo.
 

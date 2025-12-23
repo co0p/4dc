@@ -2,8 +2,8 @@
 name: create-constitution
 argument-hint: path to the project root (for example: "." or "examples/pomodoro")
 
-version: 07ec9d1
-generatedAt: 2025-12-15T09:29:16Z
+version: 7842815
+generatedAt: 2025-12-23T11:29:14Z
 source: https://github.com/co0p/4dc
 ---
 

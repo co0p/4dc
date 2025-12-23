@@ -4,8 +4,8 @@ title: Improve – System Health and Refactoring Proposals
 description: Analyze a project root and generate a dated improvement and architectural learning artifact
 argument-hint: path to project or subproject root (e.g. . or examples/pomodoro)
 
-version: 07ec9d1
-generatedAt: 2025-12-15T09:29:17Z
+version: 7842815
+generatedAt: 2025-12-23T11:29:14Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -63,6 +63,7 @@ Generate a clear, dated improvement document for the project rooted at `path` th
 - Captures **lessons and emerging patterns** (good and bad).
 - Surfaces **architectural and refactoring opportunities**.
 - Produces a **list of concrete improvement proposals** that can later be turned into increments, but does not implement them.
+- Keeps the project’s **architecture documentation** (for example, `ARCHITECTURE.md`) in sync with the actual system, including Mermaid-based C4 level 2 (containers) and level 3 (components) diagrams where required by the constitution.
 
 The output should help the team and other 4dc prompts decide **what to improve next** and why.
 # Lenses for Refactoring and Codebase Improvement
@@ -119,11 +120,22 @@ When `CONSTITUTION.md` defines modes or different “levels of rigor”, scale h
 - Refactor for testability (Beck, Feathers).
 - Apply Domain-Driven Design principles (Evans).
 - Document architectural decisions and rationale where they affect many changes.
+- Keep architectural **documentation** (for example, `ARCHITECTURE.md`) accurate and useful, including high-level and mid-level diagrams.
+
+When an `ARCHITECTURE.md` (or similarly named architecture document) exists or is required by the constitution:
+
+- Verify that it includes at least:
+  - A **C4 Container (Level 2)** view describing key containers and their relationships.
+  - One or more **C4 Component (Level 3)** views for important containers.
+- Check that Mermaid diagrams in this document accurately reflect:
+  - The current services, modules, and data stores under `path`.
+  - The actual communication paths and dependencies observed in the code and configuration.
+- Identify and propose small, incremental updates to keep diagrams and narrative synchronized with the implementation.
 
 **Mode guidance:**
 
-- **Lighter passes:** Highlight a small number of architectural inconsistencies or hacks and propose targeted, low-risk cleanups.
-- **Deeper passes:** Propose more systematic alignment of patterns (for example, a consistent error-handling approach), potentially leading to ADRs and multiple future increments.
+- **Lighter passes:** Highlight a small number of architectural inconsistencies or hacks, plus any obviously outdated diagrams, and propose targeted, low-risk cleanups (including concrete diagram tweaks).
+- **Deeper passes:** Propose more systematic alignment of patterns (for example, a consistent error-handling approach) and more comprehensive updates to architecture documentation and C4 diagrams, potentially leading to ADRs and multiple future increments.
 
 ## Testing & Reliability (Beck, Feathers)
 
@@ -242,6 +254,7 @@ The improve output is a human-readable artifact, not a conversation transcript. 
 - The artifact must follow the structure below exactly (section headings and order).
 - Each “Improvement” is a **proposal for future work** that the team may or may not pick up as a new increment.
 - When `CONSTITUTION.md` defines a `constitution-mode`, ensure the number and size of Improvements are appropriate for that mode (fewer, smaller proposals in `lite`; more comprehensive coverage allowed in `heavy`).
+ - When the project constitution or layout expects an `ARCHITECTURE.md` (or similar architecture document), the improve artifact should also contain proposals that keep that document and its diagrams in sync with the actual system, including updated Mermaid C4 level 2 (containers) and level 3 (components) diagrams where appropriate.
 
 ## Output Schema: docs/improve/YYYY-MM-DD-improve.md
 
@@ -291,7 +304,9 @@ Each improvement is a separate section with the following structure (shown here 
   - `**Priority:**` `H` / `M` / `L`.  
   - `**Effort:**` rough time estimate, e.g. `30 min`, `2–3 h`, `1–2 days`.  
   - `**Files:**` comma-separated list of concrete paths under `path`, e.g. ``path/to/file.ext``, ``another/path/file.ext``.  
-  - `**Change:**` specific change description, clear enough that someone can implement it without re-interpreting intent, and small enough to be done as one or a few safe refactorings.  
+  - `**Change:**` specific change description, clear enough that someone can implement it without re-interpreting intent, and small enough to be done as one or a few safe refactorings. For architecture-related improvements, the **Change** description SHOULD:
+    - Reference `ARCHITECTURE.md` (or the relevant architecture file) explicitly.
+    - Include updated Mermaid snippets for any C4 Container (L2) or Component (L3) diagrams that need to be changed, as fenced code blocks that can be pasted into the architecture document.
   - `**Increment Hint (optional):**` one-sentence suggested increment title or description that could be used directly as the short description for a future increment.
 
 Example (conceptual, not for copy-paste):
@@ -362,6 +377,7 @@ This section defines **how** to run the improve analysis and generate a dated im
 - Treat the given `path` as the **subject root**.
 - You may read:
   - `CONSTITUTION.md`, README, and other docs under `path`.
+  - `ARCHITECTURE.md` or other architecture documents under `path`, including any Mermaid C4 diagrams they contain.
   - Existing increment, design, implement, and improve documents under `path`.
   - Code and tests under `path`.
 - Do **not** treat parent directories, sibling projects, or other repositories as your subject.
@@ -390,6 +406,7 @@ Review key project context under `path`:
 
 - `CONSTITUTION.md` and similar guiding documents.
 - Readme / high-level docs and onboarding material under `path`.
+- Architecture documentation such as `ARCHITECTURE.md`, including its Mermaid C4 level 2 (containers) and level 3 (components) diagrams, if present.
 - Recent increments/designs/implements/improves under `path`.
 - Representative code and tests (especially around recent changes).
 
@@ -397,6 +414,7 @@ Review key project context under `path`:
 
 - **Evaluate vs. Constitution:** Assess how well the implementation adheres to the project's core principles and constraints. Prepare to summarize this as per-principle **1–5 star ratings** with short rationales.
 - **Evaluate vs. Design Goals:** Assess whether the implementation meets the intended design approach, component boundaries, and data flow.
+- **Evaluate vs. Architecture Documentation:** Compare the current implementation and deployment topology against architecture docs (for example `ARCHITECTURE.md`) and their Mermaid C4 container/component diagrams; note any mismatches or missing views.
 - **Quality Evaluation:** Assess code quality, readability, maintainability, and testability.
 - **Identify Risks:** List technical debt, potential bugs, performance concerns, or security issues.
 - **Identify Architectural Opportunities:** Note opportunities for improved structure, patterns, or abstractions.
@@ -426,7 +444,7 @@ After STOP 1 and any clarifications:
 - Analyze the codebase under `path` using the context-based lenses described in the **Lenses** section:
   - Naming & Clarity
   - Modularity & Separation
-  - Architecture & Patterns
+  - Architecture & Patterns (including alignment with and updates to `ARCHITECTURE.md` and C4 diagrams)
   - Testing & Reliability
   - Duplication & Simplicity
   - Documentation & Communication

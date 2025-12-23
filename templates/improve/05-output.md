@@ -7,6 +7,7 @@ The improve output is a human-readable artifact, not a conversation transcript. 
 - The artifact must follow the structure below exactly (section headings and order).
 - Each “Improvement” is a **proposal for future work** that the team may or may not pick up as a new increment.
 - When `CONSTITUTION.md` defines a `constitution-mode`, ensure the number and size of Improvements are appropriate for that mode (fewer, smaller proposals in `lite`; more comprehensive coverage allowed in `heavy`).
+ - When the project constitution or layout expects an `ARCHITECTURE.md` (or similar architecture document), the improve artifact should also contain proposals that keep that document and its diagrams in sync with the actual system, including updated Mermaid C4 level 2 (containers) and level 3 (components) diagrams where appropriate.
 
 ## Output Schema: docs/improve/YYYY-MM-DD-improve.md
 
@@ -56,7 +57,9 @@ Each improvement is a separate section with the following structure (shown here 
   - `**Priority:**` `H` / `M` / `L`.  
   - `**Effort:**` rough time estimate, e.g. `30 min`, `2–3 h`, `1–2 days`.  
   - `**Files:**` comma-separated list of concrete paths under `path`, e.g. ``path/to/file.ext``, ``another/path/file.ext``.  
-  - `**Change:**` specific change description, clear enough that someone can implement it without re-interpreting intent, and small enough to be done as one or a few safe refactorings.  
+  - `**Change:**` specific change description, clear enough that someone can implement it without re-interpreting intent, and small enough to be done as one or a few safe refactorings. For architecture-related improvements, the **Change** description SHOULD:
+    - Reference `ARCHITECTURE.md` (or the relevant architecture file) explicitly.
+    - Include updated Mermaid snippets for any C4 Container (L2) or Component (L3) diagrams that need to be changed, as fenced code blocks that can be pasted into the architecture document.
   - `**Increment Hint (optional):**` one-sentence suggested increment title or description that could be used directly as the short description for a future increment.
 
 Example (conceptual, not for copy-paste):
