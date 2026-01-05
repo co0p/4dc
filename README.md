@@ -10,6 +10,10 @@
 
 ---
 
+
+> [!CAUTION]
+> DO NOT TRUST AI, and do not trust others prompts. I tried to be defensive, but be aware that running other people's prompts is a security risk. Watch https://media.ccc.de/v/39c3-agentic-probllms-exploiting-ai-computer-use-and-coding-agents#t=3515
+
 4dc is a set of **LLM‑friendly prompt files** you add to your project so that you and your AI tools work in **small, incremental, evolutionary steps** instead of big risky changes.
 
 You describe **what and why** in an increment, get a **design** for how the system will change, break it down into **concrete implementation steps**, and periodically run **improve passes** that feed back into future increments.
