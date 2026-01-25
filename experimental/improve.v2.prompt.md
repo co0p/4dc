@@ -1,5 +1,6 @@
 ---
-name: improve
+name: improve.v2
+description: Reflect on a completed increment to identify improvements using a dev-centered, conversational retrospective approach.
 agent: conversational-retrospective
 version: 2.0-dev-centered
 
@@ -25,6 +26,19 @@ Reflect on the increment just completed and identify improvements:
 
 A retrospective document that captures learnings and guides future work.  
 Includes quantitative scorecard and qualitative insights.
+
+---
+
+## GitHub Issue Workflow Alignment
+
+When used with the GitHub Issue Orchestrator defined in experimental/github.xml, this prompt is responsible for producing the Improve phase content that lives as a retrospective comment on the same GitHub Issue.
+
+- The main output should be a comment that starts with a header like "## 📊 Retrospective (YYYY-MM-DD)" and includes Beck's Scorecard, sections for What Worked Well and What to Improve, Emergent Patterns, Refactoring Opportunities, and concrete Action Items with checkboxes, as outlined in the orchestrator prompt.
+- The retrospective should reference the existing issue history: increment body, design comment, implementation progress comment, linked PR and commits, and any prior retrospectives for trend tracking.
+- From the Action Items section, the developer creates follow-up issues (for refactorings, patterns, future increments) and then updates the retrospective comment with links to those issues so the knowledge graph stays connected.
+- When the retrospective is complete and follow-up issues have been created, the developer adds a comment such as "✅ Retrospective complete" and transitions the issue from improve to done, closing it and updating labels if used.
+
+This keeps the Improve phase tightly integrated with the issue's history so that the full story (why, how, what we built, and what we learned) is available in one place.
 
 ---
 
@@ -92,6 +106,13 @@ From the increment:
 - Did we complete all planned tasks?
 - What changed from the original plan?
 
+**GitHub Issue Mapping:**
+- When working via GitHub, review the full issue instead of separate files:
+  - Increment definition in the **issue body**.
+  - Design details in the **Design comment**.
+  - Implementation progress and commits in the **Implementation Progress comment** and linked PR.
+- Use these as the authoritative record of what was planned and what actually happened.
+
 ---
 
 #### Step 2 – STOP 1: Present Accomplishment Summary
@@ -123,6 +144,10 @@ Does this match your experience? Anything to add?
 ```
 
 **Important:** Wait for developer input before proceeding.
+
+**GitHub Issue Mapping:**
+- Post this accomplishment summary as the opening of a **Retrospective** comment on the issue, starting with a header such as `## 📊 Retrospective (YYYY-MM-DD)`.
+- Ask the developer to respond in the issue thread with additions or corrections before moving on to scoring.
 
 ---
 
@@ -214,6 +239,9 @@ Justification: pendingDelete pattern not immediately obvious to new developers.
 Improvement: Add pattern card to PATTERNS.md explaining Read-Modify-Save-Render with pendingDelete.
 ```
 
+**GitHub Issue Mapping:**
+- Represent the Scorecard as a Markdown table in the Retrospective comment (as shown in experimental/github.xml) so scores and notes are easily scannable from the issue.
+
 ---
 
 #### Step 4 – Identify What Worked Well
@@ -253,6 +281,9 @@ Technical:
 Collaboration:
 - [Item 1]
 ```
+
+**GitHub Issue Mapping:**
+- Add **What Worked Well** as a section in the Retrospective comment, grouped by Process, Technical, and Collaboration, so future readers can quickly understand the positives from this increment.
 
 ---
 
@@ -294,6 +325,9 @@ Collaboration:
 - [Issue 1]
   Action: [Process change]
 ```
+
+**GitHub Issue Mapping:**
+- Add **What to Improve** as another section in the same Retrospective comment, keeping issues and their actions close together for later reference when creating follow-up issues.
 
 ---
 
@@ -340,6 +374,9 @@ Benefits:
 
 Decision: Document? Yes – add to PATTERNS.md as "Optional Timestamp State Pattern".
 ```
+
+**GitHub Issue Mapping:**
+- Document any **Emergent Patterns** in the Retrospective comment and reference (or create) pattern cards under the repository's patterns/ directory, linking issue numbers where the pattern was observed.
 
 ---
 
@@ -388,6 +425,9 @@ Refactoring Opportunities:
    Risk: Medium (timer logic is subtle)
    Priority: Low – defer unless timer logic expands
 ```
+
+**GitHub Issue Mapping:**
+- List **Refactoring Opportunities** with Benefit/Effort/Risk in the Retrospective comment; these will often become source material for separate Refactoring issues using the refactoring issue template.
 
 ---
 

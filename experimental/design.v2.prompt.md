@@ -1,5 +1,6 @@
 ---
-name: design
+name: design.v2
+description: Generate a technical design for an increment using a dev-centered, conversational TDD approach.
 agent: conversational-tdd
 version: 2.0-dev-centered
 
@@ -24,6 +25,19 @@ Turn an increment definition (WHAT) into a technical design (HOW) that:
 **Output target:**
 
 A design document the developer and LLM can use to guide implementation with confidence.
+
+---
+
+## GitHub Issue Workflow Alignment
+
+When used with the GitHub Issue Orchestrator defined in experimental/github.xml, this prompt is responsible for producing the Design phase content that lives as a structured comment thread on the same GitHub Issue as the increment.
+
+- The main output of this prompt should be a comment that starts with a header like "## 🏗️ Design (YYYY-MM-DD)" and includes sections for Technical Approach, Data Flow or Mermaid diagram, Key Decisions, Contracts, Test Strategy, Risks, and a clear status line.
+- The increment definition remains in the issue body; this design content should reference that increment but not duplicate it unnecessarily.
+- When the design is approved, the developer adds a comment such as "✅ Design approved, ready for implementation" and transitions the issue from the design phase toward implementation as described in the orchestrator prompt (including updating labels if used).
+- The design comment becomes the living reference for HOW the increment will be built; future comments in the issue can link back to it when discussing changes or reviewing implementation.
+
+This keeps the issue body focused on WHAT and WHY, while the design comment captures the agreed technical HOW in a way that is searchable, linkable, and visible to the team.
 
 ---
 
@@ -90,6 +104,10 @@ From the increment and project:
 - What existing patterns should we follow?
 - What are the key constraints (performance, compatibility, patterns)?
 
+**GitHub Issue Mapping:**
+- Read the **issue body** for the increment definition (Job Story, Acceptance Criteria, Success Signals, Out of Scope, Assumptions, Risks) instead of a separate increment.md when working inside GitHub.
+- Treat the issue body as the single source of truth for WHAT/WHY; do not introduce new goals here.
+
 ---
 
 #### Step 2 – STOP 1: Summarize Findings
@@ -119,6 +137,11 @@ Initial Thoughts:
 ---
 Does this match your understanding? Any corrections?
 ```
+
+**GitHub Issue Mapping:**
+- Post this Understanding Summary as a comment on the same GitHub Issue, just before producing the full design comment.
+- Optionally start the comment with a short header such as `## 🏗️ Design – Understanding Summary (YYYY-MM-DD)` so it is easy to find in the thread.
+- Wait for the developer to reply in the issue comments (e.g., “Looks good, proceed”) before moving on.
 
 **Important:** Wait for developer confirmation before proceeding.
 
@@ -161,6 +184,10 @@ Key Decisions:
    Why: Simple, browser handles concurrency
    Alternatives: Central timer manager (rejected - over-engineering)
 ```
+
+**GitHub Issue Mapping:**
+- This content will form the **Technical Approach**, **Data Flow**, and **Key Decisions** sections of the main Design comment on the issue.
+- Write it in GitHub-flavoured Markdown so it can be pasted directly into a comment starting with `## 🏗️ Design (YYYY-MM-DD)`.
 
 ---
 
@@ -211,6 +238,9 @@ Compatibility:
 - Read-Modify-Save-Render pattern preserved
 ```
 
+**GitHub Issue Mapping:**
+- These contracts and data shapes belong in the **Contracts** section of the Design comment, using fenced code blocks (for example ```typescript``` or ```json```).
+
 ---
 
 #### Step 5 – Specify Test Strategy
@@ -248,6 +278,9 @@ Design a test strategy using a test pyramid.
 - Backwards-compatible data model (optional fields).
 - Tests cover edge cases (multiple deletes, refresh).
 
+**GitHub Issue Mapping:**
+- Summarise this as the **Test Strategy** section in the Design comment so reviewers can see how the increment will be validated from the issue itself.
+
 ---
 
 #### Step 6 – Plan CI/CD and Rollout
@@ -273,6 +306,9 @@ If issues arise:
 - Revert PR.
 - Todos continue working without undo feature.
 
+**GitHub Issue Mapping:**
+- Capture key CI/CD gates, rollout, and rollback notes in a short **CI/CD Plan** subsection inside the Design comment (rather than a separate document).
+
 ---
 
 #### Step 7 – Address Observability
@@ -295,6 +331,9 @@ Simple approach (v1): log key events to console:
 
 Future enhancement: send to analytics service (deferred).
 
+**GitHub Issue Mapping:**
+- Add an **Observability** subsection to the Design comment listing the main events/metrics to log, so operations context is visible from the issue.
+
 ---
 
 #### Step 8 – Create Architecture Diagram
@@ -316,6 +355,9 @@ graph TB
     State -->|schedule deletion| Timer
     Timer -->|after 3s| State
 ```
+
+  **GitHub Issue Mapping:**
+  - Embed this diagram directly in the Design comment using a ```mermaid``` fenced block so GitHub (or compatible renderers) can show the architecture inline.
 
 ---
 
@@ -357,6 +399,10 @@ Risks:
 Does this design work? Any concerns or alternative approaches?
 ```
 
+**GitHub Issue Mapping:**
+- This full proposal should be posted as the main **Design comment** on the issue, starting with a header like `## 🏗️ Design (YYYY-MM-DD)` and containing the sections listed above.
+- The developer reviews this comment and either replies with feedback or with an approval comment such as `✅ Design approved, ready for implementation`.
+
 **Important:** Wait for developer approval before finalizing.
 
 ---
@@ -364,6 +410,10 @@ Does this design work? Any concerns or alternative approaches?
 #### Step 10 – Finalize Design Document
 
 After approval, generate final `design.md` in the increment folder with complete details.
+
+**GitHub Issue Mapping:**
+- The GitHub Issue comment is the canonical place for the design in the workflow defined in experimental/github.xml.
+- If you also create a design.md file in the repo, ensure it stays in sync with the design comment and always link back to the issue for the discussion history.
 
 ---
 

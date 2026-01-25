@@ -1,5 +1,6 @@
 ---
-name: increment
+name: increment.v2
+description: Define a testable increment using a dev-centered, conversational TDD approach.
 agent: conversational-tdd
 version: 2.0-dev-centered
 
@@ -23,6 +24,19 @@ Turn a feature idea into a testable increment definition that:
 **Output target:**
 
 An increment definition the developer and LLM can use to drive design/implementation.
+
+---
+
+## GitHub Issue Workflow Alignment
+
+When used with the GitHub Issue Orchestrator defined in experimental/github.xml, this prompt is responsible for producing and refining the Increment definition that lives in the GitHub Issue body.
+
+- The primary output of this prompt should be formatted for the issue body using the Increment issue template (Job Story, Acceptance Criteria, Success Signals, Out of Scope, Assumptions, Risks, Progress Tracker, Links).
+- During refinement, conversation can happen in comments or in a separate chat, but the stable Increment definition should end up in the issue body.
+- When the increment is complete, the developer adds a comment like "✅ Increment complete, ready for design" and keeps the issue labeled with the increment phase as described in the orchestrator prompt.
+- Later phases (Design, Implement, Improve) stay in the same issue as comments; do not create separate issues per phase.
+
+This keeps the issue body as the single source of truth for the WHAT and WHY of the increment, while comments capture the conversation and phase transitions.
 
 ---
 
@@ -88,6 +102,10 @@ I want to quickly undo it
 So I can recover from mistakes without losing my work
 ```
 
+**GitHub Issue Mapping:**
+- This Job Story will be used to fill the **Job Story** section of the GitHub Issue body created with the Increment issue template.
+- Keep the wording clear and non-technical so it works as the top of the issue body.
+
 ---
 
 #### Step 2 – Write Gherkin Scenarios
@@ -133,6 +151,10 @@ Scenario: [Descriptive name]
      And I cannot undo the deletion
    ```
 
+**GitHub Issue Mapping:**
+- These scenarios fill the **Acceptance Criteria** section of the GitHub Issue body.
+- Make sure each scenario is copy-paste ready for the ```gherkin``` block in the Increment issue template.
+
 ---
 
 #### Step 3 – Define Success Signals
@@ -158,6 +180,10 @@ Success Signals:
 - [ ] No console errors during delete/undo flow
 ```
 
+**GitHub Issue Mapping:**
+- These become the checklist under **Success Signals** in the GitHub Issue body.
+- Write them as observable checks so they can be ticked off during implementation and review.
+
 ---
 
 #### Step 4 – Scope Boundaries (Out of Scope)
@@ -182,6 +208,10 @@ Out of Scope:
 - Undo after page refresh (pending deletions cleared)
 - Undo history (only current pending deletion)
 ```
+
+**GitHub Issue Mapping:**
+- These items fill the **Out of Scope** section of the GitHub Issue body.
+- Keep them concise so reviewers immediately see what is intentionally excluded from this increment.
 
 ---
 
@@ -209,6 +239,16 @@ Out of Scope:
 ---
 Does this match your intent? Any scenarios missing?
 ```
+
+**GitHub Issue Mapping:**
+- Use this draft to populate the GitHub Issue body created from the Increment template:
+  - Job Story → **Job Story** section
+  - Scenarios → **Acceptance Criteria** (```gherkin``` block)
+  - Success Signals → **Success Signals** checklist
+  - Out of Scope → **Out of Scope** section
+- After the developer has copied the refined draft into the issue body and is satisfied:
+  - The developer adds a comment on the issue: `✅ Increment complete, ready for design`.
+  - Keep or add the `increment` label as described in the GitHub orchestrator workflow.
 
 **Important:** Wait for developer feedback. Adjust before finalizing.
 

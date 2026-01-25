@@ -1,5 +1,6 @@
 ---
-name: implement
+name: implement.v2
+description: Implement an increment using a dev-centered, conversational TDD approach.
 agent: conversational-tdd
 version: 2.0-dev-centered
 
@@ -24,6 +25,19 @@ Turn design (HOW) into TDD implementation tasks that:
 
 A task list the developer uses to implement one test at a time with LLM assistance.  
 Each task is a complete Red-Green-Refactor cycle.
+
+---
+
+## GitHub Issue Workflow Alignment
+
+When used with the GitHub Issue Orchestrator defined in experimental/github.xml, this prompt is responsible for producing and driving the Implementation phase content that lives primarily in a dedicated Implementation Progress comment on the same GitHub Issue.
+
+- The main output should be a comment that starts with a header like "## ✅ Implementation Progress (YYYY-MM-DD)", followed by a Task List with checkboxes, current status, blockers, and an updated timestamp, as described in the orchestrator prompt.
+- The increment definition stays in the issue body and the design lives in a separate design comment; this prompt assumes both are present and uses them as context when creating the task list and guiding Red-Green-Refactor cycles.
+- As tasks complete, the developer or LLM updates the same comment or adds follow-up comments, checking off tasks and adding commit links so progress is visible in the thread.
+- When all implementation tasks are complete and a PR has been created and linked, the developer adds a comment such as "✅ Implementation complete, PR #N" and transitions the issue from implement to in-review, including updating labels if used.
+
+This keeps the Implementation phase visible and auditable inside the issue, with the task checklist acting as the living record of TDD progress tied to specific commits.
 
 ---
 
@@ -89,6 +103,10 @@ From design and increment:
 - How is testing currently set up (framework, structure)?
 - What order minimizes risk (leaf functions first)?
 
+**GitHub Issue Mapping:**
+- When working through GitHub, read the **Design comment** on the issue (starting with `## 🏗️ Design ...`) and the **Increment definition** in the issue body as your primary sources of context.
+- Treat those as the authoritative description of WHAT and HOW before you start planning tasks.
+
 ---
 
 #### Step 2 – STOP 1: Present Implementation Overview
@@ -117,6 +135,12 @@ Estimated Tasks: [N tasks]
 
 Does this order make sense? Any concerns?
 ```
+
+**GitHub Issue Mapping:**
+- Present this plan either:
+  - As a short comment on the issue before creating the full Implementation Progress comment, or
+  - As the opening section of the Implementation Progress comment itself.
+- Use GitHub-flavoured Markdown so it can be pasted directly into the issue.
 
 **Important:** Wait for developer confirmation before proceeding.
 
@@ -174,6 +198,21 @@ CHECKPOINT:
 8. Event handlers: wire delete button.
 9. Event handlers: wire undo button.
 10. Integration: full delete-undo flow.
+
+**GitHub Issue Mapping:**
+- Convert this ordered list of tasks into a GitHub checklist under an **Implementation Progress** comment on the issue, for example:
+
+  ```markdown
+  ## ✅ Implementation Progress (YYYY-MM-DD)
+
+  ### Task List
+
+  - [ ] Task 1: Add pendingDelete field
+  - [ ] Task 2: Implement markForDeletion
+  - [ ] Task 3: Wire delete button
+  ...
+  ```
+- As tasks complete, check them off and add commit hashes next to each item so progress is visible to the team.
 
 ---
 
@@ -316,6 +355,12 @@ Checkpoint:
 Tell me when committed and ready for next task.
 ```
 
+**GitHub Issue Mapping:**
+- After each CHECKPOINT, the developer updates the Implementation Progress comment on the issue:
+  - Check off the completed task.
+  - Add the commit hash (and link, if desired) under that task.
+  - Optionally add a brief note under **Current Status** and **Blockers** sections in the same comment.
+
 **Important:** Wait for developer commit before moving to next task.
 
 ---
@@ -348,6 +393,10 @@ If developer reports:
 - Test not failing as expected: review test logic together.
 - Test not passing: review implementation together.
 - Tests failing after refactor: revert refactor, try simpler approach.
+
+**GitHub Issue Mapping:**
+- Use either a single evolving Implementation Progress comment (editing it as tasks complete) or one new comment per major milestone, following the guidance in experimental/github.xml.
+- In both cases, keep the checklist and commit links in the issue so reviewers can reconstruct the sequence of changes.
 
 ---
 
@@ -384,6 +433,12 @@ Summary:
 
 Would you like to move to Improve phase (retrospective)?
 ```
+
+**GitHub Issue Mapping:**
+- Once all tasks are checked off and final validation passes:
+  - The developer creates a PR and links it to the issue (for example using "Closes #N" in the PR body).
+  - The developer adds a comment on the issue: `✅ Implementation complete, PR #N`.
+  - Update the issue label from `implement` to `in-review` as described in the GitHub orchestrator workflow.
 
 ---
 
