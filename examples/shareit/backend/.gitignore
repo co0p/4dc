@@ -1,4 +1,0 @@
-node_modules/
-data/shareit.db
-*.db
-test-db-*.sqlite
