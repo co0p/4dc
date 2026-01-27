@@ -3,9 +3,9 @@ name: 4dc-increment
 argument-hint: a short feature description or user story (e.g., "add password reset" or "users can export data as CSV")
 title: Slice a feature into shippable deliverables
 description: Discover WHAT to build through Socratic questioning, slice into small deliverables
-version: 120dfb7
-generatedAt: 2026-01-27T08:32:13Z
-source: https://github.com/co0p/4dc
+version: {{VERSION}}
+generatedAt: {{GENERATED_AT}}
+source: {{SOURCE_URL}}
 ---
 
 # Prompt: Define an Increment

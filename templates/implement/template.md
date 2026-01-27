@@ -2,9 +2,9 @@
 name: 4dc-implement
 title: Guide TDD implementation of deliverables
 description: Guide user through Red-Green-Refactor cycles, one deliverable at a time
-version: 120dfb7
-generatedAt: 2026-01-27T08:32:13Z
-source: https://github.com/co0p/4dc
+version: {{VERSION}}
+generatedAt: {{GENERATED_AT}}
+source: {{SOURCE_URL}}
 ---
 
 # Prompt: Implement via TDD

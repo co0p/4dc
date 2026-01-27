@@ -1,37 +1,54 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Location of this script: .../templates
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Generate all prompt files from template.md in each folder.
+#
+# Usage (from repo root):
+#   ./templates/generate-all.sh
+#
+# Output files are written to the repo root:
+#   - constitution.prompt.md
+#   - increment.prompt.md
+#   - implement.prompt.md
+#   - promote.prompt.md
+#   - reflect.prompt.md
 
-run_script() {
-  name="$1"
-  script_path="$2"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-  if [ -x "$script_path" ]; then
-    echo "=== Running $name ==="
-    (
-      cd "$(dirname "$script_path")"
-      "./$(basename "$script_path")"
-    )
-    echo "=== Finished $name ==="
-    echo
+COMMIT_HASH="$(git -C "${ROOT_DIR}" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+SOURCE_URL="https://github.com/co0p/4dc"
+
+# Replace template variables
+render() {
+  sed -e "s/{{VERSION}}/${COMMIT_HASH}/g" \
+      -e "s/{{GENERATED_AT}}/${GENERATED_AT}/g" \
+      -e "s#{{SOURCE_URL}}#${SOURCE_URL}#g"
+}
+
+# Generate a prompt from template.md
+generate_prompt() {
+  local name="$1"
+  local template="${SCRIPT_DIR}/${name}/template.md"
+  local output="${ROOT_DIR}/${name}.prompt.md"
+
+  if [ -f "$template" ]; then
+    echo "Generating ${name}.prompt.md..."
+    render < "$template" > "$output"
+    echo "  Wrote: $output"
   else
-    echo "!!! Skipping $name: $script_path not found or not executable" >&2
+    echo "!!! Skipping $name: $template not found" >&2
   fi
 }
 
-# Constitution: generates create-constitution prompt template (if present)
-run_script "constitution/generate.sh" "$ROOT_DIR/constitution/generate.sh"
+# Generate all prompts
+generate_prompt "constitution"
+generate_prompt "increment"
+generate_prompt "implement"
+generate_prompt "promote"
+generate_prompt "reflect"
 
-# Increment: generates increment prompt template (if present)
-run_script "increment/generate.sh" "$ROOT_DIR/increment/generate.sh"
-
-# Design: generates design prompt template (if present)
-run_script "design/generate.sh" "$ROOT_DIR/design/generate.sh"
-
-# Implement: generates implement prompt template (if present)
-run_script "implement/generate.sh" "$ROOT_DIR/implement/generate.sh"
-
-# Improve: generates improve prompt template (if present)
-run_script "improve/generate.sh" "$ROOT_DIR/improve/generate.sh"
+echo
+echo "Done. Generated prompts:"
+ls -la "${ROOT_DIR}"/*.prompt.md 2>/dev/null || echo "No .prompt.md files found"
