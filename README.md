@@ -41,13 +41,9 @@ This copies the prompt files into `.github/prompts/` with a `4dc-` prefix:
 - `.github/prompts/4dc-promote.prompt.md`
 - `.github/prompts/4dc-reflect.prompt.md`
 
+It also creates the `.4dc/` working directory and adds it to `.gitignore`.
+
 Reference these prompts in GitHub Copilot Chat, Cursor, or any LLM that supports prompt files.
-
-**Optional:** Add `.4dc/` to your `.gitignore` (working context shouldn't be committed):
-
-```bash
-echo ".4dc/" >> .gitignore
-```
 
 ---
 
