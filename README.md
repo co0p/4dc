@@ -15,13 +15,11 @@
 
 ## Executive Summary
 
-4dc is a set of **discovery-driven prompts** that help you build software through Socratic dialogue with an LLM. Instead of asking the AI to generate solutions, these prompts ask the right questions at the right time—helping you discover what to build, how to structure it, and where the design should emerge from test-driven development. You stay in control of every decision while the LLM acts as an experienced pair-programming partner.
+4dc is a set of **discovery-driven prompts** for building software through Socratic dialogue with an LLM. The prompts ask the right questions at the right time—helping you discover what to build and letting design emerge from TDD. You stay in control; the LLM acts as a pair-programming navigator.
 
-The approach centers on **ephemeral working context** and **permanent project knowledge**. When you start a feature, increment artifacts (user stories, session notes, learnings) live in `.4dc/current/` as temporary scaffolding for the LLM. As you work through test-driven cycles, you discover architectural decisions, API contracts, and design patterns. Before merging, you promote important learnings to permanent documentation—`CONSTITUTION.md` for recurring decisions, ADRs for significant trade-offs, API contracts in `docs/api/`. After the merge, the increment context is deleted. Your repository contains only working code and the decisions that guide future work.
+**Ephemeral context, permanent knowledge.** Feature work lives in `.4dc/current/` as temporary scaffolding. Before merging, you promote learnings to permanent docs—`CONSTITUTION.md` for decisions, `DESIGN.md` for emergent architecture, ADRs for trade-offs. After merge, increment context is deleted.
 
-This workflow embodies **extreme programming principles**: small incremental changes, emergent design through refactoring, continuous testing, and working code as the source of truth. The prompts enforce discipline around these practices—slicing work into deliverables, writing tests first, challenging premature abstraction, capturing learnings—while keeping you in fast feedback loops. Design doesn't happen in a separate phase; it emerges from TDD cycles and gets refined as you learn.
-
-Unlike traditional LLM workflows that generate complete solutions, 4dc helps you **think through problems systematically**. The constitution prompt helps you articulate your project's architectural constraints. The increment prompt helps you slice features into shippable deliverables. The implement prompt guides you through red-green-refactor cycles, questioning assumptions and suggesting refactorings. The promote prompt ensures valuable insights don't get lost when increment context is deleted. You learn to design well, not just to review AI-generated code.
+**Extreme programming principles:** small increments, emergent design, continuous testing, working code as truth. Design doesn't happen in a separate phase; it emerges from TDD cycles.
 
 ---
 
@@ -168,31 +166,42 @@ git push
 
 ### constitution
 
-**Purpose:** Discover and document your project's architectural decisions.
+**Purpose:** Document your project's architectural decisions.
 
-**When to use:** At project start, or when adopting 4dc. Re-run when you need to revisit foundational decisions.
+**When to use:** At project start, or when adopting 4dc.
 
-**How it works:** The prompt asks concrete questions about how your specific project should be built—not abstract values or generic best practices. Where should layers be separated? How do you handle errors? What's your testing strategy? Where do artifacts live? You answer based on your project's size, team, constraints, and criticality. The LLM synthesizes your answers into `CONSTITUTION.md`.
+**How it works:** Asks concrete questions: Where should layers be separated? How do you handle errors? What's your testing strategy? You answer based on your project's reality. The LLM synthesizes answers into `CONSTITUTION.md`.
 
-**What it creates:** A lightweight, scannable document with concrete decisions: layering rules, error handling patterns, testing expectations, dependency management, artifact layout. This becomes the reference point for all other prompts. When the design prompt asks "where should this logic live?", it checks the constitution. When the implement prompt suggests tests, it aligns with your stated approach.
+**What it creates:** Layering rules, error handling patterns, testing expectations, artifact layout. This becomes the reference for all other prompts.
 
-**What it does NOT create:** Abstract values ("we value quality"), comprehensive style guides (use linters for that), large ADRs (those are separate documents), or quality assessment lenses (those belong in the reflect prompt). The constitution is focused on decisions that guide daily work, not aspirations.
+**What it does NOT create:** Abstract values, style guides (use linters), or quality lenses (those belong in reflect).
 
-**Output:** `CONSTITUTION.md` (permanent, evolves with the project)
+**Output:** `CONSTITUTION.md` (permanent, evolves with project)
 
 ---
 
 ### increment
 
-**Purpose:** Discover what to build by slicing a feature idea into small, shippable deliverables.
+**Purpose:** Slice a feature idea into shippable deliverables with testable acceptance criteria.
 
 **When to use:** When starting new work—a feature, bug fix, refactoring, or exploration.
 
-**How it works:** The prompt helps you turn a vague idea into a concrete plan through Socratic questioning. It asks about the problem, the desired outcome, who's affected, what success looks like, and what's explicitly out of scope. It challenges scope creep ("Is that required for this increment, or a follow-up?") and vague criteria ("What specific behavior tells you this worked?"). Together you develop a user story, acceptance criteria, and detailed use case.
+**How it works:** Turns a vague idea into a concrete plan through Socratic questioning. Challenges scope creep and vague criteria. Produces a user story, acceptance criteria, use case, and deliverable slices.
 
-**The key innovation:** After defining the overall increment, the prompt helps you slice it into **deliverables**—small, independently shippable pieces that each provide value or learning. For "add password reset", deliverables might be: (1) token generation, (2) email sending, (3) reset flow UI. Each deliverable goes through its own TDD cycle, and learnings from one inform the next. This enables emergent design instead of big design up front.
+**Acceptance test stubs:** For each acceptance criterion, generates a greppable test name:
 
-**What it creates:** `.4dc/current/increment.md` with user story, acceptance criteria, use case, and deliverable slices. This is temporary working context for the LLM—it helps the implement prompt understand what you're building. After merging, this file is deleted. Important insights get promoted to permanent docs.
+```
+Test<Feature>_Given<Context>_When<Action>_Then<Result>
+```
+
+Example:
+| Acceptance Criterion | Test Stub |
+|---------------------|----------|
+| Given idle, when Start clicked, then countdown begins | `TestPomodoro_GivenIdle_WhenStartClicked_ThenCountdownBegins` |
+
+This creates 1:1 traceability between ACs and tests. Find all tests for a feature: `grep -r "TestPomodoro_Given" pkg/`
+
+**Deliverable slicing:** Breaks work into small, independently shippable pieces. Each deliverable goes through its own TDD cycle; learnings from one inform the next.
 
 **Output:** `.4dc/current/increment.md` (temporary, deleted after merge)
 
@@ -200,33 +209,39 @@ git push
 
 ### implement
 
-**Purpose:** Guide you through test-driven development cycles, one deliverable at a time.
+**Purpose:** Guide TDD cycles, one deliverable at a time.
 
-**When to use:** After defining an increment, when you're ready to write code.
+**When to use:** After defining an increment, when ready to write code.
 
-**How it works:** The prompt acts as a pair-programming navigator. It reads your constitution, the current increment context, and your existing code, then suggests the next smallest test to write. After you write a failing test, it asks: "Is this failing for the right reason?" "Is this the simplest test?" When you make it pass, it asks: "What's the simplest implementation?" "Are we solving just this test, or speculating about future needs?" During refactoring, it suggests improvements based on your constitution's principles.
+**How it works:** Pair-programming navigator. Suggests the next smallest test. After you write a failing test: "Is this failing for the right reason?" After green: "What's the simplest implementation?" During refactor: suggests improvements aligned with constitution.
 
-**Design emerges through questioning:** Every 5-10 TDD cycles, the prompt asks: "Have we discovered anything that should be promoted?" If you found that bcrypt is too slow for tokens, it suggests adding that to learnings. If you discovered a new architectural pattern, it asks whether it should become a constitutional decision or an ADR. The code and tests ARE the design; the prompt helps you recognize when design insights should become permanent knowledge.
+**Design emerges through questioning:** Every 5-10 cycles, asks: "Have we discovered anything to promote?" The code and tests ARE the design; the prompt helps you recognize when insights should become permanent.
 
-**Deliverable-by-deliverable flow:** The prompt works through one deliverable at a time. After completing deliverable 1 (token generation), it asks: "What did we learn that wasn't obvious?" before moving to deliverable 2 (email sending). This creates tight feedback loops—implementation experience shapes the next design decision.
-
-**Output:** Working code + tests (permanent), `.4dc/current/notes.md` (session observations, temporary), `.4dc/current/learnings.md` (promotion candidates, temporary)
+**Output:** Working code + tests (permanent), `.4dc/current/learnings.md` (promotion candidates, temporary)
 
 ---
 
 ### promote
 
-**Purpose:** Ensure important learnings become permanent documentation before deleting increment context.
+**Purpose:** Promote learnings to permanent docs before deleting increment context.
 
-**When to use:** Before merging a feature branch, after completing an increment.
+**When to use:** Before merging, after completing an increment.
 
-**How it works:** The prompt reads `.4dc/current/learnings.md` (populated during implementation) and asks what should be promoted to permanent docs. For each learning, it asks: "Should this go in CONSTITUTION.md?" (affects future increments), "Should this be an ADR?" (non-obvious decision), "Should this be an API contract?" (public interface), or "Should this update README?" (changes project scope). You decide, and the LLM drafts the additions.
+**How it works:** Reads `.4dc/current/learnings.md` and asks what should be promoted:
 
-**Example promotions:** "Use SHA256 for tokens, bcrypt for passwords" → CONSTITUTION.md Security section. "Chose synchronous email delivery for v1" → new ADR explaining the trade-off. "POST /auth/reset-password endpoint" → OpenAPI spec in `docs/api/auth/`. "Add rate limiting" → backlog item (GitHub issue).
+| Learning Type | Destination |
+|--------------|-------------|
+| Architectural decision | `CONSTITUTION.md` |
+| Emergent design pattern | `DESIGN.md` |
+| Non-obvious trade-off | `docs/adr/` |
+| Public interface | `docs/api/` |
+| Future work | GitHub issue |
 
-**After promotion:** The prompt confirms all learnings are captured, then asks: "Ready to delete `.4dc/current/`?" You confirm, delete the working context, and commit only the permanent additions (updated constitution, new ADRs, API contracts, code).
+**DESIGN.md:** Documents architecture that **emerged from TDD**, not planned upfront. Updated each increment with patterns discovered, module structure evolution, and open questions. Retrospective, not prescriptive.
 
-**Output:** Updates to `CONSTITUTION.md`, new files in `docs/adr/`, new files in `docs/api/`, backlog items (ephemeral context deleted)
+**After promotion:** Confirms all learnings captured, then: delete `.4dc/current/`, commit permanent additions, merge.
+
+**Output:** Updates to `CONSTITUTION.md`, `DESIGN.md`, new ADRs, API contracts (ephemeral context deleted)
 
 ---
 
@@ -234,15 +249,13 @@ git push
 
 **Purpose:** Periodic codebase health check to identify refactoring opportunities.
 
-**When to use:** After shipping several increments, when velocity slows, or when code feels painful.
+**When to use:** After several increments, when velocity slows, or when code feels painful.
 
-**How it works:** The prompt guides you through systematic codebase assessment using **quality lenses**: naming clarity, modularity, architecture, testing, duplication, documentation, delivery flow, and dependency management. For each lens, it asks reflective questions: "Are names aligned with domain language?" "Can you change one component without touching many?" "Do tests give fast feedback?" You answer based on observed pain points and patterns.
+**How it works:** Guides assessment using **quality lenses**: naming, modularity, architecture, testing, duplication, documentation, delivery. For each lens: "Are names aligned with domain language?" "Do tests give fast feedback?"
 
-**From assessment to action:** Rather than generating a report, the prompt helps you identify concrete refactorings. If validation logic appears in three places, it asks: "Should we consolidate this?" If error handling differs across modules, it asks: "Should we create a shared approach and document it as an ADR?" Each proposed refactoring is scoped small enough to become its own increment.
+**From assessment to action:** Identifies concrete refactorings scoped small enough to become increments.
 
-**Lenses are defined in this prompt:** Unlike the constitution (which captures your project's specific decisions), the lenses are general evaluation dimensions. They're tools for reflection, not rules for daily work. The reflect prompt applies these lenses to your codebase and constitution to surface improvement opportunities.
-
-**Output:** Updates to `CONSTITUTION.md` (if patterns should become rules), new ADRs (if decisions need explanation), new increment ideas (for refactorings), backlog items (for future work)
+**Output:** Updates to `CONSTITUTION.md`, `DESIGN.md`, new ADRs, new increment ideas
 
 ---
 
@@ -251,26 +264,22 @@ git push
 ```
 my-project/
 ├── CONSTITUTION.md              # Permanent: architectural decisions
+├── DESIGN.md                    # Permanent: emergent architecture (updated each increment)
 ├── README.md                    # Permanent: project overview
 │
 ├── docs/
 │   ├── adr/                     # Permanent: decision records
-│   │   ├── ADR-2025-01-20-use-postgres.md
 │   │   └── ADR-2025-01-26-sync-email.md
-│   ├── api/                     # Permanent: contracts, schemas
-│   │   ├── README.md            # Versioning, evolution rules
-│   │   └── auth/
-│   │       └── password-reset.openapi.yaml
-│   └── architecture/            # Permanent: diagrams (optional)
-│       └── system-overview.mmd
+│   └── api/                     # Permanent: contracts, schemas
+│       └── auth/
+│           └── password-reset.openapi.yaml
 │
 ├── src/                         # Permanent: code
 ├── tests/                       # Permanent: tests
 │
 └── .4dc/                        # Temporary: working context
     └── current/                 # Deleted after merge
-        ├── increment.md         # What you're building
-        ├── notes.md             # TDD session observations
+        ├── increment.md         # What you're building + test stubs
         └── learnings.md         # Promotion candidates
 ```
 
@@ -285,16 +294,16 @@ my-project/
 
 | Artifact | Location | Lifecycle | Purpose |
 |----------|----------|-----------|---------|
-| **CONSTITUTION.md** | Root | Permanent | Architectural decisions (layering, errors, testing, layout) |
-| **README.md** | Root | Permanent | Project overview, setup, usage |
-| **ADRs** | `docs/adr/` | Permanent | Decisions that need explanation (why X over Y) |
-| **API Contracts** | `docs/api/` | Permanent | Public interfaces, OpenAPI specs, schemas |
-| **Code + Tests** | `src/`, `tests/` | Permanent | The implementation (design lives here) |
-| **Increment context** | `.4dc/current/increment.md` | Temporary | User story, deliverables (LLM context) |
-| **Session notes** | `.4dc/current/notes.md` | Temporary | TDD observations, discoveries |
-| **Learnings** | `.4dc/current/learnings.md` | Temporary | Promotion checklist |
+| **CONSTITUTION.md** | Root | Permanent | Architectural decisions |
+| **DESIGN.md** | Root | Permanent | Emergent architecture (what TDD discovered) |
+| **README.md** | Root | Permanent | Project overview |
+| **ADRs** | `docs/adr/` | Permanent | Trade-off explanations |
+| **API Contracts** | `docs/api/` | Permanent | Public interfaces |
+| **Code + Tests** | `src/`, `tests/` | Permanent | The implementation |
+| **Increment context** | `.4dc/current/increment.md` | Temporary | User story, ACs, test stubs |
+| **Learnings** | `.4dc/current/learnings.md` | Temporary | Promotion candidates |
 
-**Key principle:** Increment artifacts are ephemeral scaffolding. After merge, only promoted decisions and working code remain.
+**Key principle:** Increment artifacts are ephemeral. After merge, only promoted decisions and working code remain.
 
 ---
 
@@ -353,17 +362,17 @@ graph TB
 
 ## Why This Works
 
-**Emergent design over big design up front:** Design decisions happen during TDD, not before. Each deliverable informs the next. You discover what's needed when you need it.
+**Emergent design:** Design happens during TDD, not before. Each deliverable informs the next.
 
-**Working code as truth:** The code and tests are the design. Documentation captures only the decisions that guide future work—why you chose X, how you handle Y, where Z should live.
+**Working code as truth:** Code and tests are the design. Docs capture only decisions that guide future work.
 
-**Fast feedback loops:** Deliverables are small (hours to days). You ship frequently, learn quickly, and adjust course based on real implementation experience.
+**Fast feedback:** Deliverables are small (hours to days). Ship frequently, learn quickly.
 
-**No stale documentation:** Increment context is deleted after merge. Only promoted learnings (constitution updates, ADRs, API contracts) remain. Your repo stays clean.
+**No stale docs:** Increment context deleted after merge. Only promoted learnings remain.
 
-**LLM as navigator, not driver:** You make all decisions. The LLM asks questions that help you think clearly, challenges assumptions, and ensures discipline around TDD and refactoring.
+**Traceability:** Greppable test names map 1:1 to acceptance criteria. DESIGN.md tracks what emerged.
 
-**True extreme programming:** Small steps, continuous testing, emergent design, collective code ownership (via constitutional decisions), sustainable pace.
+**LLM as navigator:** You decide. The LLM questions, challenges, ensures TDD discipline.
 
 ---
 
