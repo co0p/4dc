@@ -384,3 +384,64 @@ graph TB
 4. **Implement via TDD**: `#4dc-implement.prompt.md`
 5. **Promote learnings before merge**: `#4dc-promote.prompt.md`
 6. **Periodically reflect**: `#4dc-reflect.prompt.md` (after several increments)
+
+---
+
+## Real-World Example: GoPomodoro
+
+[**gopomodoro**](https://github.com/co0p/gopomodoro) is a minimal Pomodoro timer built using 4dc from scratch. It demonstrates how 4dc delivers on its promise of **emergent, test-driven development**.
+
+### What You'll Find
+
+The repository shows the complete artifact structure in action:
+
+- **[CONSTITUTION.md](https://github.com/co0p/gopomodoro/blob/main/CONSTITUTION.md)** — Architectural decisions that emerged from concrete questions:
+  - Package layout: Domain in `pkg/`, adapters in subpackages
+  - Dependency inversion: Domain defines interfaces, adapters implement them
+  - Construction patterns: Public fields over constructors (idiomatic Go)
+  - Testing strategy: Black-box tests via `package <name>_test`
+
+- **[DESIGN.md](https://github.com/co0p/gopomodoro/blob/main/DESIGN.md)** — Architecture that emerged from TDD:
+  - Formatter pattern discovered while making tray UI testable
+  - History table shows what emerged and when
+  - Retrospective, not prescriptive
+
+- **[Clean commit history](https://github.com/co0p/gopomodoro/commits/main)** — Each increment shows the cycle:
+  - "first increment done" → Working feature
+  - "Add short break and time display" → Next deliverable
+  - "Refactor: rename Tick→AdvanceMinute" — Post-TDD cleanup
+
+### Why This Proves 4dc Works
+
+**1. Ephemeral context, permanent knowledge**
+- No `.4dc/` directory in the repo (gitignored, deleted after merge)
+- CONSTITUTION.md and DESIGN.md contain only what matters
+- Commit messages reflect completed work, not planning overhead
+
+**2. Design emerged from TDD**
+- Formatter pattern wasn't planned upfront—it emerged when testing UI
+- Documented in DESIGN.md only after discovery
+- Package structure followed dependency inversion because tests demanded it
+
+**3. Small, shippable increments**
+- Each commit represents a complete deliverable
+- Work progressed from state machine → breaks → UI → refactoring
+- No half-implemented features or "WIP" branches
+
+**4. Constitution guides, doesn't dictate**
+- Clear rules: "Domain has zero imports", "No panics for expected failures"
+- Concrete, testable decisions
+- Evolved as the project learned (e.g., construction patterns added after discovering Go idioms)
+
+**5. Working code as truth**
+- Tests colocated with code (`*_test.go`)
+- Black-box testing forces clean APIs
+- No architectural diagrams—the code structure IS the architecture
+
+### Start Your Own
+
+Want to see the prompts that created this? Check the `.github/prompts/` directory in the 4dc repo, then install them in your project:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-prompts.sh)"
+```
