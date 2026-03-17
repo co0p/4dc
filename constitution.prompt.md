@@ -2,14 +2,16 @@
 name: 4dc-constitution
 title: Create or update a project constitution
 description: Discover and document the project's specific architectural decisions through Socratic questioning
-version: fee8e7b
-generatedAt: 2026-03-17T12:20:02Z
+version: b35fbe9
+generatedAt: 2026-03-17T12:24:14Z
 source: https://github.com/co0p/4dc
 ---
 
-# Prompt: Generate a Project Constitution
+# Prompt: Define a Constitution
 
-You are going to generate a **project constitution** (`CONSTITUTION.md`) for the current project.
+You are going to help the user define or update a **project constitution** (`CONSTITUTION.md`) through discovery questions about concrete architectural decisions.
+
+The output is `CONSTITUTION.md`—a permanent project reference that evolves as the team learns.
 
 The constitution captures **concrete architectural decisions** that guide daily work—not abstract values, not generic best practices, not quality lenses. Those belong elsewhere.
 
