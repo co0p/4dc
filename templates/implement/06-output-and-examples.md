@@ -21,7 +21,7 @@ The plan MUST follow this structure:
   - `design.md`
   - `CONSTITUTION.md` (by filename only; no absolute paths).
 
-Optionally, you MAY include a simple status line such as:
+Include a simple status line such as:
 
 - `Status: Not started / In progress / Done`
 - `Next step: Step N – <short title>`
@@ -37,17 +37,19 @@ Optionally, you MAY include a simple status line such as:
   - `Workstream C – Tests and fixtures`  
   - `Workstream D – Observability and metrics`
 
-4. Steps (XP-style Tasks, with optional checkboxes)
+4. Steps (XP-style Tasks, with checkboxes)
 
 Each step is a small, concrete work item. Use a structure like this (shown as plain text, not a fenced code block):
 
 - Section heading: `## 2. Steps`
 
-You MAY use markdown checkboxes to track progress, for example:
+Use markdown checkboxes to track progress, for example:
 
 - `- [ ] Step 1: Initialize backend package and scripts`  
 - `- [ ] Step 2: Add DB wrapper and unit tests`  
 - `- [ ] Step 3: Add Express bootstrap and logger`  
+
+When a step is completed, check its box and update the status line and next step to reflect progress.
 
 For each step, provide details as nested content, structured around a **TDD mini-cycle**:
 

@@ -3,8 +3,8 @@ name: 4dc-increment
 argument-hint: a short feature description or user story (e.g., "add password reset" or "users can export data as CSV")
 title: Slice a feature into shippable deliverables
 description: Discover WHAT to build through Socratic questioning, slice into small deliverables
-version: 6ef364d
-generatedAt: 2026-01-29T17:04:13Z
+version: bf31d0b
+generatedAt: 2026-03-17T10:27:29Z
 source: https://github.com/co0p/4dc
 ---
 
