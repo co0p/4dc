@@ -2,8 +2,8 @@
 name: 4dc-constitution
 title: Create or update a project constitution
 description: Discover and document the project's specific architectural decisions through Socratic questioning
-version: bf31d0b
-generatedAt: 2026-03-17T10:27:29Z
+version: b648c45
+generatedAt: 2026-03-17T10:49:22Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -18,6 +18,16 @@ The constitution captures **concrete architectural decisions** that guide daily 
 ## Core Purpose
 
 Help the user discover and document their project's specific architectural decisions through Socratic questioning.
+
+---
+
+## Execution Contract
+
+- **Autonomy policy**: Ask focused questions to discover decisions, but do not write final files until STOP-gate approval is explicit.
+- **Tool policy**: Read project artifacts before making claims; do not guess missing context.
+- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md` constraints, then this prompt defaults.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
+- **Stop conditions**: This prompt is complete only when draft + review gates are passed and final `CONSTITUTION.md` content is ready.
 
 ---
 
@@ -72,6 +82,24 @@ The constitution must:
 - Be **short enough** to read in minutes.
 - Be **specific enough** to influence daily decisions.
 - Contain **actual decisions**, not aspirations or generic advice.
+
+---
+
+## Output Contract
+
+Required artifacts:
+- `CONSTITUTION.md` draft content that can be written to project root.
+
+Required quality bar:
+- Includes concrete decisions for architecture, testing, artifact layout, and delivery.
+- Uses project-specific language and constraints.
+- Avoids generic advice and abstract values.
+
+Completion checklist:
+- [ ] All STOP 1 context summary items are confirmed.
+- [ ] All STOP 2 draft outline items are confirmed.
+- [ ] Final content contains only actionable project decisions.
+- [ ] No contradictory rules remain in the final draft.
 
 ---
 
@@ -288,10 +316,33 @@ Before presenting the final `CONSTITUTION.md`, internally critique your draft:
    - Are the key areas covered: layering, errors, testing, artifacts, delivery?
    - Is anything important about this specific project missing?
 
-4. **Keep Self-Critique Invisible**
+4. **Check for Contradictions**
+   - Do any decisions conflict with each other or with earlier sections?
+   - If there is overlap, is one canonical rule stated clearly?
+
+5. **Keep Self-Critique Invisible**
    - This critique is internal to the prompt.
    - The final `CONSTITUTION.md` must not mention this process.
    - It should read as if written directly by the team.
+
+---
+
+## Structured Few-Shot Example
+
+**Input situation:**
+- User says: "We keep business rules in controllers because it's faster."
+
+**Expected behavior:**
+- Challenge with concrete questions about boundaries.
+- Extract one explicit default rule for layering.
+
+**Expected output snippet:**
+
+```markdown
+### Layering
+- Domain logic lives in `src/domain/`.
+- Controllers/routes orchestrate I/O only and must not contain business rules.
+```
 
 ---
 

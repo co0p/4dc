@@ -2,8 +2,8 @@
 name: 4dc-reflect
 title: Periodic codebase health assessment
 description: Assess codebase through quality lenses, identify concrete refactorings as future increments
-version: bf31d0b
-generatedAt: 2026-03-17T10:27:29Z
+version: b648c45
+generatedAt: 2026-03-17T10:49:22Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -16,6 +16,16 @@ You are going to guide the user through a periodic codebase health assessment us
 ## Core Purpose
 
 Periodic codebase health assessment through quality lenses, identifying concrete refactorings that become future increments.
+
+---
+
+## Execution Contract
+
+- **Autonomy policy**: Drive assessment lens-by-lens, but do not finalize promotions or increment recommendations without STOP-gate decisions.
+- **Tool policy**: Base findings on observed code/documentation evidence; do not assume.
+- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md`, then this prompt defaults.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
+- **Stop conditions**: This prompt is complete only when patterns, refactorings, and next-action dispositions are explicitly summarized.
 
 ---
 
@@ -64,6 +74,22 @@ The reflection must:
 - Use **specific quality lenses** (defined below).
 - Produce **actionable refactoring proposals**.
 - Scope each proposal **small enough for one increment**.
+
+---
+
+## Output Contract
+
+Required outputs:
+- Pattern summary (good + needs attention).
+- Refactoring proposals in the defined template.
+- Disposition for each proposal (`Not started`, `In progress`, `Done` as applicable).
+- Clear split between immediate increments and backlog.
+
+Completion checklist:
+- [ ] All STOP 1 context summary items are confirmed.
+- [ ] All STOP 2 pattern summary items are confirmed.
+- [ ] Each proposal links lens -> pain point -> action.
+- [ ] Proposed actions are scoped to one increment where possible.
 
 ---
 
@@ -368,9 +394,33 @@ During reflection, internally check:
    - Am I recognizing good patterns, not just problems?
    - Am I proportionate to the project's size and criticality?
 
-4. **Keep critique invisible**
+4. **Am I contradiction-free?**
+   - Do recommendations conflict with `CONSTITUTION.md` constraints?
+   - Do prioritization decisions match the stated pain points and effort?
+
+5. **Keep critique invisible**
    - Don't mention this process to user.
    - Any outputs read as team documentation.
+
+---
+
+## Structured Few-Shot Example
+
+**Input situation:**
+- User reports slow test feedback and duplicated validation logic.
+
+**Expected behavior:**
+- Use testing and duplication lenses, identify concrete hotspots, propose one small increment.
+
+**Expected output snippet:**
+
+```markdown
+## Refactoring: Consolidate Input Validation
+Status: Not started
+Lens: Duplication & Simplicity
+Pain Point: Validation logic is duplicated in three modules.
+Proposal: Extract shared validator and migrate call sites in one increment.
+```
 
 ---
 

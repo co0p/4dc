@@ -3,8 +3,8 @@ name: 4dc-increment
 argument-hint: a short feature description or user story (e.g., "add password reset" or "users can export data as CSV")
 title: Slice a feature into shippable deliverables
 description: Discover WHAT to build through Socratic questioning, slice into small deliverables
-version: bf31d0b
-generatedAt: 2026-03-17T10:27:29Z
+version: b648c45
+generatedAt: 2026-03-17T10:49:22Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -21,6 +21,16 @@ The output is `.4dc/current/increment.md`—temporary working context that will 
 Help the user slice a feature idea into small, shippable deliverables through discovery questions about WHAT and WHY.
 
 Stay at the product level. No technical HOW. No implementation details.
+
+---
+
+## Execution Contract
+
+- **Autonomy policy**: Drive discovery proactively, but do not finalize `increment.md` before STOP-gate approvals.
+- **Tool policy**: Ground proposals in project context (`CONSTITUTION.md`, existing code) before drafting.
+- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md` constraints, then this prompt defaults.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
+- **Stop conditions**: This prompt is complete only when all STOP gates pass and final increment content is confirmed.
 
 ---
 
@@ -76,6 +86,31 @@ The increment must:
 - Stay at the **WHAT/WHY level**—no technical HOW.
 - Define **observable success criteria**.
 - Slice into **small, independently shippable pieces**.
+
+---
+
+## Output Contract
+
+Required artifact:
+- `.4dc/current/increment.md`
+
+Required sections:
+- User Story
+- Context
+- Acceptance Criteria
+- Acceptance Test Stubs
+- Use Case
+- Deliverables
+- Out of Scope
+- Promotion Checklist
+
+Completion checklist:
+- [ ] All STOP 1 understanding items are confirmed.
+- [ ] All STOP AC acceptance criteria are confirmed.
+- [ ] All STOP AT test stubs are confirmed.
+- [ ] All STOP UC use case items are confirmed.
+- [ ] All STOP 2 full-outline items are confirmed.
+- [ ] Deliverables and test stubs initialize statuses with `Not started`.
 
 ---
 
@@ -169,7 +204,7 @@ Follow this process to produce an `increment.md` that captures what to build.
 
    | AC | Test Name | Status |
    |----|-----------|--------|
-   | Given [context], when [action], then [result] | `Test<Feature>_Given<X>_When<Y>_Then<Z>` | ⬜ Not implemented |
+   | Given [context], when [action], then [result] | `Test<Feature>_Given<X>_When<Y>_Then<Z>` | Not started |
    ...
    ```
 
@@ -457,9 +492,34 @@ Before presenting the final `increment.md`, internally critique your draft:
    - Is each deliverable independently shippable?
    - Do deliverables build on each other?
 
-4. **Keep Self-Critique Invisible**
+4. **Check for Contradictions**
+   - Do acceptance criteria, test stubs, and deliverables describe the same behavior?
+   - Are out-of-scope items excluded from deliverables and success criteria?
+
+5. **Keep Self-Critique Invisible**
    - This critique is internal to the prompt.
    - The final `increment.md` must not mention this process.
+
+---
+
+## Structured Few-Shot Example
+
+**Input situation:**
+- User asks: "Add password reset."
+
+**Expected behavior:**
+- Ask discovery questions, tighten scope, define observable criteria.
+- Produce incremental deliverables with initial status tracking.
+
+**Expected output snippet:**
+
+```markdown
+## Deliverables
+
+### Deliverable 1: Generate reset token
+- Status: Not started
+- Provides: User can request a reset token.
+```
 
 ---
 

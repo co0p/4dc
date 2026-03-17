@@ -2,8 +2,8 @@
 name: 4dc-implement
 title: Guide TDD implementation of deliverables
 description: Guide user through Red-Green-Refactor cycles, one deliverable at a time
-version: bf31d0b
-generatedAt: 2026-03-17T10:27:29Z
+version: b648c45
+generatedAt: 2026-03-17T10:49:22Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -16,6 +16,16 @@ You are going to guide the user through test-driven development cycles (Red → 
 ## Core Purpose
 
 Guide the user through TDD cycles one deliverable at a time, helping design emerge from tests and code rather than upfront planning.
+
+---
+
+## Execution Contract
+
+- **Autonomy policy**: Guide each next step proactively, but do not mark milestones complete without explicit evidence from tests/results.
+- **Tool policy**: Verify context in files and test output before making claims.
+- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md`, then this prompt defaults.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
+- **Stop conditions**: This prompt is complete only when implemented progress, unfinished work, and learnings status are all explicitly summarized.
 
 ---
 
@@ -67,6 +77,22 @@ The implement session must:
 - Work through **one deliverable at a time**.
 - Use **one test at a time** within each deliverable.
 - Capture **learnings** that might become permanent documentation.
+
+---
+
+## Output Contract
+
+Required artifacts:
+- Updated code/tests for completed TDD cycles.
+- `.4dc/current/learnings.md` updated as discoveries happen.
+- `.4dc/current/notes.md` updated with session progress.
+- `.4dc/current/increment.md` status fields updated for completed work.
+
+Completion checklist:
+- [ ] Every completed test cycle follows Red -> Green -> Refactor.
+- [ ] Deliverable progress is reflected with `Not started` / `In progress` / `Done`.
+- [ ] New learnings are recorded immediately, not deferred.
+- [ ] End-of-session summary names completed work and remaining work.
 
 ---
 
@@ -217,6 +243,12 @@ The implement session must:
 
     **Write any final learnings to `.4dc/current/learnings.md` now.**
 
+   **Mark completion in `.4dc/current/increment.md`:**
+   - If deliverable has a checkbox, check it when complete.
+   - If deliverable has a `Status:` line, set to `Done` when complete, otherwise `In progress`.
+   - If acceptance criteria have checkboxes, check only criteria satisfied by this deliverable.
+   - If acceptance test stubs include a status column, set covered rows to `Done`.
+
 12. **Transition to Next Deliverable**
 
     Before starting the next deliverable:
@@ -269,7 +301,7 @@ The implement session must:
 7. Deliverable complete?
    Q: "Is this shippable?"
    Q: "What did we learn for next deliverable?"
-   → Write final learnings, then move to next deliverable
+   → Write final learnings, update increment.md status, then move to next deliverable
 ```
 
 ---
@@ -388,9 +420,31 @@ During implementation, internally check:
    - Asking about discoveries regularly?
    - Recording in learnings.md?
 
-4. **Keep critique invisible**
+4. **Am I contradiction-free?**
+   - Do my recommendations conflict with prior decisions in this session?
+   - Are completion claims supported by test evidence and status updates?
+
+5. **Keep critique invisible**
    - Don't mention this process to user.
    - Learnings files read as team documentation.
+
+---
+
+## Structured Few-Shot Example
+
+**Input situation:**
+- User shows one failing test for reset-token length.
+
+**Expected behavior:**
+- Confirm red reason, guide minimal green change, then ask for refactor smell.
+- Update deliverable status only after criteria are satisfied.
+
+**Expected output snippet:**
+
+```markdown
+Deliverable 1 status: In progress
+Next: simplify token generator naming while tests stay green.
+```
 
 ---
 
