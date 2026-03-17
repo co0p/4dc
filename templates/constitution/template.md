@@ -25,9 +25,11 @@ Help the user discover and document their project's specific architectural decis
 
 - **Autonomy policy**: Ask focused questions to discover decisions, but do not write final files until STOP-gate approval is explicit.
 - **Tool policy**: Read project artifacts before making claims; do not guess missing context.
-- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md` constraints, then this prompt defaults.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
-- **Stop conditions**: This prompt is complete only when draft + review gates are passed and final `CONSTITUTION.md` content is ready.
+- **Conflict policy**:
+   - In **create mode** (no existing `CONSTITUTION.md`): prioritize confirmed user scope, then repository evidence, then this prompt defaults.
+   - In **update mode** (existing `CONSTITUTION.md`): prioritize confirmed user scope, then existing `CONSTITUTION.md` constraints unless explicitly superseded, then this prompt defaults.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for STOP-gate progress summaries.
+- **Stop conditions**: This prompt is complete only when **STOP 1**, **STOP 2**, and **Final Approval** are explicitly passed and final `CONSTITUTION.md` content is ready.
 
 ---
 
@@ -83,6 +85,11 @@ The constitution must:
 - Be **specific enough** to influence daily decisions.
 - Contain **actual decisions**, not aspirations or generic advice.
 
+Do not include:
+- Implementation task lists or step-by-step coding plans.
+- Full ADR contents (capture only location/naming rules in constitution).
+- Generic engineering slogans without project-specific defaults.
+
 ---
 
 ## Output Contract
@@ -94,12 +101,19 @@ Required quality bar:
 - Includes concrete decisions for architecture, testing, artifact layout, and delivery.
 - Uses project-specific language and constraints.
 - Avoids generic advice and abstract values.
+- States explicit defaults and exception boundaries where needed.
+
+Acceptance rubric:
+- Each major decision area has at least one default rule.
+- No section relies on generic phrasing (for example, "follow best practices") without a concrete project default.
+- Any exception includes a trigger condition.
 
 Completion checklist:
 - [ ] All STOP 1 context summary items are confirmed.
 - [ ] All STOP 2 draft outline items are confirmed.
 - [ ] Final content contains only actionable project decisions.
 - [ ] No contradictory rules remain in the final draft.
+- [ ] Final Approval is explicit before writing `CONSTITUTION.md`.
 
 ---
 
@@ -119,9 +133,10 @@ Follow this process to produce a `CONSTITUTION.md` grounded in the actual projec
 2. **Summarize Findings → STOP 1**
 
    - Present a short summary:
-     - What this project appears to be (type, size, tech stack).
-     - What architectural decisions you can already infer from the code.
-     - What areas need clarification.
+       - What this project appears to be (type, size, tech stack).
+       - What architectural decisions you can already infer from the code.
+       - Evidence for each inferred decision (file path, config, or observed code pattern).
+       - What areas need clarification.
    
    - Clearly label this as **STOP 1**.
    - Wait for user confirmation before continuing.
@@ -130,7 +145,11 @@ Follow this process to produce a `CONSTITUTION.md` grounded in the actual projec
 
 3. **Ask Concrete Questions**
 
-   Ask targeted questions to discover decisions in each area. Examples:
+   Ask targeted questions to discover decisions in each area.
+   - Ask **3-5 high-value questions per round**, then summarize and continue.
+   - Prefer unanswered high-impact areas first (layering, errors, testing, artifacts, delivery).
+
+   Examples:
 
    **Layering & Structure:**
    - "Where should domain logic live relative to UI code?"
@@ -216,15 +235,31 @@ Follow this process to produce a `CONSTITUTION.md` grounded in the actual projec
    - Ask: "Does this capture your project's actual decisions? What should change?"
    - Wait for explicit approval before writing the final document.
 
-### Phase 4 – Write `CONSTITUTION.md` (After Approval)
+### Phase 4 - Final Approval Gate
 
-7. **Produce the Final Constitution**
+7. **Request Final Approval**
+
+   Before writing files, explicitly ask for a final go-ahead:
+   - "Approve writing `CONSTITUTION.md` with this content?"
+   - If not approved, revise and return to STOP 2.
+
+### Phase 5 – Write `CONSTITUTION.md` (After Approval)
+
+8. **Produce the Final Constitution**
 
    Only after explicit approval:
    - Write `CONSTITUTION.md` to the project root.
    - Include only the sections that have meaningful content.
    - Keep each decision concrete and actionable.
    - Omit any section that would just contain generic advice.
+
+9. **Provide Final Handoff Summary**
+
+   End with a short delta summary:
+   - Decisions added.
+   - Decisions changed (with reason).
+   - Open questions, if any.
+   - Suggested next 4dc step.
 
 ---
 
@@ -238,16 +273,24 @@ The generated `CONSTITUTION.md` MUST follow this structure (omit empty sections)
 ## Architectural Decisions
 
 ### Layering
-- [Concrete decisions about where different concerns live]
+- Default: [where different concerns live]
+- Exceptions: [when deviation is allowed]
+- Enforcement signal: [how this is reviewed/verified]
 
 ### Error Handling
-- [Concrete decisions about error types and translation]
+- Default: [error types and translation boundary]
+- Exceptions: [when to deviate]
+- Enforcement signal: [tests, checks, or review rules]
 
 ### State Management
-- [Concrete decisions about where state lives]
+- Default: [where state lives]
+- Exceptions: [when to use alternate pattern]
+- Enforcement signal: [observable guardrail]
 
 ### Dependencies
-- [Concrete decisions about wrapping, injection, external calls]
+- Default: [wrapping, injection, external calls]
+- Exceptions: [direct usage conditions]
+- Enforcement signal: [adapter boundaries, lint, or review checks]
 
 ## Testing Expectations
 
@@ -259,6 +302,7 @@ The generated `CONSTITUTION.md` MUST follow this structure (omit empty sections)
 ## Artifact Layout
 
 - **CONSTITUTION.md**: Project root
+- **DESIGN.md**: Project root (emergent architecture, updated after increments)
 - **ADRs**: [location and naming pattern as decided]
 - **API contracts**: [location as decided]
 - **Other docs**: [as decided]
@@ -342,6 +386,35 @@ Before presenting the final `CONSTITUTION.md`, internally critique your draft:
 ### Layering
 - Domain logic lives in `src/domain/`.
 - Controllers/routes orchestrate I/O only and must not contain business rules.
+```
+
+**Input situation:**
+- Existing `CONSTITUTION.md` says colocated tests, but team now wants integration tests in `tests/integration/`.
+
+**Expected behavior:**
+- Preserve existing defaults, update only the changed decision, and record why it changed.
+
+**Expected output snippet:**
+
+```markdown
+## Testing Expectations
+- Test location (unit): colocated with source files.
+- Test location (integration): `tests/integration/`.
+- Change note: integration tests moved for shared environment setup and CI isolation.
+```
+
+**Input situation:**
+- Two stakeholders give conflicting rules on PR size.
+
+**Expected behavior:**
+- Surface conflict, propose one default with explicit exception trigger, ask for confirmation.
+
+**Expected output snippet:**
+
+```markdown
+## Delivery Practices
+- PR size default: <= 400 changed lines.
+- Exception: generated files or dependency lockfile updates may exceed limit.
 ```
 
 ---

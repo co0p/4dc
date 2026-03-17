@@ -79,14 +79,14 @@ You answer based on your project's reality. The result is `CONSTITUTION.md` with
 - All tests run in <10s locally
 ```
 
-### 2. Start a Feature
+### 2. Start an Increment
 
 ```bash
 # Create working context
 mkdir -p .4dc/current
 
-# Run increment prompt with your feature idea
-#4dc-increment.prompt.md "add password reset"
+# Run increment prompt with explicit work type + intent
+#4dc-increment.prompt.md "feature: add password reset"
 ```
 
 The LLM asks discovery questions:
@@ -172,7 +172,7 @@ git push
 
 **How it works:** Asks concrete questions: Where should layers be separated? How do you handle errors? What's your testing strategy? You answer based on your project's reality. The LLM synthesizes answers into `CONSTITUTION.md`.
 
-**What it creates:** Layering rules, error handling patterns, testing expectations, artifact layout. This becomes the reference for all other prompts.
+**What it creates:** Layering rules, error handling patterns, testing expectations, artifact layout (including where `DESIGN.md` lives and evolves). This becomes the reference for all other prompts.
 
 **What it does NOT create:** Abstract values, style guides (use linters), or quality lenses (those belong in reflect).
 
@@ -182,11 +182,11 @@ git push
 
 ### increment
 
-**Purpose:** Slice a feature idea into shippable deliverables with testable acceptance criteria.
+**Purpose:** Slice a work item into shippable deliverables with testable acceptance criteria.
 
 **When to use:** When starting new work—a feature, bug fix, refactoring, or exploration.
 
-**How it works:** Turns a vague idea into a concrete plan through Socratic questioning. Challenges scope creep and vague criteria. Produces a user story, acceptance criteria, use case, and deliverable slices.
+**How it works:** Turns a vague idea into a concrete plan through Socratic questioning. First requires explicit work type and intended outcome (feature, bug fix, refactor, or exploration). Challenges scope creep and vague criteria. Produces a user story, acceptance criteria, use case, and deliverable slices.
 
 **Acceptance test stubs:** For each acceptance criterion, generates a greppable test name:
 
@@ -204,6 +204,8 @@ This creates 1:1 traceability between ACs and tests. Find all tests for a featur
 **Deliverable slicing:** Breaks work into small, independently shippable pieces. Each deliverable goes through its own TDD cycle; learnings from one inform the next.
 
 **Output:** `.4dc/current/increment.md` (temporary, deleted after merge)
+
+**Input expectation:** State explicitly what you want to implement and classify the work item type.
 
 ---
 

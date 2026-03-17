@@ -23,9 +23,11 @@ Before merging, ensure important learnings become permanent documentation, then 
 
 - **Autonomy policy**: Evaluate each learning proactively, but do not write or delete anything without explicit confirmation.
 - **Tool policy**: Read source artifacts before recommending promotion destinations.
-- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md` layout rules, then this prompt defaults.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
-- **Stop conditions**: This prompt is complete only when all selected promotions are confirmed and cleanup decision is explicitly handled.
+- **Conflict policy**:
+   - For destination conflicts, prioritize confirmed user scope, then `CONSTITUTION.md` artifact layout, then existing docs conventions.
+   - For cleanup conflicts, never delete `.4dc/current/` without explicit confirmation.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for learning dispositions, promotion progress, and cleanup status.
+- **Stop conditions**: This prompt is complete only when all selected promotions are written with confirmation and **Final Cleanup Approval** is explicitly resolved.
 
 ---
 
@@ -78,6 +80,11 @@ For each learning in `learnings.md`:
 - Updates to `README.md` (if project scope changed)
 - Confirmation to delete `.4dc/current/`
 
+Do not include:
+- Silent writes without explicit confirmation.
+- Bundling unrelated learnings into one decision.
+- Cleanup actions before promotion status is summarized.
+
 ---
 
 ## Output Contract
@@ -88,11 +95,22 @@ Required outputs:
 - Final promotion summary with progress statuses.
 - Cleanup decision recorded (`Done` only after explicit confirmation).
 
+Required quality bar:
+- Each promoted item references source learning text.
+- Each write shows exact destination path and placement.
+- Skipped learnings are explicitly dispositioned.
+
+Acceptance rubric:
+- Every learning has one disposition: promote now, backlog, or skip with reason.
+- Writes are traceable to explicit user confirmation.
+- Cleanup is blocked until promotion summary is complete.
+
 Completion checklist:
 - [ ] Every learning is reviewed and dispositioned.
 - [ ] No file writes occur without explicit confirmation.
 - [ ] Promotion status uses `Not started` / `In progress` / `Done`.
 - [ ] Cleanup step is explicitly confirmed before deletion instructions.
+- [ ] Final cleanup approval is explicitly captured.
 
 ---
 
@@ -115,6 +133,7 @@ Completion checklist:
    - "[N] potential ADRs"
    - "[N] potential API contracts"
    - "[N] backlog items"
+   - For each, include source reference from `.4dc/current/learnings.md`.
 
 ### Phase 2 – Promotion Decisions (For Each Learning)
 
@@ -168,6 +187,7 @@ Completion checklist:
 4. **Wait for User Decision**
 
    For each learning:
+   - Process in batches of **3-5 items**, then summarize status before continuing.
    - Present the question and recommendation.
    - Wait for user to confirm or skip.
    - Only proceed to drafting after confirmation.
@@ -244,6 +264,13 @@ Completion checklist:
    Ask: "All learnings promoted. Ready to delete `.4dc/current/`?"
    
    Wait for explicit "yes" before proceeding.
+
+9b. **Final Cleanup Approval**
+
+   Confirm final state before deletion instructions:
+   - Promotions summary status: `Done`
+   - Any deferred items recorded: `Done`
+   - Cleanup approval: explicit `yes`
 
 10. **Provide Deletion Instructions**
 
@@ -529,6 +556,33 @@ Before finalizing promotions, internally check:
 Promotion status: In progress
 ADR draft prepared at docs/adr/ADR-YYYY-MM-DD-sync-email.md
 Waiting for explicit confirmation.
+```
+
+**Input situation:**
+- Two learnings overlap: one suggests CONSTITUTION update, one suggests ADR.
+
+**Expected behavior:**
+- Ask whether both are needed, avoid duplicate wording, and keep one canonical source of truth.
+
+**Expected output snippet:**
+
+```markdown
+Decision: CONSTITUTION gets default rule; ADR captures rationale and trade-offs.
+Promotion status: In progress
+```
+
+**Input situation:**
+- User confirms all promotions but forgets cleanup confirmation.
+
+**Expected behavior:**
+- Hold deletion instructions until explicit yes is given.
+
+**Expected output snippet:**
+
+```markdown
+Promotions are Done.
+Cleanup status: In progress
+Please confirm deletion of .4dc/current/.
 ```
 
 ---

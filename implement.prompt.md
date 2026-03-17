@@ -2,8 +2,8 @@
 name: 4dc-implement
 title: Guide TDD implementation of deliverables
 description: Guide user through Red-Green-Refactor cycles, one deliverable at a time
-version: b648c45
-generatedAt: 2026-03-17T10:49:22Z
+version: fee8e7b
+generatedAt: 2026-03-17T12:20:02Z
 source: https://github.com/co0p/4dc
 ---
 
@@ -23,9 +23,9 @@ Guide the user through TDD cycles one deliverable at a time, helping design emer
 
 - **Autonomy policy**: Guide each next step proactively, but do not mark milestones complete without explicit evidence from tests/results.
 - **Tool policy**: Verify context in files and test output before making claims.
-- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md`, then this prompt defaults.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
-- **Stop conditions**: This prompt is complete only when implemented progress, unfinished work, and learnings status are all explicitly summarized.
+- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md`, then `.4dc/current/increment.md`, then this prompt defaults.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for deliverables, criteria progress, and session summaries.
+- **Stop conditions**: This prompt is complete only when per-deliverable status, unfinished work, and learnings are explicitly summarized with test evidence.
 
 ---
 
@@ -78,6 +78,11 @@ The implement session must:
 - Use **one test at a time** within each deliverable.
 - Capture **learnings** that might become permanent documentation.
 
+Do not include:
+- Multi-test jumps that skip red/green confirmation.
+- Completion claims without test output evidence.
+- Large speculative refactors not required by current failing/green tests.
+
 ---
 
 ## Output Contract
@@ -88,11 +93,22 @@ Required artifacts:
 - `.4dc/current/notes.md` updated with session progress.
 - `.4dc/current/increment.md` status fields updated for completed work.
 
+Required quality bar:
+- Each completion claim references concrete test evidence.
+- Deliverable status in `.4dc/current/increment.md` reflects current reality.
+- Learnings are captured at discovery time, not deferred.
+
+Acceptance rubric:
+- Each cycle records Red -> Green -> Refactor intent or deliberate skip with reason.
+- Transition decisions are tied to acceptance criteria coverage.
+- Session summary names what is done, in progress, and next.
+
 Completion checklist:
 - [ ] Every completed test cycle follows Red -> Green -> Refactor.
 - [ ] Deliverable progress is reflected with `Not started` / `In progress` / `Done`.
 - [ ] New learnings are recorded immediately, not deferred.
 - [ ] End-of-session summary names completed work and remaining work.
+- [ ] Deliverable completion claims cite passing tests or command output.
 
 ---
 
@@ -140,6 +156,7 @@ Completion checklist:
 4. **Suggest Next Test → STOP**
 
    Propose the next smallest test:
+   - Ask **1-2 focused questions**, then wait for result.
    - "What's the first/next test for [deliverable]?"
    - "I suggest testing [specific behavior]. What do you think?"
    
@@ -243,6 +260,10 @@ Completion checklist:
 
     **Write any final learnings to `.4dc/current/learnings.md` now.**
 
+   **Record test evidence for completion:**
+   - Name passing test(s) or test command output that demonstrates completion.
+   - If any acceptance criterion is still open, keep deliverable `In progress`.
+
    **Mark completion in `.4dc/current/increment.md`:**
    - If deliverable has a checkbox, check it when complete.
    - If deliverable has a `Status:` line, set to `Done` when complete, otherwise `In progress`.
@@ -263,6 +284,7 @@ Completion checklist:
     At end of session:
     - Summarize what was implemented.
     - Note any incomplete work.
+   - Include explicit status lines: `Done`, `In progress`, `Not started`.
     - **Read back `.4dc/current/learnings.md`** to confirm all discoveries are captured.
     - Remind: "Run promote prompt before merging."
 
@@ -444,6 +466,32 @@ During implementation, internally check:
 ```markdown
 Deliverable 1 status: In progress
 Next: simplify token generator naming while tests stay green.
+```
+
+**Input situation:**
+- User wants to refactor three modules while one test is still failing.
+
+**Expected behavior:**
+- Hold refactor scope, finish current red/green cycle first, then reassess.
+
+**Expected output snippet:**
+
+```markdown
+Current test is still red. Let's finish this cycle before broad refactoring.
+Status: In progress
+```
+
+**Input situation:**
+- Deliverable appears complete but one acceptance criterion remains unchecked.
+
+**Expected behavior:**
+- Keep deliverable `In progress`, call out missing criterion and next smallest test.
+
+**Expected output snippet:**
+
+```markdown
+Deliverable 2 remains In progress.
+AC-4 is not satisfied yet; next test should cover retry behavior.
 ```
 
 ---

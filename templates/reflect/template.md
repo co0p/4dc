@@ -23,9 +23,11 @@ Periodic codebase health assessment through quality lenses, identifying concrete
 
 - **Autonomy policy**: Drive assessment lens-by-lens, but do not finalize promotions or increment recommendations without STOP-gate decisions.
 - **Tool policy**: Base findings on observed code/documentation evidence; do not assume.
-- **Conflict policy**: If instructions conflict, prioritize confirmed user scope, then `CONSTITUTION.md`, then this prompt defaults.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for all tracked items.
-- **Stop conditions**: This prompt is complete only when patterns, refactorings, and next-action dispositions are explicitly summarized.
+- **Conflict policy**:
+   - Prioritize confirmed user scope, then `CONSTITUTION.md`, then repository evidence.
+   - If lens findings conflict, keep one canonical recommendation and mark alternatives explicitly.
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for proposal dispositions and reflection progress summaries.
+- **Stop conditions**: This prompt is complete only when **STOP 1**, **STOP 2**, and **Prioritization Approval** are explicitly resolved.
 
 ---
 
@@ -65,6 +67,7 @@ Before reflecting, read and understand:
 Guide user through systematic reflection to identify:
 
 - **Updates to CONSTITUTION.md**: If patterns should become rules.
+- **Updates to DESIGN.md**: If emergent architecture patterns should be documented.
 - **New ADRs**: If emerging patterns need alignment decisions.
 - **New increment ideas**: For concrete refactorings.
 - **Backlog items**: For future improvements.
@@ -75,21 +78,38 @@ The reflection must:
 - Produce **actionable refactoring proposals**.
 - Scope each proposal **small enough for one increment**.
 
+Do not include:
+- Broad rewrite recommendations without incremental slices.
+- Assertions without concrete code or artifact evidence.
+- Lens content copied into `CONSTITUTION.md` without explicit promotion decision.
+
 ---
 
 ## Output Contract
 
 Required outputs:
 - Pattern summary (good + needs attention).
+- Proposed `DESIGN.md` updates for emergent patterns.
 - Refactoring proposals in the defined template.
 - Disposition for each proposal (`Not started`, `In progress`, `Done` as applicable).
 - Clear split between immediate increments and backlog.
+
+Required quality bar:
+- Every pattern claim cites concrete evidence (file path, test, commit, or doc).
+- Every proposal links lens -> pain point -> action.
+- Immediate increments are scoped to one increment each.
+
+Acceptance rubric:
+- No proposal lacks an owner path (increment, ADR, CONSTITUTION, or backlog).
+- Prioritization reflects stated effort and value.
+- Contradictory recommendations are resolved before final summary.
 
 Completion checklist:
 - [ ] All STOP 1 context summary items are confirmed.
 - [ ] All STOP 2 pattern summary items are confirmed.
 - [ ] Each proposal links lens -> pain point -> action.
 - [ ] Proposed actions are scoped to one increment where possible.
+- [ ] Prioritization approval is explicit for immediate increments vs backlog.
 
 ---
 
@@ -194,6 +214,7 @@ These lenses are defined IN THIS PROMPT, not in CONSTITUTION.md.
 1. **Understand Recent Changes**
 
    Ask:
+   - Ask **3-5 focused questions per round**, then summarize before moving lenses.
    - "What's changed since last reflection?"
    - "Any areas of pain or slowness?"
    - "Any recent bugs or incidents?"
@@ -212,6 +233,7 @@ These lenses are defined IN THIS PROMPT, not in CONSTITUTION.md.
    - What's changed recently.
    - Initial observations about health.
    - Areas that seem worth examining.
+   - Evidence references (files, tests, commits, or docs).
    
    Clearly label as **STOP 1**.
    Wait for user confirmation.
@@ -297,19 +319,33 @@ These lenses are defined IN THIS PROMPT, not in CONSTITUTION.md.
    - Show exact placement.
    - Wait for confirmation.
 
-10. **Create ADRs**
+10. **Update DESIGN.md**
 
-    If emerging patterns need alignment:
+   If emergent architecture should be documented:
+   - Draft addition for `DESIGN.md` (pattern, context, location).
+   - Show exact placement.
+   - Wait for confirmation.
+
+11. **Create ADRs**
+
+   If emerging patterns need alignment:
     - Draft ADR explaining the pattern.
     - Document why this approach was chosen.
     - Wait for confirmation.
 
-11. **Create Increment Ideas**
+12. **Create Increment Ideas**
 
-    For refactorings that should be done:
+   For refactorings that should be done:
     - Write brief increment description.
     - Scope small enough for one increment.
     - Suggest user create `.4dc/current/increment.md` or backlog item.
+
+13. **Request Prioritization Approval**
+
+   Before closing, explicitly confirm:
+   - Which proposals are immediate increments.
+   - Which proposals move to backlog.
+   - Which proposals require ADR/CONSTITUTION updates first.
 
 ---
 
@@ -323,6 +359,8 @@ These lenses are defined IN THIS PROMPT, not in CONSTITUTION.md.
 **Proposal:** [concrete change]
 **Effort:** [rough estimate: 1h, half-day, 2 days]
 **Value:** [what improves]
+**Evidence:** [files/tests/commits/doc references]
+**Status:** Not started
 
 **Promote to:**
 - [ ] CONSTITUTION (if recurring pattern)
@@ -420,6 +458,35 @@ Status: Not started
 Lens: Duplication & Simplicity
 Pain Point: Validation logic is duplicated in three modules.
 Proposal: Extract shared validator and migrate call sites in one increment.
+```
+
+**Input situation:**
+- User reports frequent merge conflicts in a large shared utility file.
+
+**Expected behavior:**
+- Use modularity and delivery lenses, propose a small extraction increment with clear boundary.
+
+**Expected output snippet:**
+
+```markdown
+## Refactoring: Extract Validation Modules by Domain
+Status: Not started
+Lens: Modularity & Separation
+Pain Point: Shared utility file causes repeated merge conflicts.
+Proposal: Split validators into domain-specific modules in one increment.
+```
+
+**Input situation:**
+- Findings suggest both stricter error policy and looser team workflow guidance.
+
+**Expected behavior:**
+- Resolve conflicting guidance, keep one canonical recommendation, and request prioritization approval.
+
+**Expected output snippet:**
+
+```markdown
+Conflict resolved: enforce one error translation boundary in API adapters.
+Prioritization approval requested for immediate increment vs backlog.
 ```
 
 ---
