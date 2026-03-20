@@ -215,7 +215,9 @@ This creates 1:1 traceability between ACs and tests. Find all tests for a featur
 
 **When to use:** After defining an increment, when ready to write code.
 
-**How it works:** Pair-programming navigator. Suggests the next smallest test. After you write a failing test: "Is this failing for the right reason?" After green: "What's the simplest implementation?" During refactor: suggests improvements aligned with constitution.
+**How it works:** Starts with a technical kickoff for the current deliverable (API contracts, affected screens/states, data boundaries, first test seam), then acts as a pair-programming navigator for TDD. Suggests the next smallest test. After you write a failing test: "Is this failing for the right reason?" After green: "What's the simplest implementation?" During refactor: suggests improvements aligned with constitution.
+
+**Responsibility boundary:** Technical HOW belongs here. The increment prompt stays product-level (WHAT/WHY) and deliberately defers technical design details to implement.
 
 **Design emerges through questioning:** Every 5-10 cycles, asks: "Have we discovered anything to promote?" The code and tests ARE the design; the prompt helps you recognize when insights should become permanent.
 

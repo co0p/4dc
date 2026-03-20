@@ -198,11 +198,13 @@ Run through each prompt and verify:
 - [ ] Has STOP 1, STOP AC, STOP UC, STOP 2
 - [ ] Slices into deliverables
 - [ ] No technical implementation details
+- [ ] Explicitly defers technical design questions to implement prompt
 
 ### 4.3 implement.prompt.md
 - [ ] Frontmatter correct (no argument-hint)
 - [ ] All required sections present
 - [ ] Reads CONSTITUTION.md and increment.md
+- [ ] Starts each deliverable with technical kickoff (API contracts, screens/states, data boundaries)
 - [ ] TDD cycle clearly documented
 - [ ] One test at a time enforced
 - [ ] Promotion checks every 5-10 cycles

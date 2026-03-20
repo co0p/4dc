@@ -88,6 +88,7 @@ The increment must:
 - Stay at the **WHAT/WHY level**—no technical HOW.
 - Define **observable success criteria**.
 - Slice into **small, independently shippable pieces**.
+- Defer all technical design questions (API contracts, screens/states, data boundaries) to the **Implement** prompt.
 
 Do not include:
 - File/class/module implementation plans.

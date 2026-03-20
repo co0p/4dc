@@ -58,6 +58,7 @@ Help user slice a feature idea into small, shippable deliverables through discov
 - Challenge vague success criteria ("What specific behavior tells you it worked?")
 - Slice into **deliverables** (small, independently shippable pieces)
 - Stay at WHAT/WHY level (no technical HOW, no implementation details)
+- Explicitly defer technical design questions (API contracts, screens/states, data boundaries) to implement
 
 ### Input Context
 - Project path
@@ -113,6 +114,7 @@ Each deliverable should:
 Guide user through TDD cycles (Red → Green → Refactor) one deliverable at a time, helping design emerge from code.
 
 ### Key Behaviors
+- Begin each deliverable with a technical kickoff (API contracts, screens/states, data boundaries, first test seam)
 - Work one deliverable at a time (informed by previous deliverables)
 - Suggest next smallest test (one test at a time, never batch)
 - Ask test quality questions (failing for right reason? simplest test?)
