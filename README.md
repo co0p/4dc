@@ -15,7 +15,7 @@
 
 ## Executive Summary
 
-4dc is a set of **discovery-driven prompts** for building software through Socratic dialogue with an LLM. The prompts ask the right questions at the right time—helping you discover what to build and letting design emerge from TDD. You stay in control; the LLM acts as a pair-programming navigator.
+4dc is a set of **discovery-driven prompts** for building software through Socratic dialogue with an LLM. Each prompt takes on a specific role at the right moment—Principal Engineer to extract architectural decisions, Product-minded Engineer to slice work, Domain Architect to shape the design, TDD Navigator to drive implementation, and Documentation Steward to preserve learnings. You stay in control; the LLM asks the right questions, challenges vague answers, and keeps the work moving.
 
 **Ephemeral context, permanent knowledge.** Feature work lives in `.4dc/` as temporary scaffolding. Before merging, you promote learnings to permanent docs—`CONSTITUTION.md` for decisions, `docs/DESIGN.md` for emergent architecture, `docs/domain.md` for the domain model, `docs/architecture.md` for C4 diagrams, ADRs for trade-offs. After merge, increment context is deleted.
 
@@ -87,9 +87,10 @@ You answer based on your project's reality. The result is `CONSTITUTION.md` with
 ```
 
 The LLM asks discovery questions:
-- "What's the smallest outcome that provides value?"
-- "What's explicitly out of scope?"
-- "How will you know it worked?"
+- "Is this a feature, bugfix, refactor, or exploration?"
+- "What exact behavior or outcome do you want?"
+- "What problem are you trying to solve?"
+- "What would success look like?"
 
 Together you develop a user story, acceptance criteria (each with an inline greppable test name), and slice the work into deliverables. Deliverable 1 is always identified as a walking skeleton — the thinnest end-to-end path that proves all layers connect before logic is added.
 
@@ -110,20 +111,15 @@ The result is `.4dc/increment.md` (temporary LLM context):
 #4dc-design.prompt.md
 ```
 
-The LLM guides a domain and architecture exploration before any code is written:
+The LLM reads `.4dc/increment.md` and guides the team through three phases before any code is written:
 
-```
-LLM: "What are the key domain concepts here? List them as nouns."
-You: "Task, Priority, Status, Tag"
+- **Language and boundaries** — key domain nouns and verbs are named, a ubiquitous language glossary is agreed, and bounded contexts are drawn.
+- **Tactical domain model** — aggregates, entities, value objects, and events are proposed as a Mermaid class diagram.
+- **C4 architecture** — context, container, and component diagrams (Mermaid) show how the pieces fit together.
 
-LLM: "What invariant does Task protect?"
-You: "A task must always have a title and a status"
+Each phase ends with a STOP gate. Nothing moves forward until the team confirms the model is correct.
 
-LLM: "Let's sketch the C4 context. Who interacts with the system?"
-You: "Only the user, via CLI"
-```
-
-The result is `.4dc/design.md`—a shared vocabulary, DDD model, and C4 diagrams. Promoted excerpts become `docs/domain.md` and `docs/architecture.md`.
+The result is `.4dc/design.md` — a shared vocabulary, DDD model, and C4 diagrams scoped to this increment. Promoted excerpts become `docs/domain.md` and `docs/architecture.md`.
 
 ### 4. Implement via TDD
 
@@ -135,14 +131,19 @@ The result is `.4dc/design.md`—a shared vocabulary, DDD model, and C4 diagrams
 The LLM starts each deliverable with a **technical kickoff** (API contracts, affected screens, data boundaries, first test seam), then drives an **ATDD outer loop**: acceptance tests — whose names come straight from `.4dc/increment.md` — are written first and stay RED until all criteria are met. The TDD inner loop then drives unit tests toward GREEN without per-step STOP gates.
 
 ```
-LLM: "Write the acceptance test for TestAdd_GivenNoTasks_WhenAdd_ThenStoredWithDefaults first.
-      It should compile and fail for the right reason."
-You: [writes acceptance test, runs it — RED]
+LLM: [drafts acceptance test for TestAdd_GivenNoTasks_WhenAdd_ThenStoredWithDefaults]
+You: [applies it, runs it — RED]
 
-LLM: "Good — failing for the right reason. What's the first unit test
-      that gets us one step closer?"
-You: "Test that the CSV row is written"
-LLM: "Write it. What's the simplest code that passes?"
+LLM: "RED for the right reason. Here's the next unit test:"
+     [drafts test for CSV row write]
+You: [applies it, runs it — RED]
+
+LLM: "Here's the simplest implementation:"
+     [drafts minimal code]
+You: [applies it, runs it — GREEN]
+
+LLM: "GREEN. Refactor opportunity: the file path is hardcoded. Worth extracting?"
+You: "Yes"
 
 You: [red → green → refactor cycles...]
 
@@ -216,6 +217,23 @@ git push
 **How it works:** Asks discovery questions to understand the problem, then drives acceptance criteria that are observable and specific. Each criterion gets an inline greppable test name (`→ TestFeature_Given_When_Then`) added directly beneath it — no separate table. Guides identification of a **walking skeleton** as Deliverable 1: the thinnest end-to-end path that touches every architectural layer, proving they connect before any logic is added.
 
 **Output:** `.4dc/increment.md` (temporary, deleted after merge)
+
+---
+
+### design
+
+**Purpose:** Shape the HOW through domain modelling and architecture before any code is written.
+
+**When to use:** After increment, before implement — whenever the increment touches multiple architectural layers or introduces new domain concepts.
+
+**How it works:** Reads `.4dc/increment.md` and guides three gated phases:
+1. **Language and boundaries** (STOP D1) — proposes a ubiquitous language glossary and bounded context map; confirmed before moving on.
+2. **Tactical domain model** (STOP D2) — proposes aggregates, entities, value objects, and domain events as a Mermaid class diagram.
+3. **C4 architecture** (STOP D3) — produces context, container, and component diagrams (Mermaid). Nothing is written until Final Approval is explicit.
+
+Keeps strictly to the design level — no code, no test stubs, no implementation prescriptions.
+
+**Output:** `.4dc/design.md` (temporary, deleted after merge). Promoted excerpts become `docs/domain.md` and `docs/architecture.md`.
 
 ---
 
@@ -388,58 +406,3 @@ graph TB
 ## Real-World Example: GoPomodoro
 
 [**gopomodoro**](https://github.com/co0p/gopomodoro) is a minimal Pomodoro timer built using 4dc from scratch. It demonstrates how 4dc delivers on its promise of **emergent, test-driven development**.
-
-### What You'll Find
-
-The repository shows the complete artifact structure in action:
-
-- **[CONSTITUTION.md](https://github.com/co0p/gopomodoro/blob/main/CONSTITUTION.md)** — Architectural decisions that emerged from concrete questions:
-  - Package layout: Domain in `pkg/`, adapters in subpackages
-  - Dependency inversion: Domain defines interfaces, adapters implement them
-  - Construction patterns: Public fields over constructors (idiomatic Go)
-  - Testing strategy: Black-box tests via `package <name>_test`
-
-- **[DESIGN.md](https://github.com/co0p/gopomodoro/blob/main/DESIGN.md)** — Architecture that emerged from TDD:
-  - Formatter pattern discovered while making tray UI testable
-  - History table shows what emerged and when
-  - Retrospective, not prescriptive
-
-- **[Clean commit history](https://github.com/co0p/gopomodoro/commits/main)** — Each increment shows the cycle:
-  - "first increment done" → Working feature
-  - "Add short break and time display" → Next deliverable
-  - "Refactor: rename Tick→AdvanceMinute" — Post-TDD cleanup
-
-### Why This Proves 4dc Works
-
-**1. Ephemeral context, permanent knowledge**
-- No `.4dc/` directory in the repo (gitignored, deleted after merge)
-- CONSTITUTION.md and `docs/DESIGN.md` contain only what matters
-- Commit messages reflect completed work, not planning overhead
-
-**2. Design emerged from TDD**
-- Formatter pattern wasn't planned upfront—it emerged when testing UI
-- Documented in `docs/DESIGN.md` only after discovery
-- Package structure followed dependency inversion because tests demanded it
-
-**3. Small, shippable increments**
-- Each commit represents a complete deliverable
-- Work progressed from state machine → breaks → UI → refactoring
-- No half-implemented features or "WIP" branches
-
-**4. Constitution guides, doesn't dictate**
-- Clear rules: "Domain has zero imports", "No panics for expected failures"
-- Concrete, testable decisions
-- Evolved as the project learned (e.g., construction patterns added after discovering Go idioms)
-
-**5. Working code as truth**
-- Tests colocated with code (`*_test.go`)
-- Black-box testing forces clean APIs
-- No architectural diagrams—the code structure IS the architecture
-
-### Start Your Own
-
-Want to see the prompts that created this? Check the `.github/prompts/` directory in the 4dc repo, then install them in your project:
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-prompts.sh)"
-```
