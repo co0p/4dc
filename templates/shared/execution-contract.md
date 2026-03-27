@@ -1,0 +1,4 @@
+- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for work-item progress, STOP-gate summaries, and completion tracking.
+- **Conflict resolution**: If instructions conflict, surface one concise clarifying question rather than choosing silently. Priority order: confirmed user scope → `CONSTITUTION.md` constraints → this prompt's defaults.
+- **No guessing**: Read relevant artifacts before making claims. Do not invent file contents, test results, or user intent.
+- **Destructive actions require explicit confirmation**: Never delete, overwrite, or commit without an unambiguous "yes" from the user.

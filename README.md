@@ -17,9 +17,9 @@
 
 4dc is a set of **discovery-driven prompts** for building software through Socratic dialogue with an LLM. The prompts ask the right questions at the right time—helping you discover what to build and letting design emerge from TDD. You stay in control; the LLM acts as a pair-programming navigator.
 
-**Ephemeral context, permanent knowledge.** Feature work lives in `.4dc/current/` as temporary scaffolding. Before merging, you promote learnings to permanent docs—`CONSTITUTION.md` for decisions, `DESIGN.md` for emergent architecture, ADRs for trade-offs. After merge, increment context is deleted.
+**Ephemeral context, permanent knowledge.** Feature work lives in `.4dc/` as temporary scaffolding. Before merging, you promote learnings to permanent docs—`CONSTITUTION.md` for decisions, `docs/DESIGN.md` for emergent architecture, `docs/domain.md` for the domain model, `docs/architecture.md` for C4 diagrams, ADRs for trade-offs. After merge, increment context is deleted.
 
-**Extreme programming principles:** small increments, emergent design, continuous testing, working code as truth. Design doesn't happen in a separate phase; it emerges from TDD cycles.
+**Extreme programming principles:** small increments, emergent design, continuous testing, working code as truth. Design doesn't happen in a separate phase; it emerges from TDD cycles. Acceptance criteria carry inline greppable test names (`→ TestFeature_Given_When_Then`). Every deliverable starts with a walking skeleton and ATDD outer loop — acceptance tests written RED first, TDD inner loop drives them GREEN.
 
 ---
 
@@ -35,9 +35,9 @@ This copies the prompt files into `.github/prompts/` with a `4dc-` prefix:
 
 - `.github/prompts/4dc-constitution.prompt.md`
 - `.github/prompts/4dc-increment.prompt.md`
+- `.github/prompts/4dc-design.prompt.md`
 - `.github/prompts/4dc-implement.prompt.md`
 - `.github/prompts/4dc-promote.prompt.md`
-- `.github/prompts/4dc-reflect.prompt.md`
 
 It also creates the `.4dc/` working directory and adds it to `.gitignore`.
 
@@ -82,9 +82,6 @@ You answer based on your project's reality. The result is `CONSTITUTION.md` with
 ### 2. Start an Increment
 
 ```bash
-# Create working context
-mkdir -p .4dc/current
-
 # Run increment prompt with explicit work type + intent
 #4dc-increment.prompt.md "feature: add password reset"
 ```
@@ -94,44 +91,73 @@ The LLM asks discovery questions:
 - "What's explicitly out of scope?"
 - "How will you know it worked?"
 
-Together you develop a user story, acceptance criteria, and slice the work into deliverables. The result is `.4dc/current/increment.md` (temporary LLM context).
+Together you develop a user story, acceptance criteria (each with an inline greppable test name), and slice the work into deliverables. Deliverable 1 is always identified as a walking skeleton — the thinnest end-to-end path that proves all layers connect before logic is added.
 
-### 3. Implement via TDD
+The result is `.4dc/increment.md` (temporary LLM context):
+
+```markdown
+## Acceptance Criteria
+
+- [ ] Given no tasks exist, when I run `todo add "Buy milk"`, then a task is stored
+  → `TestAdd_GivenNoTasks_WhenAdd_ThenStoredWithDefaults`
+- [ ] Given tasks exist, when I run `todo list`, then all tasks are printed
+  → `TestList_GivenTasks_WhenList_ThenAllPrinted`
+```
+
+### 3. Shape Domain and Architecture
+
+```bash
+#4dc-design.prompt.md
+```
+
+The LLM guides a domain and architecture exploration before any code is written:
+
+```
+LLM: "What are the key domain concepts here? List them as nouns."
+You: "Task, Priority, Status, Tag"
+
+LLM: "What invariant does Task protect?"
+You: "A task must always have a title and a status"
+
+LLM: "Let's sketch the C4 context. Who interacts with the system?"
+You: "Only the user, via CLI"
+```
+
+The result is `.4dc/design.md`—a shared vocabulary, DDD model, and C4 diagrams. Promoted excerpts become `docs/domain.md` and `docs/architecture.md`.
+
+### 4. Implement via TDD
 
 ```bash
 # Run implement prompt
 #4dc-implement.prompt.md
 ```
 
-The LLM guides you through test-driven cycles:
+The LLM starts each deliverable with a **technical kickoff** (API contracts, affected screens, data boundaries, first test seam), then drives an **ATDD outer loop**: acceptance tests — whose names come straight from `.4dc/increment.md` — are written first and stay RED until all criteria are met. The TDD inner loop then drives unit tests toward GREEN without per-step STOP gates.
 
 ```
-LLM: "What's the first test for token generation?"
-You: "Test that tokens are 32 bytes"
-LLM: "Write a test that calls generate_token() and asserts length"
+LLM: "Write the acceptance test for TestAdd_GivenNoTasks_WhenAdd_ThenStoredWithDefaults first.
+      It should compile and fail for the right reason."
+You: [writes acceptance test, runs it — RED]
 
-You: [writes test, runs it - fails]
+LLM: "Good — failing for the right reason. What's the first unit test
+      that gets us one step closer?"
+You: "Test that the CSV row is written"
+LLM: "Write it. What's the simplest code that passes?"
 
-LLM: "Good - failing for the right reason. What's the simplest 
-      implementation that makes it pass?"
-You: [implements, test passes]
+You: [red → green → refactor cycles...]
 
-LLM: "With tests green, what smells bad? Should we refactor?"
-You: "The function name is unclear"
-LLM: "What would be clearer?"
-You: "generate_reset_token"
-LLM: "Refactor the name, verify tests still pass"
+LLM: "Acceptance test is GREEN. Deliverable done. What did we learn?"
 ```
 
-As you work, the LLM appends important discoveries to `.4dc/current/learnings.md`.
+As you work, the LLM appends important discoveries to `.4dc/learnings.md`.
 
-### 4. Promote Learnings Before Merging
+### 5. Promote Learnings Before Merging
 
 ```bash
 #4dc-promote.prompt.md
 ```
 
-The LLM reads `.4dc/current/learnings.md` and asks what should be permanent:
+The LLM reads `.4dc/learnings.md` and pushes learnings back to the permanent high-level picture on main:
 
 ```
 LLM: "You discovered: 'Use SHA256 for tokens, bcrypt for passwords'
@@ -142,19 +168,20 @@ LLM: [drafts addition to CONSTITUTION.md Security section]
      "Confirm?"
 You: "Yes"
 
-LLM: "You decided: 'Synchronous email delivery for v1'
-      Should this be an ADR?"
+LLM: "The Task aggregate boundary shifted—does docs/domain.md need updating?"
+You: "Yes, Tag is now a value object on Task"
+
+LLM: [drafts updated docs/domain.md]
+     "Confirm?"
 You: "Yes"
 
-LLM: [creates docs/adr/ADR-2025-01-26-sync-email.md]
-
-LLM: "All learnings promoted. Ready to delete .4dc/current/?"
+LLM: "All learnings promoted. Ready to delete `.4dc/`?"
 You: "Yes"
 ```
 
 ```bash
 # Clean up and merge
-rm -rf .4dc/current/
+rm -rf .4dc/
 git add CONSTITUTION.md docs/ src/ tests/
 git commit -m "Add password reset"
 git push
@@ -172,9 +199,9 @@ git push
 
 **How it works:** Asks concrete questions: Where should layers be separated? How do you handle errors? What's your testing strategy? You answer based on your project's reality. The LLM synthesizes answers into `CONSTITUTION.md`.
 
-**What it creates:** Layering rules, error handling patterns, testing expectations, artifact layout (including where `DESIGN.md` lives and evolves). This becomes the reference for all other prompts.
+**What it creates:** Layering rules, error handling patterns, testing expectations, artifact layout (including where `docs/DESIGN.md` lives and evolves). This becomes the reference for all other prompts.
 
-**What it does NOT create:** Abstract values, style guides (use linters), or quality lenses (those belong in reflect).
+**What it does NOT create:** Abstract values, style guides (use linters).
 
 **Output:** `CONSTITUTION.md` (permanent, evolves with project)
 
@@ -186,26 +213,9 @@ git push
 
 **When to use:** When starting new work—a feature, bug fix, refactoring, or exploration.
 
-**How it works:** Turns a vague idea into a concrete plan through Socratic questioning. First requires explicit work type and intended outcome (feature, bug fix, refactor, or exploration). Challenges scope creep and vague criteria. Produces a user story, acceptance criteria, use case, and deliverable slices.
+**How it works:** Asks discovery questions to understand the problem, then drives acceptance criteria that are observable and specific. Each criterion gets an inline greppable test name (`→ TestFeature_Given_When_Then`) added directly beneath it — no separate table. Guides identification of a **walking skeleton** as Deliverable 1: the thinnest end-to-end path that touches every architectural layer, proving they connect before any logic is added.
 
-**Acceptance test stubs:** For each acceptance criterion, generates a greppable test name:
-
-```
-Test<Feature>_Given<Context>_When<Action>_Then<Result>
-```
-
-Example:
-| Acceptance Criterion | Test Stub |
-|---------------------|----------|
-| Given idle, when Start clicked, then countdown begins | `TestPomodoro_GivenIdle_WhenStartClicked_ThenCountdownBegins` |
-
-This creates 1:1 traceability between ACs and tests. Find all tests for a feature: `grep -r "TestPomodoro_Given" pkg/`
-
-**Deliverable slicing:** Breaks work into small, independently shippable pieces. Each deliverable goes through its own TDD cycle; learnings from one inform the next.
-
-**Output:** `.4dc/current/increment.md` (temporary, deleted after merge)
-
-**Input expectation:** State explicitly what you want to implement and classify the work item type.
+**Output:** `.4dc/increment.md` (temporary, deleted after merge)
 
 ---
 
@@ -213,53 +223,35 @@ This creates 1:1 traceability between ACs and tests. Find all tests for a featur
 
 **Purpose:** Guide TDD cycles, one deliverable at a time.
 
-**When to use:** After defining an increment, when ready to write code.
+**When to use:** After the design phase (or after increment for trivial work), when ready to write code.
 
-**How it works:** Starts with a technical kickoff for the current deliverable (API contracts, affected screens/states, data boundaries, first test seam), then acts as a pair-programming navigator for TDD. Suggests the next smallest test. After you write a failing test: "Is this failing for the right reason?" After green: "What's the simplest implementation?" During refactor: suggests improvements aligned with constitution.
+**How it works:** Starts with a **technical kickoff** for the current deliverable (API contracts, affected screens/states, data boundaries, first test seam). Then drives an **ATDD outer loop**: acceptance tests (from the inline `→ TestName` stubs in `increment.md`) are written first and run RED before any unit tests are written. The **TDD inner loop** then cycles freely — red → green → refactor — without per-step STOP gates. The acceptance test going GREEN marks the deliverable done. References `.4dc/design.md` for structural grounding. Flags design divergences immediately in `learnings.md`.
 
-**Responsibility boundary:** Technical HOW belongs here. The increment prompt stays product-level (WHAT/WHY) and deliberately defers technical design details to implement.
-
-**Design emerges through questioning:** Every 5-10 cycles, asks: "Have we discovered anything to promote?" The code and tests ARE the design; the prompt helps you recognize when insights should become permanent.
-
-**Output:** Working code + tests (permanent), `.4dc/current/learnings.md` (promotion candidates, temporary)
+**Output:** Working code + tests (permanent), `.4dc/learnings.md` (promotion candidates, temporary)
 
 ---
 
 ### promote
 
-**Purpose:** Promote learnings to permanent docs before deleting increment context.
+**Purpose:** Push learnings back to the permanent high-level picture on main before merging.
 
 **When to use:** Before merging, after completing an increment.
 
-**How it works:** Reads `.4dc/current/learnings.md` and asks what should be promoted:
+**How it works:** Reads `.4dc/learnings.md` and drives promotion decisions across all permanent knowledge stores:
 
 | Learning Type | Destination |
 |--------------|-------------|
+| Domain model change | `docs/domain.md` |
+| C4 architecture change | `docs/architecture.md` |
 | Architectural decision | `CONSTITUTION.md` |
-| Emergent design pattern | `DESIGN.md` |
+| Emergent design pattern | `docs/DESIGN.md` |
 | Non-obvious trade-off | `docs/adr/` |
 | Public interface | `docs/api/` |
 | Future work | GitHub issue |
 
-**DESIGN.md:** Documents architecture that **emerged from TDD**, not planned upfront. Updated each increment with patterns discovered, module structure evolution, and open questions. Retrospective, not prescriptive.
+**After promotion:** Confirms all learnings captured, then: delete `.4dc/`, commit permanent additions, merge.
 
-**After promotion:** Confirms all learnings captured, then: delete `.4dc/current/`, commit permanent additions, merge.
-
-**Output:** Updates to `CONSTITUTION.md`, `DESIGN.md`, new ADRs, API contracts (ephemeral context deleted)
-
----
-
-### reflect
-
-**Purpose:** Periodic codebase health check to identify refactoring opportunities.
-
-**When to use:** After several increments, when velocity slows, or when code feels painful.
-
-**How it works:** Guides assessment using **quality lenses**: naming, modularity, architecture, testing, duplication, documentation, delivery. For each lens: "Are names aligned with domain language?" "Do tests give fast feedback?"
-
-**From assessment to action:** Identifies concrete refactorings scoped small enough to become increments.
-
-**Output:** Updates to `CONSTITUTION.md`, `DESIGN.md`, new ADRs, new increment ideas
+**Output:** Updates to `docs/domain.md`, `docs/architecture.md`, `CONSTITUTION.md`, `docs/DESIGN.md`, new ADRs, API contracts (ephemeral context deleted)
 
 ---
 
@@ -268,10 +260,12 @@ This creates 1:1 traceability between ACs and tests. Find all tests for a featur
 ```
 my-project/
 ├── CONSTITUTION.md              # Permanent: architectural decisions
-├── DESIGN.md                    # Permanent: emergent architecture (updated each increment)
 ├── README.md                    # Permanent: project overview
 │
 ├── docs/
+│   ├── domain.md                # Permanent: DDD model (language, contexts, aggregates, events)
+│   ├── architecture.md          # Permanent: C4 diagrams (Mermaid)
+│   ├── DESIGN.md                # Permanent: emergent architecture (what TDD discovered)
 │   ├── adr/                     # Permanent: decision records
 │   │   └── ADR-2025-01-26-sync-email.md
 │   └── api/                     # Permanent: contracts, schemas
@@ -281,10 +275,10 @@ my-project/
 ├── src/                         # Permanent: code
 ├── tests/                       # Permanent: tests
 │
-└── .4dc/                        # Temporary: working context
-    └── current/                 # Deleted after merge
-        ├── increment.md         # What you're building + test stubs
-        └── learnings.md         # Promotion candidates
+└── .4dc/                        # Temporary: working context (deleted after merge)
+    ├── increment.md             # What you're building + test stubs
+    ├── design.md                # Domain model + C4 diagrams for this increment
+    └── learnings.md             # Promotion candidates
 ```
 
 **.gitignore:**
@@ -299,13 +293,16 @@ my-project/
 | Artifact | Location | Lifecycle | Purpose |
 |----------|----------|-----------|---------|
 | **CONSTITUTION.md** | Root | Permanent | Architectural decisions |
-| **DESIGN.md** | Root | Permanent | Emergent architecture (what TDD discovered) |
+| **docs/domain.md** | `docs/` | Permanent | DDD model: language, contexts, aggregates, events |
+| **docs/architecture.md** | `docs/` | Permanent | C4 diagrams: context, container, component |
+| **docs/DESIGN.md** | `docs/` | Permanent | Emergent architecture (what TDD discovered) |
 | **README.md** | Root | Permanent | Project overview |
 | **ADRs** | `docs/adr/` | Permanent | Trade-off explanations |
 | **API Contracts** | `docs/api/` | Permanent | Public interfaces |
 | **Code + Tests** | `src/`, `tests/` | Permanent | The implementation |
-| **Increment context** | `.4dc/current/increment.md` | Temporary | User story, ACs, test stubs |
-| **Learnings** | `.4dc/current/learnings.md` | Temporary | Promotion candidates |
+| **Increment context** | `.4dc/increment.md` | Temporary | User story, ACs, test stubs |
+| **Design context** | `.4dc/design.md` | Temporary | Domain model + C4 for this increment |
+| **Learnings** | `.4dc/learnings.md` | Temporary | Promotion candidates |
 
 **Key principle:** Increment artifacts are ephemeral. After merge, only promoted decisions and working code remain.
 
@@ -316,49 +313,46 @@ my-project/
 ```mermaid
 graph TB
     Start([Feature Idea])
-    
-    Constitution[CONSTITUTION.md<br/>Architectural decisions]
-    
+
+    Constitution["CONSTITUTION.md + docs/\nHigh-level picture on main"]
+
     Start --> Inc{increment prompt}
-    Inc -->|Discover WHAT,<br/>slice deliverables| IncDoc[.4dc/current/<br/>increment.md]
-    
-    IncDoc --> D1[Deliverable 1:<br/>implement prompt]
+    Inc -->|Discover WHAT,<br/>slice deliverables| IncDoc[.4dc/<br/>increment.md]
+
+    IncDoc --> Design{design prompt}
+    Design -->|DDD + C4| DesignDoc[.4dc/<br/>design.md]
+
+    DesignDoc --> D1[Deliverable 1:<br/>implement prompt]
     D1 -->|TDD cycles| D1Code[Code + Tests<br/>+ learnings.md]
     D1Code --> D1Done{Deliverable done?}
     D1Done -->|More tests| D1
     D1Done -->|Yes| D2
-    
+
     D2[Deliverable 2:<br/>implement prompt<br/><i>informed by D1</i>]
     D2 -->|TDD cycles| D2Code[Code + Tests<br/>+ learnings.md]
     D2Code --> D2Done{Deliverable done?}
     D2Done -->|More tests| D2
-    D2Done -->|Yes| D3
-    
-    D3[Deliverable 3:<br/>implement prompt<br/><i>informed by D1+D2</i>]
-    D3 --> D3Code[Code + Tests<br/>+ learnings.md]
-    D3Code --> AllDone{All deliverables<br/>complete?}
-    
+    D2Done -->|Yes| AllDone
+
+    AllDone{All deliverables<br/>complete?}
     AllDone -->|Yes| Promote{promote prompt}
+    Promote -->|Update| Domain[docs/domain.md]
+    Promote -->|Update| Arch[docs/architecture.md]
     Promote -->|Update| ConstUpdate[CONSTITUTION.md]
     Promote -->|Create| ADR[docs/adr/]
-    Promote -->|Create| API[docs/api/]
-    
-    Promote --> Cleanup[Delete .4dc/current/]
+
+    Promote --> Cleanup[Delete .4dc/]
     Cleanup --> Merge[Merge PR]
-    
-    Merge --> Reflect{reflect prompt<br/><i>periodic</i>}
-    Reflect -->|Identify refactorings| NextInc[Next increments]
-    NextInc --> Inc
-    
+    Merge --> Inc
+
+    Constitution -.->|Guides| Design
     Constitution -.->|Guides| D1
     Constitution -.->|Guides| D2
-    Constitution -.->|Guides| D3
-    Constitution -.->|Evaluates against| Reflect
-    
+
     style IncDoc fill:#fff4e1
+    style DesignDoc fill:#fff4e1
     style D1Code fill:#e1ffe1
     style D2Code fill:#e1ffe1
-    style D3Code fill:#e1ffe1
     style Constitution fill:#e1f5ff
 ```
 
@@ -374,7 +368,7 @@ graph TB
 
 **No stale docs:** Increment context deleted after merge. Only promoted learnings remain.
 
-**Traceability:** Greppable test names map 1:1 to acceptance criteria. DESIGN.md tracks what emerged.
+**Traceability:** Greppable test names map 1:1 to acceptance criteria. `docs/DESIGN.md` tracks what emerged.
 
 **LLM as navigator:** You decide. The LLM questions, challenges, ensures TDD discipline.
 
@@ -384,10 +378,10 @@ graph TB
 
 1. **Install the prompts** (see Installation above)
 2. **Create your constitution**: `#4dc-constitution.prompt.md .`
-3. **Start your first increment**: `#4dc-increment.prompt.md "your feature idea"`
-4. **Implement via TDD**: `#4dc-implement.prompt.md`
-5. **Promote learnings before merge**: `#4dc-promote.prompt.md`
-6. **Periodically reflect**: `#4dc-reflect.prompt.md` (after several increments)
+3. **Start your first increment**: `#4dc-increment.prompt.md "feature: your feature idea"` — discover WHAT, define ACs with inline test names, identify walking skeleton
+4. **Shape domain and architecture**: `#4dc-design.prompt.md` — shared vocabulary, DDD model, C4 diagrams
+5. **Implement via TDD**: `#4dc-implement.prompt.md` — ATDD outer loop, then TDD inner loop, until acceptance tests pass
+6. **Promote learnings before merge**: `#4dc-promote.prompt.md`
 
 ---
 
@@ -419,12 +413,12 @@ The repository shows the complete artifact structure in action:
 
 **1. Ephemeral context, permanent knowledge**
 - No `.4dc/` directory in the repo (gitignored, deleted after merge)
-- CONSTITUTION.md and DESIGN.md contain only what matters
+- CONSTITUTION.md and `docs/DESIGN.md` contain only what matters
 - Commit messages reflect completed work, not planning overhead
 
 **2. Design emerged from TDD**
 - Formatter pattern wasn't planned upfront—it emerged when testing UI
-- Documented in DESIGN.md only after discovery
+- Documented in `docs/DESIGN.md` only after discovery
 - Package structure followed dependency inversion because tests demanded it
 
 **3. Small, shippable increments**

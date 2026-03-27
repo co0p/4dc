@@ -3,8 +3,8 @@ name: 4dc-increment
 argument-hint: explicit work type + goal (e.g., "feature: add password reset", "bugfix: fix token expiry", "refactor: extract validator", "exploration: evaluate retry strategy")
 title: Slice work into shippable deliverables
 description: Discover WHAT to build through Socratic questioning, slice into small deliverables
-version: {{VERSION}}
-generatedAt: {{GENERATED_AT}}
+version: "{{VERSION}}"
+generatedAt: "{{GENERATED_AT}}"
 source: {{SOURCE_URL}}
 ---
 
@@ -12,7 +12,7 @@ source: {{SOURCE_URL}}
 
 You are going to help the user slice a work item into small, shippable deliverables through discovery questions about WHAT and WHY.
 
-The output is `.4dc/current/increment.md`—temporary working context that will be deleted after the feature is merged.
+The output is `.4dc/increment.md`—temporary working context that will be deleted after the feature is merged.
 
 ---
 
@@ -27,11 +27,7 @@ Stay at the product level. No technical HOW. No implementation details.
 ## Execution Contract
 
 - **Autonomy policy**: Drive discovery proactively, but do not finalize `increment.md` before STOP-gate approvals.
-- **Tool policy**: Ground proposals in project context (`CONSTITUTION.md`, existing code) before drafting.
-- **Conflict policy**:
-   - In **create mode** (no current increment): prioritize confirmed user scope, then `CONSTITUTION.md`, then this prompt defaults.
-   - In **update mode** (existing `.4dc/current/increment.md`): preserve prior approved scope unless explicitly superseded.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for deliverables, acceptance test stubs, and STOP-gate progress summaries.
+{{SHARED:execution-contract}}
 - **Stop conditions**: This prompt is complete only when **STOP 1**, **STOP AC**, **STOP AT**, **STOP UC**, **STOP 2**, and **Final Approval** are explicitly passed.
 
 ---
@@ -68,7 +64,7 @@ Before defining the increment, read and understand:
 
 ## Goal
 
-Generate `.4dc/current/increment.md` that captures:
+Generate `.4dc/increment.md` that captures:
 
 - **User Story**: As a..., I want..., so that...
 - **Acceptance Criteria**: Observable behaviors that must be true
@@ -100,7 +96,7 @@ Do not include:
 ## Output Contract
 
 Required artifact:
-- `.4dc/current/increment.md`
+- `.4dc/increment.md`
 
 Required sections:
 - User Story
@@ -125,11 +121,12 @@ Acceptance rubric:
 Completion checklist:
 - [ ] All STOP 1 understanding items are confirmed.
 - [ ] All STOP AC acceptance criteria are confirmed.
-- [ ] All STOP AT test stubs are confirmed.
+- [ ] Each acceptance criterion has an inline test name (`→ Test...`).
+- [ ] Walking skeleton deliverable identified and placed first.
 - [ ] All STOP UC use case items are confirmed.
 - [ ] All STOP 2 full-outline items are confirmed.
-- [ ] Deliverables and test stubs initialize statuses with `Not started`.
-- [ ] Final Approval is explicit before writing `.4dc/current/increment.md`.
+- [ ] Deliverables initialize status with `Not started`.
+- [ ] Final Approval is explicit before writing `.4dc/increment.md`.
 
 ---
 
@@ -199,49 +196,33 @@ Follow this process to produce an `increment.md` that captures what to build.
    Ask: "Are these criteria complete? What's missing or wrong?"
    Iterate until user confirms "complete enough."
 
-### Phase 2b – Generate Acceptance Test Stubs (STOP AT)
+### Phase 2b – Attach Test Names to Criteria
 
-4b. **Generate Test Stubs for Each Criterion → STOP AT**
+4b. **Embed a test name inline on each criterion**
 
-   For each acceptance criterion, generate a test stub name using this **greppable naming convention**:
+   For each accepted criterion, propose a greppable test name and embed it directly beneath the criterion:
 
-   ```
-   Test<Feature>_Given<Context>_When<Action>_Then<Result>
+   ```markdown
+   - [ ] Given [context], when [action], then [observable result]
+     → `Test<Feature>_Given<Context>_When<Action>_Then<Result>`
    ```
 
    **Naming rules:**
-   - Use PascalCase, no spaces or special characters
-   - Feature = the increment's main capability
-   - Given/When/Then map directly from the AC
-   - Keep names under 80 characters (abbreviate if needed)
+   - PascalCase, no spaces or special characters
+   - Given/When/Then map directly from the AC text
+   - Keep under 80 characters; abbreviate if needed
+   - Adapt casing to project conventions (e.g., `test_feature_given_x` for Python/bash)
 
-   **Example mapping:**
-
-   | Acceptance Criterion | Test Stub Name |
-   |---------------------|----------------|
-   | Given idle timer, when Start clicked, then 25:00 countdown begins | `TestPomodoro_GivenIdle_WhenStartClicked_ThenCountdownBegins` |
-   | Given running timer, when Pause clicked, then timer freezes | `TestPomodoro_GivenRunning_WhenPauseClicked_ThenTimerFreezes` |
-   | Given 4 completed pomodoros, when pomodoro ends, then long break starts | `TestPomodoro_Given4Completed_WhenPomodoroEnds_ThenLongBreakStarts` |
-
-   Present the mapping:
-
+   **Example:**
    ```markdown
-   ## Acceptance Test Stubs
-
-   | AC | Test Name | Status |
-   |----|-----------|--------|
-   | Given [context], when [action], then [result] | `Test<Feature>_Given<X>_When<Y>_Then<Z>` | Not started |
-   ...
+   - [ ] Given idle timer, when Start clicked, then 25:00 countdown begins
+     → `TestPomodoro_GivenIdle_WhenStartClicked_ThenCountdownBegins`
    ```
 
-   These stubs:
-   - **Are greppable**: `grep -r "TestPomodoro_Given" pkg/` finds all tests for the work item
-   - **Map 1:1 to ACs**: Every AC has exactly one test stub
-   - **Are language-agnostic**: Adapt casing to project conventions (e.g., `test_pomodoro_given_idle` for Python)
+   These names become the acceptance test function names in implement. Keeping them co-located with their criterion means the spec and the test stay in sync.
 
-   Clearly label this as **STOP AT**.
-   Ask: "Do these test names accurately reflect the acceptance criteria?"
-   Wait for user confirmation before continuing.
+   Ask: "Do these names accurately map to the criteria?"
+   Revise on feedback, then continue to STOP UC.
 
 ### Phase 3 – Define Use Case (STOP UC)
 
@@ -285,11 +266,13 @@ Follow this process to produce an `increment.md` that captures what to build.
    - **Provides**: [value or learning]
    - **Criteria**: [subset of acceptance criteria this covers]
    - **Shippable**: [what's working after this, even if incomplete]
+   - **Success tests**: [test stub names from STOP AT that cover this deliverable]
 
    ### Deliverable 2: [Short title]
    - **Provides**: [value or learning, informed by D1]
    - **Criteria**: [additional criteria this covers]
-   - **Shippable**: [what's working after this]
+   - **Shippable**: [what works after this]
+   - **Success tests**: [test stub names from STOP AT that cover this deliverable]
    
    ...
    ```
@@ -299,10 +282,17 @@ Follow this process to produce an `increment.md` that captures what to build.
    - Be shippable (working code, even if feature incomplete).
    - Inform the next deliverable.
 
+   **Walking Skeleton first:**
+   Before finalizing the slice order, ask:
+   - "What's the thinnest end-to-end path that touches every layer of the system?"
+
+   Consider making Deliverable 1 a **tracer bullet**: the minimum code that threads through the full stack—even with hardcoded or trivial values—proving that all layers connect before logic is added. The skeleton should be runnable and shippable; subsequent deliverables add correctness, validation, and edge cases.
+
    **Example slicing** for "add password reset":
-   1. Token generation (foundation + learn about storage)
-   2. Email sending (integration + learn about templates)
-   3. Reset flow UI (completion + learn about UX)
+   1. Tracer bullet: token endpoint exists, returns hardcoded 202 (proves route → handler → response works)
+   2. Token generation: real random token, stored to DB (proves persistence layer)
+   3. Email sending: real email dispatched (proves integration boundary)
+   4. Validation + error cases: bad input, expired token (adds correctness)
 
 7. **Challenge Scope Creep**
 
@@ -351,7 +341,7 @@ Follow this process to produce an `increment.md` that captures what to build.
 9. **Request Final Approval**
 
    Before writing files, explicitly ask:
-   - "Approve writing `.4dc/current/increment.md` with this outline?"
+   - "Approve writing `.4dc/increment.md` with this outline?"
    - If not approved, revise and return to STOP 2.
 
 ### Phase 6 – Write `increment.md` (After Approval)
@@ -359,8 +349,38 @@ Follow this process to produce an `increment.md` that captures what to build.
 10. **Produce the Final Increment**
 
    Only after explicit approval:
-   - Create `.4dc/current/` directory if needed.
-   - Write `increment.md` to `.4dc/current/increment.md`.
+   - Create `.4dc/` directory if needed.
+   - Write `increment.md` to `.4dc/increment.md`.
+   - Keep all content at the product level—no technical details.
+
+11. **Provide Final Handoff Summary**
+
+   End with a short summary:
+   - Accepted scope.
+   - Deferred scope.
+   - Deliverables by status (`Not started` by default).
+   - Suggested next step (`design` or `implement` prompt).
+   ```
+
+   Clearly label this as **STOP 2**.
+   Ask: "Does this capture what you want to build? What should change?"
+   Wait for explicit approval before writing the final document.
+
+### Phase 5 – Final Approval Gate
+
+9. **Request Final Approval**
+
+   Before writing files, explicitly ask:
+   - "Approve writing `.4dc/increment.md` with this outline?"
+   - If not approved, revise and return to STOP 2.
+
+### Phase 6 – Write `increment.md` (After Approval)
+
+10. **Produce the Final Increment**
+
+   Only after explicit approval:
+   - Create `.4dc/` directory if needed.
+   - Write `increment.md` to `.4dc/increment.md`.
    - Keep all content at the product level—no technical details.
 
 11. **Provide Final Handoff Summary**
@@ -391,7 +411,9 @@ As a [actor], I want [capability], so that [benefit].
 ## Acceptance Criteria
 
 - [ ] Given [context], when [action], then [observable result]
+  → `Test<Feature>_Given<X>_When<Y>_Then<Z>`
 - [ ] Given [context], when [action], then [observable result]
+  → `Test<Feature>_Given<X>_When<Y>_Then<Z>`
 ...
 
 ## Use Case
@@ -411,17 +433,19 @@ As a [actor], I want [capability], so that [benefit].
 
 ## Deliverables
 
-### Deliverable 1: [Title]
+### Deliverable 1: [Title] *(Walking Skeleton)*
 - **Status**: Not started
-- **Provides**: [value or learning]
+- **Provides**: [thin end-to-end path proving all layers connect]
 - **Criteria**: [which acceptance criteria]
 - **Shippable**: [what works after this]
+- **Success tests**: [inline test names from Acceptance Criteria above]
 
 ### Deliverable 2: [Title]
 - **Status**: Not started
 - **Provides**: [value or learning]
 - **Criteria**: [which acceptance criteria]
 - **Shippable**: [what works after this]
+- **Success tests**: [inline test names from Acceptance Criteria above]
 
 ...
 
@@ -430,22 +454,13 @@ As a [actor], I want [capability], so that [benefit].
 - [Explicit exclusions for this increment]
 - [Things that are follow-up work]
 
-## Acceptance Test Stubs
-
-| AC | Test Name | Status |
-|----|-----------|--------|
-| Given [context], when [action], then [result] | `Test<Feature>_Given<X>_When<Y>_Then<Z>` | Not started |
-| ... | ... | ... |
-
-**Greppable pattern**: `grep -r "Test<Feature>_Given" <test-dir>/`
-
 ## Promotion Checklist
 
 - [ ] Architectural decisions to add to CONSTITUTION.md?
 - [ ] API contracts to document (location per CONSTITUTION.md)?
 - [ ] Patterns worth capturing as ADRs (location per CONSTITUTION.md)?
-- [ ] Emergent design patterns to add to DESIGN.md?
-- [ ] All acceptance test stubs implemented and passing?
+- [ ] Emergent design patterns to add to `docs/DESIGN.md`?
+- [ ] All acceptance tests passing?
 - [ ] Backlog items discovered?
 ```
 
@@ -461,7 +476,8 @@ When defining the increment, do NOT:
 - **Accept vague deliverables**: "Backend work" → "What specific capability becomes available?"
 - **Accept scope creep**: "Is that THIS increment or a follow-up?"
 - **Accept vague success criteria**: "What specific behavior tells you it worked?"
-- **Skip deliverable slicing**: Always break into small, shippable pieces
+- **Skip the walking skeleton question**: Always ask what the thinnest end-to-end path is before slicing
+- **Put test names in a separate table**: Embed them inline with their criterion so spec and test name stay co-located
 
 ---
 
@@ -536,13 +552,7 @@ Before presenting the final `increment.md`, internally critique your draft:
    - Is each deliverable independently shippable?
    - Do deliverables build on each other?
 
-4. **Check for Contradictions**
-   - Do acceptance criteria, test stubs, and deliverables describe the same behavior?
-   - Are out-of-scope items excluded from deliverables and success criteria?
-
-5. **Keep Self-Critique Invisible**
-   - This critique is internal to the prompt.
-   - The final `increment.md` must not mention this process.
+{{SHARED:self-critique-tail}}
 
 ---
 
@@ -595,8 +605,18 @@ Deliverable 2 updated to include AC-3.
 
 ## Communication Style
 
-- **Outcome-first**: Lead with what you found or propose.
-- **Crisp acknowledgments**: One short acknowledgment when warm context, then substance.
-- **No filler**: Never repeat "Got it" or "I understand."
-- **Respect through momentum**: Keep work moving with clear outputs.
-- **Tight responses**: Short paragraphs, focused questions.
+{{SHARED:communication-style}}
+
+---
+
+## Prompt Eval
+
+Use these checks when assessing the quality of this prompt's outputs:
+
+- **Completeness**: All required output sections are present in `increment.md`.
+- **Determinism**: The same feature request produces the same structure (story, ACs, use case, deliverables).
+- **Actionability**: Every acceptance criterion is observable and testable without ambiguity.
+- **Scope control**: Out-of-scope items are explicitly listed; nothing undeclared was added.
+- **Status fidelity**: All status fields use `Not started` / `In progress` / `Done` only.
+- **Observable ACs**: Zero ACs use "works correctly" or "should work" without a verifiable assertion.
+- **Walking skeleton**: Deliverable 1 is a tracer bullet when multiple architectural layers are touched.

@@ -2,8 +2,8 @@
 name: 4dc-constitution
 title: Create or update a project constitution
 description: Discover and document the project's specific architectural decisions through Socratic questioning
-version: {{VERSION}}
-generatedAt: {{GENERATED_AT}}
+version: "{{VERSION}}"
+generatedAt: "{{GENERATED_AT}}"
 source: {{SOURCE_URL}}
 ---
 
@@ -26,11 +26,7 @@ Help the user discover and document their project's specific architectural decis
 ## Execution Contract
 
 - **Autonomy policy**: Ask focused questions to discover decisions, but do not write final files until STOP-gate approval is explicit.
-- **Tool policy**: Read project artifacts before making claims; do not guess missing context.
-- **Conflict policy**:
-   - In **create mode** (no existing `CONSTITUTION.md`): prioritize confirmed user scope, then repository evidence, then this prompt defaults.
-   - In **update mode** (existing `CONSTITUTION.md`): prioritize confirmed user scope, then existing `CONSTITUTION.md` constraints unless explicitly superseded, then this prompt defaults.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for STOP-gate progress summaries.
+{{SHARED:execution-contract}}
 - **Stop conditions**: This prompt is complete only when **STOP 1**, **STOP 2**, and **Final Approval** are explicitly passed and final `CONSTITUTION.md` content is ready.
 
 ---
@@ -304,11 +300,11 @@ The generated `CONSTITUTION.md` MUST follow this structure (omit empty sections)
 ## Artifact Layout
 
 - **CONSTITUTION.md**: Project root
-- **DESIGN.md**: Project root (emergent architecture, updated after increments)
+- **docs/DESIGN.md**: `docs/` folder (emergent architecture, updated after increments)
 - **ADRs**: [location and naming pattern as decided]
 - **API contracts**: [location as decided]
 - **Other docs**: [as decided]
-- **Working context**: `.4dc/current/` (temporary, gitignored)
+- **Working context**: `.4dc/` (temporary, gitignored)
 
 ## Delivery Practices
 
@@ -325,7 +321,7 @@ When generating the constitution, do NOT:
 
 - **Include abstract values**: "We value quality" → Ask for concrete decision
 - **Include generic best practices**: "Follow SOLID" → Ask how it applies to THIS project
-- **Include quality lenses**: Those belong in the reflect prompt
+- **Include quality lenses**: Those belong in a dedicated refactoring increment
 - **Include large ADRs**: Those are separate documents, not constitution content
 - **Prescribe solutions**: Ask questions to discover existing/desired decisions
 - **Accept vague answers**: Challenge until specific
@@ -362,14 +358,7 @@ Before presenting the final `CONSTITUTION.md`, internally critique your draft:
    - Are the key areas covered: layering, errors, testing, artifacts, delivery?
    - Is anything important about this specific project missing?
 
-4. **Check for Contradictions**
-   - Do any decisions conflict with each other or with earlier sections?
-   - If there is overlap, is one canonical rule stated clearly?
-
-5. **Keep Self-Critique Invisible**
-   - This critique is internal to the prompt.
-   - The final `CONSTITUTION.md` must not mention this process.
-   - It should read as if written directly by the team.
+{{SHARED:self-critique-tail}}
 
 ---
 
@@ -423,8 +412,18 @@ Before presenting the final `CONSTITUTION.md`, internally critique your draft:
 
 ## Communication Style
 
-- **Outcome-first**: Lead with what you found or propose.
-- **Crisp acknowledgments**: One short acknowledgment when warm context, then substance.
-- **No filler**: Never repeat "Got it" or "I understand."
-- **Respect through momentum**: Keep work moving with clear outputs.
-- **Tight responses**: Short paragraphs, focused questions.
+{{SHARED:communication-style}}
+
+---
+
+## Prompt Eval
+
+Use these checks when assessing the quality of this prompt's outputs:
+
+- **Completeness**: All required output sections are present in the generated `CONSTITUTION.md`.
+- **Determinism**: The same decisions produce the same structure (no free-form creative expansion).
+- **Actionability**: Every section contains at least one explicit decision, not just guidelines or aspirations.
+- **Scope control**: No generic best practices appear without being grounded in a project-specific choice.
+- **Status fidelity**: All status fields use `Not started` / `In progress` / `Done` only.
+- **Decision density**: Zero phrases like "strive to", "aim to", or "consider" without a concrete default.
+- **No meta-commentary**: The final artifact does not reference this prompt, LLMs, or this review process.

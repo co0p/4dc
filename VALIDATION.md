@@ -41,7 +41,7 @@ Each prompt MUST contain these sections in this order:
 | Rule | Check |
 |------|-------|
 | No mention of "path" as argument (use "current project") | ☐ |
-| No hardcoded artifact paths except `.4dc/current/` | ☐ |
+| No hardcoded artifact paths except `.4dc/` | ☐ |
 | Artifact locations reference "per CONSTITUTION.md" | ☐ |
 | No mention of "modes" (lite/medium/heavy) | ☐ |
 | No meta-chat about prompts/LLMs in output artifacts | ☐ |
@@ -59,9 +59,9 @@ Prompts MUST provide enough context for LLM to work without guessing.
 |--------|-----------------|-------|
 | constitution | Existing code structure, README, any existing CONSTITUTION.md | ☐ |
 | increment | CONSTITUTION.md, user story, existing code | ☐ |
-| implement | CONSTITUTION.md, `.4dc/current/increment.md`, existing code + tests | ☐ |
-| promote | `.4dc/current/learnings.md`, CONSTITUTION.md, existing ADRs/contracts | ☐ |
-| reflect | CONSTITUTION.md, existing ADRs, code + tests, recent commits | ☐ |
+| implement | CONSTITUTION.md, `.4dc/increment.md`, `.4dc/design.md`, existing code + tests | ☐ |
+| design | CONSTITUTION.md, `.4dc/increment.md`, `docs/domain.md`, `docs/architecture.md` | ☐ |
+| promote | `.4dc/learnings.md`, `.4dc/design.md`, CONSTITUTION.md, `docs/domain.md`, `docs/architecture.md`, existing ADRs/contracts | ☐ |
 
 ### 2.2 When Uncertain, Ask User
 
@@ -81,9 +81,9 @@ Each prompt MUST instruct the LLM to:
 |--------|---------------------|-------|
 | constitution | STOP 1: context summary, STOP 2: outline approval | ☐ |
 | increment | STOP 1: understanding, STOP AC: criteria, STOP UC: use case, STOP 2: deliverables | ☐ |
+| design | STOP D1: ubiquitous language, STOP D2: tactical DDD, STOP D3: C4 architecture, STOP D4: final approval | ☐ |
 | implement | STOP after each: test suggestion, red verification, green guidance, refactoring | ☐ |
 | promote | STOP for each learning decision, STOP before deletion | ☐ |
-| reflect | STOP 1: context, STOP 2: pattern summary | ☐ |
 
 ---
 
@@ -92,9 +92,9 @@ Each prompt MUST instruct the LLM to:
 The prompts MUST support this workflow:
 
 ```
-constitution (one-time) → increment → implement → promote → [reflect periodically]
-                              ↑                                      │
-                              └──────────────────────────────────────┘
+constitution (one-time) → increment → design → implement → promote
+                              ↑                                  │
+                              └──────────────────────────────────┘
 ```
 
 ### 3.1 Constitution Prompt
@@ -113,64 +113,66 @@ constitution (one-time) → increment → implement → promote → [reflect per
 |---------------------------|-------|
 | Takes user story/feature idea as input | ☐ |
 | Reads CONSTITUTION.md for alignment | ☐ |
-| Creates `.4dc/current/increment.md` | ☐ |
+| Creates `.4dc/increment.md` | ☐ |
 | Contains: user story, acceptance criteria, use case, deliverables | ☐ |
 | Slices into small, independently shippable deliverables | ☐ |
 | Stays at WHAT/WHY level, no technical HOW | ☐ |
 | Output is temporary, deleted after merge | ☐ |
 
-### 3.3 Implement Prompt
+### 3.3 Design Prompt
 
 | Requirement (from README) | Check |
 |---------------------------|-------|
-| Reads CONSTITUTION.md and `.4dc/current/increment.md` | ☐ |
+| Reads CONSTITUTION.md, `.4dc/increment.md`, `docs/domain.md`, `docs/architecture.md` | ☐ |
+| Builds ubiquitous language and bounded contexts | ☐ |
+| Maps tactical DDD (aggregates, entities, VOs, events) | ☐ |
+| Produces C4 diagrams (Context + Container + Component, Mermaid) | ☐ |
+| Creates `.4dc/design.md` | ☐ |
+| Output is temporary, deleted after merge | ☐ |
+
+| Requirement (from README) | Check |
+|---------------------------|-------|
+| Reads CONSTITUTION.md, `.4dc/increment.md`, and `.4dc/design.md` | ☐ |
 | Works one deliverable at a time | ☐ |
 | Guides TDD: Red → Green → Refactor | ☐ |
 | ONE test at a time, never batch | ☐ |
 | Asks promotion questions every 5-10 cycles | ☐ |
-| Creates `.4dc/current/learnings.md` | ☐ |
-| Creates `.4dc/current/notes.md` (session observations) | ☐ |
+| Creates `.4dc/learnings.md` | ☐ |
+| Creates `.4dc/notes.md` (session observations) | ☐ |
 | Output: permanent code + tests, temporary notes/learnings | ☐ |
 
-### 3.4 Promote Prompt
+### 3.5 Promote Prompt
 
 | Requirement (from README) | Check |
 |---------------------------|-------|
-| Reads `.4dc/current/learnings.md` | ☐ |
+| Reads `.4dc/learnings.md` and `.4dc/design.md` | ☐ |
 | For each learning, asks WHERE it should go | ☐ |
-| Promotion targets: CONSTITUTION.md, ADRs, API contracts, README, backlog | ☐ |
+| Promotion targets: `docs/domain.md`, `docs/architecture.md`, `docs/DESIGN.md`, CONSTITUTION.md, ADRs, API contracts, README, backlog | ☐ |
 | Drafts additions, shows exact placement | ☐ |
 | Waits for confirmation before writing | ☐ |
-| Confirms deletion of `.4dc/current/` | ☐ |
+| Confirms deletion of `.4dc/` | ☐ |
 | Output: updates to permanent docs, ephemeral context deleted | ☐ |
-
-### 3.5 Reflect Prompt
-
-| Requirement (from README) | Check |
-|---------------------------|-------|
-| Reads CONSTITUTION.md and codebase | ☐ |
-| Uses quality lenses (defined IN prompt, not constitution) | ☐ |
-| 8 lenses: naming, modularity, architecture, testing, duplication, docs, delivery, dependencies | ☐ |
-| Identifies concrete refactorings, not reports | ☐ |
-| Each refactoring scoped as one increment | ☐ |
-| Output: constitution updates, ADRs, new increment ideas, backlog | ☐ |
 
 ### 3.6 Artifact Locations
 
 | Artifact | Location | Prompt Creates | Prompt Reads |
 |----------|----------|----------------|--------------|
 | CONSTITUTION.md | Project root | constitution, promote | all |
-| increment.md | `.4dc/current/` | increment | implement |
-| notes.md | `.4dc/current/` | implement | implement |
-| learnings.md | `.4dc/current/` | implement | promote |
-| ADRs | per CONSTITUTION.md | promote | reflect |
+| increment.md | `.4dc/` | increment | design, implement |
+| design.md | `.4dc/` | design | implement, promote |
+| notes.md | `.4dc/` | implement | implement |
+| learnings.md | `.4dc/` | implement | promote |
+| docs/domain.md | `docs/` | promote | design, implement, promote |
+| docs/architecture.md | `docs/` | promote | design, implement, promote |
+| docs/DESIGN.md | `docs/` | promote | implement, promote |
+| ADRs | per CONSTITUTION.md | promote | promote |
 | API contracts | per CONSTITUTION.md | promote | - |
 
 ### 3.7 Lifecycle Consistency
 
 | Rule | Check |
 |------|-------|
-| `.4dc/current/` is temporary (deleted after merge) | ☐ |
+| `.4dc/` is temporary (deleted after merge) | ☐ |
 | CONSTITUTION.md is permanent (evolves) | ☐ |
 | ADRs are permanent | ☐ |
 | Prompts reference artifacts consistently | ☐ |
@@ -187,14 +189,14 @@ Run through each prompt and verify:
 - [ ] All required sections present
 - [ ] Asks about artifact layout (where ADRs, API docs live)
 - [ ] STOP 1 and STOP 2 clearly labeled
-- [ ] No hardcoded paths except `.4dc/current/`
+- [ ] No hardcoded paths except `.4dc/`
 - [ ] No mention of modes
 
 ### 4.2 increment.prompt.md
 - [ ] Frontmatter has argument-hint for user story
 - [ ] All required sections present
 - [ ] Reads CONSTITUTION.md
-- [ ] Creates `.4dc/current/increment.md`
+- [ ] Creates `.4dc/increment.md`
 - [ ] Has STOP 1, STOP AC, STOP UC, STOP 2
 - [ ] Slices into deliverables
 - [ ] No technical implementation details
@@ -210,22 +212,22 @@ Run through each prompt and verify:
 - [ ] Promotion checks every 5-10 cycles
 - [ ] Creates learnings.md and notes.md
 
-### 4.4 promote.prompt.md
+### 4.4 design.prompt.md
 - [ ] Frontmatter correct (no argument-hint)
 - [ ] All required sections present
-- [ ] Reads learnings.md
-- [ ] Decision tree for each learning type
-- [ ] Drafts exact content before writing
-- [ ] Confirms deletion of .4dc/current/
-- [ ] References CONSTITUTION.md for artifact paths
+- [ ] Reads CONSTITUTION.md, `.4dc/increment.md`, `docs/domain.md`, `docs/architecture.md`
+- [ ] STOP D1 (ubiquitous language), D2 (tactical DDD), D3 (C4), D4 (final approval)
+- [ ] Produces Mermaid diagrams
+- [ ] Creates `.4dc/design.md`
 
-### 4.5 reflect.prompt.md
+### 4.5 promote.prompt.md
 - [ ] Frontmatter correct (no argument-hint)
 - [ ] All required sections present
-- [ ] 8 quality lenses defined IN prompt
-- [ ] STOP 1 and STOP 2 clearly labeled
-- [ ] Outputs increment ideas (not just reports)
-- [ ] Refactorings scoped to single increment
+- [ ] Reads learnings.md and design.md
+- [ ] Decision tree for each learning type (domain.md, architecture.md, docs/DESIGN.md, CONSTITUTION, ADR, API, README)
+- [ ] Drafts exact content before writing
+- [ ] Confirms deletion of `.4dc/`
+- [ ] References CONSTITUTION.md for artifact paths
 
 ---
 

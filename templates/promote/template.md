@@ -2,31 +2,27 @@
 name: 4dc-promote
 title: Promote learnings to permanent documentation
 description: Before merging, ensure important learnings become permanent docs, then delete working context
-version: {{VERSION}}
-generatedAt: {{GENERATED_AT}}
+version: "{{VERSION}}"
+generatedAt: "{{GENERATED_AT}}"
 source: {{SOURCE_URL}}
 ---
 
 # Prompt: Promote Learnings
 
-You are going to help the user promote important learnings to permanent documentation before merging, then safely delete the ephemeral increment context.
+You are going to help the user promote learnings back into the permanent high-level picture on main—updating domain model, architecture, and architectural decisions—then safely delete the ephemeral increment context.
 
 ---
 
 ## Core Purpose
 
-Before merging, ensure important learnings become permanent documentation, then safely delete ephemeral increment context.
+After each increment cycle, promote learnings back to the permanent high-level picture on main: domain model, architecture diagrams, architectural decisions, and design patterns. Then safely delete ephemeral increment context.
 
 ---
 
 ## Execution Contract
 
 - **Autonomy policy**: Evaluate each learning proactively, but do not write or delete anything without explicit confirmation.
-- **Tool policy**: Read source artifacts before recommending promotion destinations.
-- **Conflict policy**:
-   - For destination conflicts, prioritize confirmed user scope, then `CONSTITUTION.md` artifact layout, then existing docs conventions.
-   - For cleanup conflicts, never delete `.4dc/current/` without explicit confirmation.
-- **Status vocabulary**: Use only `Not started`, `In progress`, and `Done` for learning dispositions, promotion progress, and cleanup status.
+{{SHARED:execution-contract}}
 - **Stop conditions**: This prompt is complete only when all selected promotions are written with confirmation and **Final Cleanup Approval** is explicitly resolved.
 
 ---
@@ -55,8 +51,12 @@ You care about:
 
 Before promoting, read:
 
-- `.4dc/current/learnings.md` (populated by implement prompt)
+- `.4dc/learnings.md` (populated by implement prompt)
+- `.4dc/design.md` (design decisions from the design phase, if exists)
 - `CONSTITUTION.md` (to see current structure, sections, and **artifact layout**)
+- `docs/domain.md` (existing domain model)
+- `docs/architecture.md` (existing C4 architecture diagrams)
+- `docs/DESIGN.md` (existing emergent architecture documentation)
 - Existing ADRs (location per CONSTITUTION.md)
 - Existing API contracts (location per CONSTITUTION.md)
 - `README.md` (to check if project scope changed)
@@ -70,15 +70,17 @@ For each learning in `learnings.md`:
 1. Ask WHERE it should go.
 2. Draft the addition (show exact placement).
 3. Wait for confirmation before writing.
-4. After all promotions: confirm deletion of `.4dc/current/`.
+4. After all promotions: confirm deletion of `.4dc/`.
 
 **Outputs:**
 - Updates to `CONSTITUTION.md` (if architectural decisions)
-- Updates to `DESIGN.md` (emergent architecture documentation)
+- Updates to `docs/DESIGN.md` (emergent architecture documentation)
+- Updates to `docs/domain.md` (if domain model changed)
+- Updates to `docs/architecture.md` (if C4 architecture changed)
 - New ADRs (location per CONSTITUTION.md artifact layout)
 - New API contracts (location per CONSTITUTION.md artifact layout)
 - Updates to `README.md` (if project scope changed)
-- Confirmation to delete `.4dc/current/`
+- Confirmation to delete `.4dc/`
 
 Do not include:
 - Silent writes without explicit confirmation.
@@ -120,8 +122,11 @@ Completion checklist:
 
 1. **Parse Learnings File**
 
-   Read `.4dc/current/learnings.md` and identify:
+   Read `.4dc/learnings.md` and identify:
    - CONSTITUTION updates
+   - docs/domain.md updates (from design divergences)
+   - docs/architecture.md updates (from design divergences)
+   - docs/DESIGN.md updates
    - ADRs to create
    - API contracts to add
    - Backlog items
@@ -130,10 +135,13 @@ Completion checklist:
 
    List all learnings found:
    - "[N] potential CONSTITUTION updates"
+   - "[N] potential domain model updates"
+   - "[N] potential architecture diagram updates"
+   - "[N] potential docs/DESIGN.md updates"
    - "[N] potential ADRs"
    - "[N] potential API contracts"
    - "[N] backlog items"
-   - For each, include source reference from `.4dc/current/learnings.md`.
+   - For each, include source reference from `.4dc/learnings.md`.
 
 ### Phase 2 – Promotion Decisions (For Each Learning)
 
@@ -141,43 +149,57 @@ Completion checklist:
 
    Use this decision tree:
 
-   **Question 1: Should this go in CONSTITUTION.md?**
+   **Question 1: Should this update `docs/domain.md`?**
+   - Did the domain model change? (new aggregate, renamed concept, new event, shifted boundary?)
+   - Did the Ubiquitous Language gain or lose terms?
+   - Did the bounded context responsibilities shift?
+   
+   → If yes: Draft updated section in `docs/domain.md`, show exact placement.
+
+   **Question 2: Should this update `docs/architecture.md`?**
+   - Did the C4 structure change? (new container, new component, changed relationship?)
+   - Did the system boundary expand or contract?
+   - Did the implementation diverge from `.4dc/design.md` in a way that changes the C4 picture?
+   
+   → If yes: Draft updated Mermaid diagram in `docs/architecture.md`, show exact placement.
+
+   **Question 3: Should this go in CONSTITUTION.md?**
    - Does it affect how future increments work?
    - Is it a recurring architectural decision?
    - Will it guide daily development choices?
    
    → If yes: Draft addition, show section placement.
 
-   **Question 2: Should this be an ADR?**
+   **Question 4: Should this be an ADR?**
    - Is the decision non-obvious?
    - Will someone wonder "why did they do it this way?"
    - Are there significant trade-offs to document?
    
    → If yes: Draft ADR using template.
 
-   **Question 3: Should this be an API contract?**
+   **Question 5: Should this be an API contract?**
    - Is this a public interface?
    - Does it need versioning/documentation?
    - Will other systems depend on it?
    
    → If yes: Draft OpenAPI/JSON Schema, place per CONSTITUTION.md artifact layout.
 
-   **Question 4: Should this update README?**
+   **Question 6: Should this update README?**
    - Did the project's purpose or scope change?
    - Is there new setup/usage information?
    - Would a new user need to know this?
    
    → If yes: Draft README section addition.
 
-   **Question 5: Should this update DESIGN.md?**
+   **Question 7: Should this update `docs/DESIGN.md`?**
    - Did a new architectural pattern emerge from TDD?
    - Did the module/package structure evolve?
    - Are there design decisions that emerged (not planned upfront)?
    - Would this help future developers understand the "why" behind the structure?
    
-   → If yes: Draft addition to DESIGN.md (see DESIGN.md Template below).
+   → If yes: Draft addition to `docs/DESIGN.md` (see docs/DESIGN.md Template below).
 
-   **Question 6: Is this a backlog item?**
+   **Question 8: Is this a backlog item?**
    - Future work not ready to commit?
    - Nice-to-have improvement?
    - Technical debt to address later?
@@ -244,8 +266,11 @@ Completion checklist:
 
    Only after explicit confirmation:
    - Update `CONSTITUTION.md` with additions.
+   - Update `docs/domain.md` if domain model changed.
+   - Update `docs/architecture.md` if C4 architecture changed.
    - Create new ADR files.
    - Create new API contract files.
+   - Update `docs/DESIGN.md` if emergent patterns documented.
    - Update `README.md` if applicable.
 
 ### Phase 5 – Cleanup
@@ -254,6 +279,9 @@ Completion checklist:
 
    Present summary of what was promoted:
    - "Updated CONSTITUTION.md: [sections]"
+   - "Updated docs/domain.md: [sections]"
+   - "Updated docs/architecture.md: [diagrams]"
+   - "Updated docs/DESIGN.md: [sections]"
    - "Created ADRs: [files]"
    - "Created API contracts: [files]"
    - "Updated README.md: [sections]"
@@ -261,7 +289,7 @@ Completion checklist:
 
 9. **Confirm Deletion → STOP**
 
-   Ask: "All learnings promoted. Ready to delete `.4dc/current/`?"
+   Ask: "All learnings promoted. Ready to delete `.4dc/`?"
    
    Wait for explicit "yes" before proceeding.
 
@@ -276,7 +304,7 @@ Completion checklist:
 
     After confirmation, instruct user to run:
     
-    `rm -rf .4dc/current/`
+    `rm -rf .4dc/`
     
     Then commit changes:
     
@@ -285,9 +313,9 @@ Completion checklist:
 
 ---
 
-## DESIGN.md Template
+## docs/DESIGN.md Template
 
-The `DESIGN.md` file documents **emergent architecture**—patterns and structures that emerged through TDD, not planned upfront. It evolves after each increment.
+The `docs/DESIGN.md` file documents **emergent architecture**—patterns and structures that emerged through TDD, not planned upfront. It evolves after each increment.
 
 ```markdown
 # Design (Emergent)
@@ -323,7 +351,7 @@ The `DESIGN.md` file documents **emergent architecture**—patterns and structur
 | YYYY-MM-DD | [increment name] | [what emerged] |
 ```
 
-**Key principle**: DESIGN.md is **retrospective**, not prescriptive. It documents what TDD discovered, not what was planned.
+**Key principle**: `docs/DESIGN.md` is **retrospective**, not prescriptive. It documents what TDD discovered, not what was planned.
 
 ---
 
@@ -411,13 +439,13 @@ Present as (using path from CONSTITUTION.md artifact layout):
 > 
 > Confirm? [yes/no]
 
-### DESIGN.md Update Example
+### docs/DESIGN.md Update Example
 
 Learning: "State machine pattern emerged for timer transitions"
 
 Present as:
 
-> ## Proposed Addition to DESIGN.md
+> ## Proposed Addition to docs/DESIGN.md
 >
 > ### Section: Patterns Discovered
 >
@@ -480,7 +508,7 @@ When promoting learnings, do NOT:
 - **Assume promotion location**: Ask about each learning
 - **Write without confirmation**: Wait for explicit "yes"
 - **Skip backlog items**: Suggest GitHub issues for future work
-- **Leave working context**: Confirm deletion of `.4dc/current/`
+- **Leave working context**: Confirm deletion of `.4dc/`
 - **Include meta-commentary**: Promoted docs read as team-written
 - **Batch decisions**: Handle each learning individually
 
@@ -507,13 +535,13 @@ When promoting learnings, do NOT:
 - "Did the project's purpose change?"
 - "Is there new setup information?"
 
-**For DESIGN.md updates:**
+**For docs/DESIGN.md updates:**
 - "Did any architectural pattern emerge from TDD that wasn't planned?"
-- "Did the module structure evolve? Should DESIGN.md reflect the new shape?"
+- "Did the module structure evolve? Should `docs/DESIGN.md` reflect the new shape?"
 - "Would a future developer wonder 'why is it structured this way?'"
 
 **For cleanup:**
-- "All learnings promoted. Ready to delete .4dc/current/?"
+- "All learnings promoted. Ready to delete .4dc/?"
 
 ---
 
@@ -527,18 +555,13 @@ Before finalizing promotions, internally check:
 
 2. **Complete Capture**
    - Are any important learnings being skipped?
-   - Is anything going to be lost when `.4dc/current/` is deleted?
+   - Is anything going to be lost when `.4dc/` is deleted?
 
 3. **Clean Artifacts**
    - Do promoted docs read as team-written?
    - Is there any meta-commentary to remove?
 
-4. **Check for Contradictions**
-   - Do promotion recommendations conflict with `CONSTITUTION.md` artifact layout?
-   - Are summary claims consistent with what was actually confirmed and written?
-
-5. **Keep critique invisible**
-   - Don't mention this process in promoted docs.
+{{SHARED:self-critique-tail}}
 
 ---
 
@@ -582,15 +605,29 @@ Promotion status: In progress
 ```markdown
 Promotions are Done.
 Cleanup status: In progress
-Please confirm deletion of .4dc/current/.
+Please confirm deletion of .4dc/.
 ```
 
 ---
 
 ## Communication Style
 
-- **Outcome-first**: "Found 3 learnings to promote."
-- **Specific**: Show exact content and placement.
-- **Confirming**: "Confirm?" and wait.
-- **Clean**: "Ready to delete .4dc/current/?"
-- **No filler**: Skip acknowledgment phrases.
+{{SHARED:communication-style}}
+
+- **Specific**: Show exact content and placement for every promoted item.
+- **Confirming**: Draft first, then "Confirm?" — never write without explicit approval.
+- **Clean**: End with "Ready to delete `.4dc/`?" once all promotions are done.
+
+---
+
+## Prompt Eval
+
+Use these checks when assessing the quality of this prompt's outputs:
+
+- **Completeness**: Every learning in `.4dc/learnings.md` has an explicit disposition (promote, defer, or discard).
+- **Determinism**: The same learnings produce the same promotion destinations without variance.
+- **Actionability**: Every promoted item shows exact placement (file path and section).
+- **Scope control**: No content was written to permanent docs without explicit user confirmation.
+- **Status fidelity**: All status fields use `Not started` / `In progress` / `Done` only.
+- **Nothing lost**: All learnings are accounted for; nothing was silently skipped.
+- **Clean artifacts**: No meta-commentary, LLM references, or process documentation appears in promoted content.
