@@ -1,79 +1,45 @@
-# todo – Example
+# Todo Example
 
-This example walks through the 4dc workflow for a simple CLI todo tool written in bash.
+This example demonstrates the first shippable slice of the mobile todo app:
 
-It demonstrates the **design step** inserted between `increment` and `implement`, and shows how `promote` pushes learnings back to `docs/` on main.
+- Render todos from bundled sample data.
+- Enforce strict state values: `open`, `active`, `completed`.
+- Fail fast on invalid state values.
+- Provide browser-native behavior tests without external dependencies.
 
----
+## Files
 
-## Workflow Walkthrough
+- `index.html`: app page shell and DOM anchors.
+- `sample-data.js`: deterministic seed dataset.
+- `app.js`: validation, rendering, and lightweight logging.
+- `styles.css`: brutalist visual system for mobile UI.
+- `tests.html`: browser test runner page.
+- `tests.js`: test suite for rendering, validation, and logging behavior.
 
-### Step 1: Constitution
+## Run Locally
 
-`CONSTITUTION.md` establishes:
-- Pure bash, single file, no dependencies
-- Fail-fast validation
-- File-backed storage at `~/.todo/tasks.csv`
-- `docs/` layout for permanent knowledge
+1. Open `index.html` in a browser.
+2. Verify the list renders three seeded items.
+3. Open `tests.html` in a browser.
+4. Confirm all tests pass.
 
-### Step 2: Increment
+## Guaranteed Behavior in this Increment
 
-`.4dc/increment.md` was produced for the first feature: **Add Task**.
+- Only states `open`, `active`, and `completed` are accepted.
+- Any invalid state throws an explicit error and stops rendering.
+- Empty dataset shows an empty-state message.
+- A `list-load` log entry is written with the rendered item count.
+- Users can add new todo items via form input above the list.
+- New todos always start with state `open`.
+- New todos persist across page reloads via localStorage.
+- Empty or >256 character titles are rejected with error message.
+- Input field is cleared after successful add.
 
-Key outputs:
-- 4 acceptance criteria (add with defaults, add with priority, error on missing title, list)
-- 4 greppable test stubs (e.g. `TestAdd_GivenTitle_WhenAdd_ThenStoredWithDefaults`)
-- 2 deliverables: storage+add, then list
+## Scope Boundaries
 
-### Step 3: Design
+Out of scope for this increment:
 
-`.4dc/design.md` was produced before any code was written.
+- Edit, delete, or toggle todo items.
+- Filtering.
 
-Key outputs:
-- **Ubiquitous Language**: Task, Title, Status, Priority, Task Store, Id
-- **Bounded Context**: Task Management (single context)
-- **Domain Model**: Task aggregate (Mermaid class diagram), Status + Priority as value objects, TaskAdded event
-- **C4 diagrams**: Context (user → todo.sh → filesystem), Container (todo.sh + tasks.csv), Component (router, validator, store-rw, id-gen)
-- **Design decisions**: CSV storage rationale, sequential id, subcommand routing via case/esac
-- **Open questions**: sort order for list, created_at format
-
-### Step 4: Implement (TDD)
-
-Implementation followed the design. Learnings captured in `.4dc/learnings.md`:
-- Validate-then-mutate pattern → `docs/DESIGN.md`
-- Store-on-demand creation pattern → `docs/DESIGN.md`
-- CSV format decision → `docs/adr/`
-
-### Step 5: Promote
-
-Promote pushed learnings back to `docs/`:
-- `docs/domain.md` ← domain model from `.4dc/design.md`
-- `docs/architecture.md` ← C4 diagrams from `.4dc/design.md`
-- `docs/DESIGN.md` ← emergent patterns from TDD
-
-Then `.4dc/` was deleted.
-
----
-
-## Files in This Example
-
-```
-examples/todo/
-├── CONSTITUTION.md             # Project foundation
-├── README.md                   # This file
-├── docs/
-│   ├── domain.md               # Promoted DDD model
-│   ├── architecture.md         # Promoted C4 diagrams
-│   └── DESIGN.md               # Promoted emergent architecture
-└── .4dc/                       # Ephemeral (gitignored in real projects)
-    ├── increment.md            # Shown here for illustration
-    └── design.md               # Shown here for illustration
-```
-
-> In a real project, `.4dc/` is gitignored and deleted after merge. It is kept here only to show what the design session produced.
-
----
-
-## Key Takeaway
-
-Main branch holds the high-level picture (`CONSTITUTION.md`, `docs/`). `.4dc/` holds only the ephemeral working context for the active increment. Promote is the bridge that keeps the two in sync.
+These behaviors are intentionally deferred to later increments.

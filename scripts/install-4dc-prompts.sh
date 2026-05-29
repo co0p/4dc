@@ -10,7 +10,7 @@ BRANCH="main"
 PROMPT_FILES=(
   "constitution.prompt.md"
   "increment.prompt.md"
-  "design.prompt.md"
+  "plan.prompt.md"
   "implement.prompt.md"
   "promote.prompt.md"
 )
