@@ -1,5 +1,13 @@
 Best high-signal sources to refine 4dc prompts for GPT-5 Codex and Claude Sonnet:
 
+XP-aligned engineering sources to pair with prompt-engineering references:
+
+0. Kent Beck - Extreme Programming Explained: Embrace Change (book)
+Why: Primary XP source for planning game, small releases, test-first development, simple design, refactoring, and sustainable pace.
+
+0.5 Martin Fowler - Refactoring (book + catalog)
+Why: Practical refactoring guidance that maps directly to Red -> Green -> Refactor flow enforcement.
+
 1. OpenAI GPT-5 Prompting Guide (most practical, agentic-focused)
 - https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide  
 Why: Covers controlling agent eagerness, tool preambles, reasoning effort, instruction conflict cleanup, and coding-specific prompt patterns.

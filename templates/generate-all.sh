@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generate all prompt files from template.md in each folder.
+# Generate all prompt files from root-level templates.
 #
 # Usage (from repo root):
 #   ./templates/generate-all.sh
@@ -9,7 +9,7 @@ set -euo pipefail
 # Output files are written to the repo root:
 #   - constitution.prompt.md
 #   - increment.prompt.md
-#   - design.prompt.md
+#   - plan.prompt.md
 #   - implement.prompt.md
 #   - promote.prompt.md
 
@@ -41,6 +41,26 @@ splice_shared() {
   printf '%s' "$content"
 }
 
+# Splice root template blocks: replace {{TEMPLATE:name}} with contents of templates/name.md
+splice_templates() {
+  local content
+  content="$(cat)"
+  local marker fragment path
+  while IFS= read -r marker; do
+    fragment="${marker#\{\{TEMPLATE:}"
+    fragment="${fragment%\}\}}"
+    path="${SCRIPT_DIR}/${fragment}.md"
+    if [ -f "$path" ]; then
+      local replacement
+      replacement="$(cat "$path")"
+      content="${content//${marker}/${replacement}}"
+    else
+      echo "!!! Template block not found: $path" >&2
+    fi
+  done < <(echo "$content" | grep -o '{{TEMPLATE:[^}]*}}' | sort -u)
+  printf '%s' "$content"
+}
+
 # Replace template variables
 render() {
   sed -e "s/{{VERSION}}/${COMMIT_HASH}/g" \
@@ -51,12 +71,12 @@ render() {
 # Generate a prompt from template.md
 generate_prompt() {
   local name="$1"
-  local template="${SCRIPT_DIR}/${name}/template.md"
+  local template="${SCRIPT_DIR}/${name}.md"
   local output="${ROOT_DIR}/${name}.prompt.md"
 
   if [ -f "$template" ]; then
     echo "Generating ${name}.prompt.md..."
-    splice_shared < "$template" | render > "$output"
+    splice_shared < "$template" | splice_templates | render > "$output"
     echo "  Wrote: $output"
   else
     echo "!!! Skipping $name: $template not found" >&2
@@ -66,8 +86,8 @@ generate_prompt() {
 # Generate all prompts
 generate_prompt "constitution"
 generate_prompt "increment"
+generate_prompt "plan"
 generate_prompt "implement"
-generate_prompt "design"
 generate_prompt "promote"
 
 echo

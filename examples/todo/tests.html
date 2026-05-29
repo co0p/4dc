@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo Browser Tests</title>
+  <style>
+    body { font-family: ui-monospace, Menlo, monospace; margin: 16px; background: #0f0f0f; color: #f4f4f4; }
+    .ok { color: #8dd694; }
+    .fail { color: #ff8a80; }
+    .summary { margin-bottom: 12px; font-weight: 700; }
+    #fixture { margin-top: 16px; border: 1px solid #424242; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Todo Browser Tests</h1>
+  <div id="summary" class="summary">Running...</div>
+  <ol id="results"></ol>
+
+  <div id="fixture">
+    <p id="error-state" hidden></p>
+    <p id="empty-state" hidden>No todos available.</p>
+    <ul id="todo-list"></ul>
+  </div>
+
+  <script src="sample-data.js"></script>
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+  <script src="tests.js"></script>
+</body>
+</html>

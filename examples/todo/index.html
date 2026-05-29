@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo - Example Data List</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell" aria-labelledby="app-title">
+    <header class="app-header">
+      <h1 id="app-title">Todo States</h1>
+      <p class="app-subtitle">Example data rendering baseline</p>
+    </header>
+
+    <section class="panel add-todo-panel" aria-label="Add new todo">
+      <h2 class="add-todo-heading">Add Todo</h2>
+      <form id="add-todo-form" class="add-todo-form">
+        <label for="todo-input" class="add-todo-label">Todo title:</label>
+        <input 
+          type="text" 
+          id="todo-input" 
+          class="add-todo-input"
+          maxlength="256"
+          required
+          aria-describedby="add-error"
+        >
+        <button type="submit" id="add-todo-btn" class="add-todo-btn">Add</button>
+      </form>
+      <p id="add-error" class="error-state" role="alert" hidden></p>
+    </section>
+
+    <section class="panel" aria-label="Todo list panel">
+      <p id="error-state" class="error-state" role="alert" hidden></p>
+      <p id="empty-state" class="empty-state" hidden>No todos available.</p>
+      <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+    </section>
+  </main>
+
+  <script src="sample-data.js"></script>
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      try {
+        window.TodoApp.start({
+          listElementId: "todo-list",
+          emptyElementId: "empty-state",
+          errorElementId: "error-state"
+        });
+      } catch (err) {
+        var errorEl = document.getElementById("error-state");
+        if (errorEl) {
+          errorEl.textContent = err.message;
+          errorEl.hidden = false;
+        }
+      }
+
+      var addForm = document.getElementById("add-todo-form");
+      var addInput = document.getElementById("todo-input");
+      var addError = document.getElementById("add-error");
+
+      if (addForm && addInput) {
+        addForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var title = addInput.value.trim();
+
+          try {
+            window.TodoApp.addTodo(title, {
+              listElement: document.getElementById("todo-list"),
+              emptyElement: document.getElementById("empty-state"),
+              errorElement: document.getElementById("error-state")
+            });
+
+            addInput.value = "";
+            if (addError) {
+              addError.textContent = "";
+              addError.hidden = true;
+            }
+          } catch (err) {
+            if (addError) {
+              addError.textContent = err.message;
+              addError.hidden = false;
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
