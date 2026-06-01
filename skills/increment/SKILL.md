@@ -1,7 +1,7 @@
 ---
 name: 4dc-increment
 argument-hint: "short increment intent, e.g. 'feature: export weekly summary'"
-description: "Use after CONSTITUTION.md exists and before any implementation. Defines the next narrow, testable changeset — WHAT and WHY only, no technical detail."
+description: "Use after CONSTITUTION.md exists and before any implementation. Defines the next narrow, testable behavior change — WHAT and WHY only, no technical detail."
 ---
 
 # Increment Skill
@@ -45,8 +45,6 @@ One increment per cycle — if scope expands, split into separate increments.
 3. **Generate `.agent/increment-review.html`** — show proposed increment definition
 4. **STOP** — wait for explicit approval or revision requests
 5. **On approval** — write `.agent/increment.md`
-
-{{TEMPLATE:html}}
 
 ---
 

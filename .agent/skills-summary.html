@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4dc Skills Summary</title>
+  <style>
+    :root {
+      --bg: #f4f3ef;
+      --panel: #ffffff;
+      --ink: #111111;
+      --accent: #1a56db;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --line: #1b1b1b;
+      --radius: 4px;
+      --green: #166534;
+      --green-bg: #dcfce7;
+      --amber: #92400e;
+      --amber-bg: #fef3c7;
+      --blue: #1e3a8a;
+      --blue-bg: #dbeafe;
+      --purple: #4c1d95;
+      --purple-bg: #ede9fe;
+      --red: #7f1d1d;
+      --red-bg: #fee2e2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", "Segoe UI", -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    header {
+      border-bottom: 2px solid var(--line);
+      background: var(--panel);
+      padding: 20px 32px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    header h1 { font-size: 1.4rem; font-weight: 800; }
+    header .sub { color: var(--muted); font-size: 0.88rem; }
+
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 0;
+      padding: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 2px solid var(--line);
+      background: var(--panel);
+      padding: 20px 16px;
+    }
+    nav h2 {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 7px 8px;
+      border-radius: var(--radius);
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+      transition: background 0.1s;
+    }
+    nav a:hover { background: var(--bg); }
+    nav a .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    nav .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    main { padding: 32px; }
+
+    .ideology {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .ideology h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 12px; }
+    .ideology p { color: #333; margin-bottom: 10px; }
+    .ideology p:last-child { margin-bottom: 0; }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .pillar {
+      border: 1.5px solid var(--border);
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--bg);
+    }
+    .pillar strong { display: block; font-size: 0.82rem; font-weight: 800; margin-bottom: 4px; }
+    .pillar span { font-size: 0.82rem; color: var(--muted); }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 110px;
+    }
+    .flow-step .badge {
+      padding: 6px 14px;
+      border: 2px solid var(--line);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .flow-step .artifact {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: "JetBrains Mono", Menlo, monospace;
+      text-align: center;
+    }
+    .flow-arrow {
+      font-size: 1.2rem;
+      color: var(--muted);
+      padding: 0 4px;
+      flex-shrink: 0;
+      margin-top: -14px;
+    }
+
+    .skill-card {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      margin-bottom: 28px;
+      scroll-margin-top: 16px;
+    }
+    .skill-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 2px solid var(--line);
+    }
+    .skill-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .skill-header-text h3 {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+    .skill-header-text .name-tag {
+      font-size: 0.75rem;
+      font-family: "JetBrains Mono", Menlo, monospace;
+      color: var(--muted);
+    }
+
+    .skill-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+    .skill-col {
+      padding: 16px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .skill-col:last-child { border-right: none; }
+    .skill-col h4 {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .skill-col ul {
+      list-style: none;
+      padding: 0;
+    }
+    .skill-col ul li {
+      font-size: 0.84rem;
+      padding: 3px 0;
+      display: flex;
+      gap: 6px;
+    }
+    .skill-col ul li::before { content: "→"; color: var(--muted); flex-shrink: 0; }
+
+    .persona-block {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 0.84rem;
+    }
+    .persona-block strong { font-weight: 800; }
+
+    .hard-gate {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: #7f1d1d;
+      background: #fff5f5;
+    }
+    .hard-gate strong { font-weight: 800; }
+    .hard-gate ul { list-style: none; padding: 0; margin-top: 4px; }
+    .hard-gate ul li { padding: 2px 0; }
+    .hard-gate ul li::before { content: "✗ "; font-weight: 700; }
+
+    .handoff {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      display: flex;
+      gap: 24px;
+      background: var(--panel);
+    }
+    .handoff span { color: var(--muted); }
+    .handoff code {
+      font-family: "JetBrains Mono", Menlo, monospace;
+      font-size: 0.78rem;
+      background: var(--bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      nav { position: static; height: auto; border-right: none; border-bottom: 2px solid var(--line); }
+      .skill-body { grid-template-columns: 1fr; }
+      .skill-col { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>4dc Skills</h1>
+  <span class="sub">Role, persona &amp; SDLC ideology — generated 2026-05-29</span>
+</header>
+
+<div class="layout">
+
+  <nav>
+    <h2>Jump to</h2>
+    <a href="#ideology"><span class="dot" style="background:#6b7280"></span>Ideology</a>
+    <a href="#flow"><span class="dot" style="background:#6b7280"></span>Cycle flow</a>
+    <hr class="divider">
+    <a href="#constitution"><span class="dot" style="background:#1a56db"></span>constitution</a>
+    <a href="#increment"><span class="dot" style="background:#166534"></span>increment</a>
+    <a href="#plan"><span class="dot" style="background:#92400e"></span>plan</a>
+    <a href="#implement"><span class="dot" style="background:#4c1d95"></span>implement</a>
+    <a href="#promote"><span class="dot" style="background:#7f1d1d"></span>promote</a>
+  </nav>
+
+  <main>
+
+    <!-- IDEOLOGY -->
+    <section class="ideology" id="ideology">
+      <h2>Underlying SDLC Ideology</h2>
+      <p>
+        4dc is a <strong>four-discipline cycle</strong> grounded in Extreme Programming (XP), Lean Software Development, and use-case thinking.
+        Each discipline is a hard boundary: no phase bleeds into the next, and no phase is skipped.
+        The agent never guesses intent — it reads artifacts.
+      </p>
+      <p>
+        The core bet is that <em>premature implementation is the root cause of most rework</em>.
+        By separating WHAT (increment), HOW (plan), and EXECUTION (implement), the cycle forces clarity before commitment.
+        The <strong>promote</strong> discipline ensures nothing durable is lost in a transient working directory.
+      </p>
+      <div class="pillars">
+        <div class="pillar">
+          <strong>YAGNI</strong>
+          <span>Build only what the current increment requires. No speculative work.</span>
+        </div>
+        <div class="pillar">
+          <strong>Evidence over claims</strong>
+          <span>No phase is complete without an observable artifact or test result.</span>
+        </div>
+        <div class="pillar">
+          <strong>Forward-only change</strong>
+          <span>No backward compatibility unless explicitly requested. Always the next safe step.</span>
+        </div>
+        <div class="pillar">
+          <strong>One question at a time</strong>
+          <span>Focused discovery. Broad questionnaires are anti-patterns.</span>
+        </div>
+        <div class="pillar">
+          <strong>Red → Green → Refactor</strong>
+          <span>No production code before a failing test. No skip of the refactor pass.</span>
+        </div>
+        <div class="pillar">
+          <strong>Handoff contracts</strong>
+          <span>Files are the source of truth between phases, not memory or conversation.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLOW -->
+    <section id="flow">
+      <div class="flow">
+        <div class="flow-step">
+          <div class="badge" style="background:#dbeafe;border-color:#1a56db;color:#1e3a8a">constitution</div>
+          <div class="artifact">CONSTITUTION.md</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="badge" style="background:#dcfce7;border-color:#166534;color:#166534">increment</div>
+          <div class="artifact">.agent/increment.md</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="badge" style="background:#fef3c7;border-color:#92400e;color:#92400e">plan</div>
+          <div class="artifact">.agent/plan.md</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="badge" style="background:#ede9fe;border-color:#4c1d95;color:#4c1d95">implement</div>
+          <div class="artifact">.agent/implementation.md</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="badge" style="background:#fee2e2;border-color:#7f1d1d;color:#7f1d1d">promote</div>
+          <div class="artifact">docs/ · CONSTITUTION.md</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONSTITUTION -->
+    <section class="skill-card" id="constitution">
+      <div class="skill-header">
+        <div class="skill-icon" style="background:#dbeafe;border-color:#1a56db">📜</div>
+        <div class="skill-header-text">
+          <h3>constitution</h3>
+          <div class="name-tag">name: 4dc-constitution</div>
+        </div>
+      </div>
+      <div class="skill-body">
+        <div class="skill-col">
+          <h4>Role</h4>
+          <ul>
+            <li>Establishes durable project guardrails</li>
+            <li>Runs once per project; revisited when rules break down</li>
+            <li>Produces the law that every other skill operates under</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Input → Output</h4>
+          <ul>
+            <li>README, existing docs, project structure</li>
+            <li>3–5 focused questions per round</li>
+            <li>HTML review → approval → <code>CONSTITUTION.md</code></li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>SDLC Ideology</h4>
+          <ul>
+            <li>XP: team agreements before code</li>
+            <li>Lean: eliminate ambiguity upstream</li>
+            <li>Rules must be verifiable, not slogans</li>
+            <li>No generic copy-paste — every rule is project-specific</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-block">
+        <strong>Persona:</strong> Constitutional lawyer. Asks probing questions, synthesises constraints into enforceable rules, and refuses to write a law that can't be tested. Never prescribes implementation — only guardrails.
+      </div>
+      <div class="hard-gate">
+        <strong>Hard gates:</strong>
+        <ul>
+          <li>No CONSTITUTION.md until HTML review is explicitly approved</li>
+          <li>No implementation details in the output — guardrails, not recipes</li>
+          <li>No generic principles — every rule justified by project context</li>
+        </ul>
+      </div>
+      <div class="handoff">
+        <div><span>Produces: </span><code>CONSTITUTION.md</code></div>
+        <div><span>Unlocks: </span><code>skills/increment/SKILL.md</code></div>
+      </div>
+    </section>
+
+    <!-- INCREMENT -->
+    <section class="skill-card" id="increment">
+      <div class="skill-header">
+        <div class="skill-icon" style="background:#dcfce7;border-color:#166534">🎯</div>
+        <div class="skill-header-text">
+          <h3>increment</h3>
+          <div class="name-tag">name: 4dc-increment</div>
+        </div>
+      </div>
+      <div class="skill-body">
+        <div class="skill-col">
+          <h4>Role</h4>
+          <ul>
+            <li>Translates vague intent into a bounded, testable changeset</li>
+            <li>Defines WHAT and WHY — nothing else</li>
+            <li>Scope guard: splits anything too large</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Input → Output</h4>
+          <ul>
+            <li>CONSTITUTION.md + user intent (one sentence)</li>
+            <li>1–3 clarifying questions</li>
+            <li>HTML review → approval → <code>.agent/increment.md</code></li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>SDLC Ideology</h4>
+          <ul>
+            <li>XP: user stories with binary acceptance criteria</li>
+            <li>Lean: smallest shippable slice</li>
+            <li>Use-case thinking: observable user outcome</li>
+            <li>No technical vocabulary — pure behaviour</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-block">
+        <strong>Persona:</strong> Product analyst. Relentlessly scopes down, insists on measurable acceptance criteria, and refuses to let technical ideas contaminate the WHAT. If the slice is too large, splits it — no exceptions.
+      </div>
+      <div class="hard-gate">
+        <strong>Hard gates:</strong>
+        <ul>
+          <li>No technical design, file names, or code detail in increment.md</li>
+          <li>No vague acceptance criteria ("works correctly", "feels right")</li>
+          <li>One increment per cycle — excess scope is split, not squeezed in</li>
+        </ul>
+      </div>
+      <div class="handoff">
+        <div><span>Produces: </span><code>.agent/increment.md</code></div>
+        <div><span>Unlocks: </span><code>skills/plan/SKILL.md</code></div>
+      </div>
+    </section>
+
+    <!-- PLAN -->
+    <section class="skill-card" id="plan">
+      <div class="skill-header">
+        <div class="skill-icon" style="background:#fef3c7;border-color:#92400e">🗺</div>
+        <div class="skill-header-text">
+          <h3>plan</h3>
+          <div class="name-tag">name: 4dc-plan</div>
+        </div>
+      </div>
+      <div class="skill-body">
+        <div class="skill-col">
+          <h4>Role</h4>
+          <ul>
+            <li>Converts increment into ordered technical subtasks</li>
+            <li>Every subtask has a verification step</li>
+            <li>Maps each subtask to an acceptance criterion</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Input → Output</h4>
+          <ul>
+            <li>CONSTITUTION.md + increment.md + codebase scan</li>
+            <li>Risk identification before drafting</li>
+            <li>HTML review → approval → <code>.agent/plan.md</code></li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>SDLC Ideology</h4>
+          <ul>
+            <li>XP: planning game — tasks sized for one session</li>
+            <li>Lean: pull from acceptance criteria, not push from ideas</li>
+            <li>Full traceability: requirement → subtask → test</li>
+            <li>No code written — only intent and sequence</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-block">
+        <strong>Persona:</strong> Senior architect in planning mode. Reads the codebase before saying anything, surfaces risks, and writes subtasks precise enough that a junior can execute them without ambiguity. Stops before touching a file.
+      </div>
+      <div class="hard-gate">
+        <strong>Hard gates:</strong>
+        <ul>
+          <li>No code, no file edits during this phase</li>
+          <li>No subtask without a verification step</li>
+          <li>Every acceptance criterion must have a covering subtask</li>
+        </ul>
+      </div>
+      <div class="handoff">
+        <div><span>Produces: </span><code>.agent/plan.md</code></div>
+        <div><span>Unlocks: </span><code>skills/implement/SKILL.md</code></div>
+      </div>
+    </section>
+
+    <!-- IMPLEMENT -->
+    <section class="skill-card" id="implement">
+      <div class="skill-header">
+        <div class="skill-icon" style="background:#ede9fe;border-color:#4c1d95">⚙️</div>
+        <div class="skill-header-text">
+          <h3>implement</h3>
+          <div class="name-tag">name: 4dc-implement</div>
+        </div>
+      </div>
+      <div class="skill-body">
+        <div class="skill-col">
+          <h4>Role</h4>
+          <ul>
+            <li>Executes plan.md subtask by subtask</li>
+            <li>Enforces Red → Green → Refactor per subtask</li>
+            <li>Maintains live progress state; captures every deviation</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Input → Output</h4>
+          <ul>
+            <li>CONSTITUTION.md + increment.md + plan.md + test baseline</li>
+            <li>Subtask loop with evidence per step</li>
+            <li><code>.agent/implementation.md</code> + <code>.agent/learnings.md</code></li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>SDLC Ideology</h4>
+          <ul>
+            <li>XP: strict TDD — test first, always</li>
+            <li>Lean: minimal code to make test pass, then refactor</li>
+            <li>Evidence over claims: no "done" without test output</li>
+            <li>Continuous state: never batch-update progress</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-block">
+        <strong>Persona:</strong> Disciplined craftsperson. Follows the plan unless there is a documented reason not to, writes the failing test before touching production code, and records every surprise immediately. Does not claim completion without proof.
+      </div>
+      <div class="hard-gate">
+        <strong>Hard gates:</strong>
+        <ul>
+          <li>No production code before a failing test exists for that subtask</li>
+          <li>No subtask marked complete without objective evidence</li>
+          <li>No skipping or reordering subtasks without recording the reason</li>
+        </ul>
+      </div>
+      <div class="handoff">
+        <div><span>Produces: </span><code>.agent/implementation.md</code> (status: complete) + <code>.agent/learnings.md</code></div>
+        <div><span>Unlocks: </span><code>skills/promote/SKILL.md</code></div>
+      </div>
+    </section>
+
+    <!-- PROMOTE -->
+    <section class="skill-card" id="promote">
+      <div class="skill-header">
+        <div class="skill-icon" style="background:#fee2e2;border-color:#7f1d1d">📦</div>
+        <div class="skill-header-text">
+          <h3>promote</h3>
+          <div class="name-tag">name: 4dc-promote</div>
+        </div>
+      </div>
+      <div class="skill-body">
+        <div class="skill-col">
+          <h4>Role</h4>
+          <ul>
+            <li>Extracts durable knowledge from transient .agent/ files</li>
+            <li>Writes ADRs, updates docs, revises CONSTITUTION.md</li>
+            <li>Closes the cycle; cleans the working directory</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>Input → Output</h4>
+          <ul>
+            <li>All .agent/ artifacts + existing permanent docs</li>
+            <li>Per-candidate approval before any write</li>
+            <li>Permanent artifacts: ADRs, README, CONSTITUTION.md</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h4>SDLC Ideology</h4>
+          <ul>
+            <li>Lean: eliminate waste — only promote what's verified</li>
+            <li>XP: retrospective embedded in the delivery cycle</li>
+            <li>Knowledge management: transient → durable with traceability</li>
+            <li>.agent/ is scratchpad; docs/ is truth</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-block">
+        <strong>Persona:</strong> Librarian and retrospective facilitator. Reads everything, judges what's worth keeping, proposes each promotion with a destination and rationale, and only writes after explicit approval. Leaves the workspace clean.
+      </div>
+      <div class="hard-gate">
+        <strong>Hard gates:</strong>
+        <ul>
+          <li>No permanent doc written until that candidate is individually approved</li>
+          <li>No promotion of guesses or unverified plans — only what was built</li>
+          <li>No .agent/ cleanup until all promotions are confirmed written</li>
+        </ul>
+      </div>
+      <div class="handoff">
+        <div><span>Produces: </span><code>docs/adr/</code> · <code>CONSTITUTION.md</code> · <code>README.md</code> (as approved)</div>
+        <div><span>Cycle restart: </span><code>skills/increment/SKILL.md</code></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

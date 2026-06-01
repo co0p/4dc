@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4dc — Flow Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f3ef;
+      --panel: #ffffff;
+      --ink: #111111;
+      --accent: #1a56db;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 4px;
+    }
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, sans-serif;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    p.subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .diagram-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>4dc — Four Discipline Cycle</h1>
+<p class="subtitle">constitution → increment → plan → implement → promote</p>
+
+<div class="diagram-container">
+<pre class="mermaid">
+flowchart TD
+
+  %% ── CONSTITUTION ─────────────────────────────────────
+  subgraph CONSTITUTION["① CONSTITUTION"]
+    C1(("Read existing\nproject context"))
+    C2(("Define guardrails\n& Tidy First policy"))
+    CF1["constitution-review.html"]
+    CA{"Approved?"}
+    C3["CONSTITUTION.md"]
+    C1 --> C2 --> CF1 --> CA
+    CA -- "revise" --> C2
+    CA -- "yes" --> C3
+  end
+
+  %% ── INCREMENT ────────────────────────────────────────
+  subgraph INCREMENT["② INCREMENT"]
+    I1(("Read CONSTITUTION.md\n& prior learnings"))
+    I2(("Clarify behavior\nchange intent"))
+    IF1["increment-review.html"]
+    IA{"Approved?"}
+    I3["increment.md\n(goal + acceptance criteria)"]
+    I1 --> I2 --> IF1 --> IA
+    IA -- "revise" --> I2
+    IA -- "yes" --> I3
+  end
+
+  %% ── PLAN ─────────────────────────────────────────────
+  subgraph PLAN["③ PLAN"]
+    P1(("Read increment.md\n& codebase"))
+    P2{"Tidy First?\n(would it ease\nthe behavior change?)"}
+    PT[/"[tidy] subtasks\n(structural only)"/]
+    P3(("Draft [behavior]\nsubtasks"))
+    PF1["plan-review.html"]
+    PA{"Approved?"}
+    P4["plan.md\n([tidy] first, then [behavior])"]
+    P1 --> P2
+    P2 -- "yes — justify it" --> PT --> P3
+    P2 -- "no" --> P3
+    P3 --> PF1 --> PA
+    PA -- "revise" --> P3
+    PA -- "yes" --> P4
+  end
+
+  %% ── IMPLEMENT ────────────────────────────────────────
+  subgraph IMPLEMENT["④ IMPLEMENT"]
+    IM1(("Establish baseline\n(tests green)"))
+    IM2[/"[tidy] subtask\nstructural change only"/]
+    IM3(("Run tests"))
+    IM4{"Tests green?"}
+    IM5(("Commit separately\n(tidy commit)"))
+    IM6{"More [tidy]\nsubtasks?"}
+    IM7[/"[behavior] subtask\nconstrain AI context"/]
+    IM8(("Red — write\nfailing test"))
+    IM9(("Green — minimal\nimplementation"))
+    IM10(("Refactor —\nclean up"))
+    IM11(("Update\nimplementation.md"))
+    IM12{"More [behavior]\nsubtasks?"}
+    IMF1(("Final\nverification"))
+    IMF2{"All criteria\nmet?"}
+    IM13["implementation.md\nstatus: complete"]
+
+    IM1 --> IM2 --> IM3 --> IM4
+    IM4 -- "fix tidy" --> IM2
+    IM4 -- "green" --> IM5 --> IM6
+    IM6 -- "yes" --> IM2
+    IM6 -- "no" --> IM7
+    IM7 --> IM8 --> IM9 --> IM10 --> IM11 --> IM12
+    IM12 -- "yes" --> IM7
+    IM12 -- "no" --> IMF1 --> IMF2
+    IMF2 -- "gaps found" --> IM7
+    IMF2 -- "yes" --> IM13
+  end
+
+  %% ── PROMOTE ──────────────────────────────────────────
+  subgraph PROMOTE["⑤ PROMOTE"]
+    PR1(("Read implementation.md\n& learnings"))
+    PR2(("Extract durable\noutcomes"))
+    PRF1["promote-review.html"]
+    PRA{"Approved?"}
+    PR3(("Update CONSTITUTION.md,\nADRs, docs"))
+    PR4(("Archive .agent/ files"))
+    PR1 --> PR2 --> PRF1 --> PRA
+    PRA -- "revise" --> PR2
+    PRA -- "yes" --> PR3 --> PR4
+  end
+
+  %% ── PHASE LINKS ─────────────────────────────────────
+  C3 --> I1
+  I3 --> P1
+  P4 --> IM1
+  IM13 --> PR1
+  PR4 -. "next cycle" .-> I1
+
+  %% ── STYLES ───────────────────────────────────────────
+  classDef action    fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+  classDef artefact  fill:#ffffff,stroke:#6b7280,color:#111111
+  classDef decision  fill:#fef9c3,stroke:#ca8a04,color:#713f12
+  classDef tidy      fill:#f3e8ff,stroke:#7c3aed,color:#3b0764
+  classDef behavior  fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+  class C1,C2,I1,I2,P1,P3,IM1,IM3,IM5,IM8,IM9,IM10,IM11,IMF1,PR1,PR2,PR3,PR4 action
+  class C3,IF1,I3,PF1,P4,CF1,PRF1,IM13 artefact
+  class CA,IA,PA,IM4,IM6,IM12,IMF2,PRA decision
+  class PT,IM2 tidy
+  class P3,IM7 behavior
+</pre>
+</div>
+
+<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</body>
+</html>

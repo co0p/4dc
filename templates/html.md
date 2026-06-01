@@ -1,15 +1,15 @@
 ## HTML Review Contract
 
-Before writing final Markdown artifacts, generate a reviewable HTML file in `.4dc/` and pause for approval.
+Before writing final Markdown artifacts, generate a reviewable HTML file in `.agent/` and pause for approval.
 
 **Workflow Order (MANDATORY):**
-1. Generate HTML review file in `.4dc/`
+1. Generate HTML review file in `.agent/`
 2. Present HTML to user for review
 3. STOP and wait for explicit approval
 4. Only after approval: write final Markdown artifacts
 
 **File Naming Convention:**
-- All `.4dc/` artifacts MUST use lowercase filenames
+- All `.agent/` artifacts MUST use lowercase filenames
 - Examples: `increment.md`, `plan.md`, `implementation.md`, `promote.md`
 - Review files: `increment-review.html`, `plan-review.html`, `implementation-review.html`, `promotion-report.html`
 
@@ -196,10 +196,10 @@ Canonical HTML skeleton (recommended):
 				<h2>Inputs Reviewed</h2>
 				<ul>
 					<li>CONSTITUTION.md</li>
-					<li>.4dc/increment.md</li>
-					<li>.4dc/plan.md</li>
-					<li>.4dc/implementation.md</li>
-					<li>.4dc/promote.md</li>
+					<li>.agent/increment.md</li>
+					<li>.agent/plan.md</li>
+					<li>.agent/implementation.md</li>
+					<li>.agent/learnings.md</li>
 				</ul>
 			</section>
 

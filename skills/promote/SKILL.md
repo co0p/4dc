@@ -44,15 +44,13 @@ Present each candidate separately with destination path and rationale.
 ## Process
 
 1. **Read all `.agent/` artifacts** — full review of increment, plan, implementation, and learnings
-2. **Identify promotion candidates** from `learnings.md`’s "Promote Candidates" section plus your own review
+2. **Identify promotion candidates** from `learnings.md`'s "Promote Candidates" section plus your own review
 3. **For each candidate:**
-   - State: what it is, where it goes, why it’s durable
+   - State: what it is, where it goes, why it's durable
    - Generate `.agent/promotion-review.html` covering all candidates
 4. **STOP** — present HTML review, await per-candidate approval
 5. **On approval** — write each approved permanent artifact
 6. **Clean up** — archive or delete `.agent/` files for this cycle
-
-{{TEMPLATE:html}}
 
 ---
 
@@ -61,6 +59,7 @@ Present each candidate separately with destination path and rationale.
 | Type | Trigger | Destination |
 |------|---------|-------------|
 | Architecture decision | Non-obvious choice with lasting impact | `docs/adr/ADR-<date>-<slug>.md` |
+| Design optionality | A decision that bought or sold future options — worth naming for the next cycle | `docs/adr/ADR-<date>-<slug>.md` |
 | Guardrail update | Constitution rule violated, needs clarification | `CONSTITUTION.md` |
 | Behavior change | Public API, CLI, or user-facing behavior changed | `README.md` |
 | Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |

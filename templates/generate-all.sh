@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generate all prompt files from root-level templates.
+# Generate all skill files from root-level templates.
 #
 # Usage (from repo root):
 #   ./templates/generate-all.sh
 #
-# Output files are written to the repo root:
-#   - constitution.prompt.md
-#   - increment.prompt.md
-#   - plan.prompt.md
-#   - implement.prompt.md
-#   - promote.prompt.md
+# Output files are written to skills/<name>/SKILL.md:
+#   - skills/constitution/SKILL.md
+#   - skills/increment/SKILL.md
+#   - skills/plan/SKILL.md
+#   - skills/implement/SKILL.md
+#   - skills/promote/SKILL.md
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -68,14 +68,16 @@ render() {
       -e "s#{{SOURCE_URL}}#${SOURCE_URL}#g"
 }
 
-# Generate a prompt from template.md
-generate_prompt() {
+# Generate a skill file from template.md into skills/<name>/SKILL.md
+generate_skill() {
   local name="$1"
   local template="${SCRIPT_DIR}/${name}.md"
-  local output="${ROOT_DIR}/${name}.prompt.md"
+  local skill_dir="${ROOT_DIR}/skills/${name}"
+  local output="${skill_dir}/SKILL.md"
 
   if [ -f "$template" ]; then
-    echo "Generating ${name}.prompt.md..."
+    echo "Generating skills/${name}/SKILL.md..."
+    mkdir -p "$skill_dir"
     splice_shared < "$template" | splice_templates | render > "$output"
     echo "  Wrote: $output"
   else
@@ -83,13 +85,13 @@ generate_prompt() {
   fi
 }
 
-# Generate all prompts
-generate_prompt "constitution"
-generate_prompt "increment"
-generate_prompt "plan"
-generate_prompt "implement"
-generate_prompt "promote"
+# Generate all skills
+generate_skill "constitution"
+generate_skill "increment"
+generate_skill "plan"
+generate_skill "implement"
+generate_skill "promote"
 
 echo
-echo "Done. Generated prompts:"
-ls -la "${ROOT_DIR}"/*.prompt.md 2>/dev/null || echo "No .prompt.md files found"
+echo "Done. Generated skills:"
+find "${ROOT_DIR}/skills" -name 'SKILL.md' 2>/dev/null | sort || echo "No SKILL.md files found"

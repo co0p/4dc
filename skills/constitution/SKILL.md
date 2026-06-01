@@ -22,11 +22,13 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 ## Concrete Output
 
 `CONSTITUTION.md` containing:
-1. Engineering principles grounded in XP, lean software development, and use-case thinking
+1. Engineering principles grounded in XP, Tidy First, and lean software development
 2. Architectural boundaries and dependency direction
-3. Testing strategy and quality gates
-4. Documentation rules and ADR policy
-5. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
+3. Testing strategy and quality gates: Red→Green→Refactor with structural and behavioral changes separated
+4. Tidy First policy: when to tidy before changing behavior, what constitutes a valid tidying
+5. Documentation rules and ADR policy
+6. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
+7. AI collaboration rules: constrain context per task, preserve optionality, maintain human judgment over architectural decisions
 
 ---
 
@@ -46,8 +48,6 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 3. **Generate `.agent/constitution-review.html`** — present proposed guardrails in review format
 4. **STOP** — wait for explicit approval or revision requests
 5. **On approval** — write `CONSTITUTION.md`
-
-{{TEMPLATE:html}}
 
 ---
 

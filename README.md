@@ -5,400 +5,240 @@
   </picture>
 </p>
 
-<p align="center"><strong>4dc – four document cascade</strong></p>
-<p align="center"><em>Discovery-driven prompts for emergent, test-driven development.</em></p>
+<p align="center"><strong>4dc – four discipline cycle</strong></p>
+<p align="center"><em>A skill-based methodology for emergent, test-driven development with any coding agent.</em></p>
 
 ---
 
 > [!CAUTION]
 > DO NOT TRUST AI, and do not trust others' prompts. Running prompts from untrusted sources is a security risk. Watch https://media.ccc.de/v/39c3-agentic-probllms
 
-## Executive Summary
+## What is 4dc?
 
-4dc is a set of **discovery-driven prompts** for building software through Socratic dialogue with an LLM. Each prompt takes on a specific role at the right moment—Principal Engineer to extract architectural decisions, Product-minded Engineer to slice work, Domain Architect to shape the design, TDD Navigator to drive implementation, and Documentation Steward to preserve learnings. You stay in control; the LLM asks the right questions, challenges vague answers, and keeps the work moving.
+4dc is a **four-discipline cycle** grounded in Extreme Programming, Lean Software Development, and use-case thinking. It is delivered as a set of composable **skills** — one skill per phase, one concrete output artifact per skill.
 
-**Ephemeral context, permanent knowledge.** Feature work lives in `.4dc/` as temporary scaffolding. Before merging, you promote learnings to permanent docs—`CONSTITUTION.md` for decisions, `docs/DESIGN.md` for emergent patterns, ADRs for trade-offs, API specs for interfaces. After merge, increment context is deleted. All documents are generated as HTML for human reading and navigation.
+Each skill has a single responsibility, a defined input, and a hard gate before it produces output. Skills are composable: use them individually via any prompt-capable agent, or use the included **orchestrator** (`AGENTS.md`) to automate phase detection and skill loading.
 
-**Extreme programming principles:** small increments, emergent design, continuous testing, working code as truth. Design doesn't happen in a separate phase; it emerges from TDD cycles and is captured when proven valuable. Acceptance criteria carry inline greppable test names (`→ TestFeature_Given_When_Then`). Implementation follows Red → Green → Refactor discipline with continuous progress tracking.
+**Core bets:**
+- Premature implementation is the root cause of most rework. Separate WHAT, HOW, and EXECUTION before touching code.
+- Files are the source of truth between phases, not memory or conversation.
+- No phase is complete without an observable artifact or test result.
+- Evidence over claims — never "done" without proof.
 
 ---
 
 ## Installation
 
-From the root of your project, run:
+From the root of your project:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-prompts.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-skills.sh)"
 ```
 
-This copies the prompt files into `.github/prompts/` with a `4dc-` prefix:
+This installs:
 
-- `.github/prompts/4dc-constitution.prompt.md`
-- `.github/prompts/4dc-increment.prompt.md`
-- `.github/prompts/4dc-plan.prompt.md`
-- `.github/prompts/4dc-implement.prompt.md`
-- `.github/prompts/4dc-promote.prompt.md`
-
-It also creates the `.4dc/` working directory and adds it to `.gitignore`.
-
-Reference these prompts in GitHub Copilot Chat, Cursor, or any LLM that supports prompt files.
+```
+skills/
+  constitution/SKILL.md
+  increment/SKILL.md
+  plan/SKILL.md
+  implement/SKILL.md
+  promote/SKILL.md
+AGENTS.md                 ← orchestrator (auto-detects phase, loads the right skill)
+.agent/                   ← working directory (gitignored)
+```
 
 ---
 
-## Quick Example
+## Two ways to use 4dc
 
-### 1. Create Your Constitution (One-Time Setup)
+### Option A — Orchestrator (recommended)
+
+`AGENTS.md` is the entry point. Any compatible agent (GitHub Copilot, Claude Code, Cursor, etc.) reads it automatically on startup.
+
+The orchestrator inspects your workspace and determines the current phase:
+
+| Condition | Phase | Loads |
+|-----------|-------|-------|
+| No `CONSTITUTION.md` | constitution | `skills/constitution/SKILL.md` |
+| `CONSTITUTION.md` exists, no `.agent/increment.md` | increment | `skills/increment/SKILL.md` |
+| `.agent/increment.md` exists, no `.agent/plan.md` | plan | `skills/plan/SKILL.md` |
+| `.agent/plan.md` exists, implementation not complete | implement | `skills/implement/SKILL.md` |
+| `.agent/implementation.md` status: complete | promote | `skills/promote/SKILL.md` |
+
+You can also name a phase explicitly — the orchestrator loads it directly without checking conditions.
+
+Stop gates are enforced: the orchestrator will not advance until the current phase has produced its artifact **and** you have explicitly approved it. Silence is not approval.
+
+### Option B — Skills directly
+
+Reference any skill file in your agent's context to run that phase in isolation:
+
+```
+# GitHub Copilot Chat
+@workspace #skills/increment/SKILL.md "feature: add CSV export"
+
+# Claude Code
+/read skills/plan/SKILL.md
+
+# Any prompt-capable agent
+Attach skills/implement/SKILL.md to your context, then describe what to build
+```
+
+Useful when integrating 4dc into an existing workflow or running a single phase without the full cycle.
+
+---
+
+## The cycle
+
+```
+CONSTITUTION.md → .agent/increment.md → .agent/plan.md → .agent/implementation.md → docs/
+```
+
+Each arrow is a stop gate — explicit human approval before the next skill starts.
+
+---
+
+## Skills
+
+### ⚖️ constitution — *Constitutional lawyer*
+
+Asks probing questions, synthesises project-specific constraints into enforceable rules, and refuses to write a law that can't be tested. Never prescribes implementation — only guardrails.
+
+**Responsibility:** Create or update `CONSTITUTION.md` — the project's durable engineering guardrails.
+
+**Input:** Existing `CONSTITUTION.md` (if any), `README.md`, project structure.
+
+**Output:** `CONSTITUTION.md` with engineering principles, architectural boundaries, testing strategy, documentation rules, and the `.agent/` lifecycle contract.
+
+**SDLC ideology:** XP — team agreements before code. Lean — eliminate ambiguity upstream. Every rule must be verifiable; no abstract slogans, no generic internet copy-paste.
+
+**Hard gates:** No output until HTML review is approved. No implementation detail. No rule that isn't grounded in this project's specific context.
+
+---
+
+### 🔬 increment — *Product analyst*
+
+Relentlessly scopes down, insists on measurable acceptance criteria, refuses to let technical ideas contaminate the WHAT. If the slice is too large, it splits — no exceptions.
+
+**Responsibility:** Define one small, outcome-focused increment: WHAT and WHY only, no technical detail.
+
+**Input:** `CONSTITUTION.md`, user intent (one sentence).
+
+**Output:** `.agent/increment.md` — single-sentence goal, 2–5 binary acceptance criteria, explicit out-of-scope list, applicable constitution constraints.
+
+**SDLC ideology:** XP user stories with binary acceptance criteria. Lean smallest shippable slice. Use-case thinking: observable user outcome — no technical vocabulary in this artifact.
+
+**Hard gates:** No file names, approaches, or code. No vague acceptance criteria. One increment per cycle.
+
+---
+
+### 🏗️ plan — *Senior architect in planning mode*
+
+Reads the codebase before saying anything, surfaces risks, writes subtasks precise enough that a junior can execute them without ambiguity. Stops before touching a file.
+
+**Responsibility:** Define HOW — an ordered sequence of verifiable subtasks traceable to acceptance criteria.
+
+**Input:** `CONSTITUTION.md`, `.agent/increment.md`, current codebase structure.
+
+**Output:** `.agent/plan.md` — goal, 2–3 sentence strategy, ordered subtasks each with a verification step and dependency mapping, risks.
+
+**SDLC ideology:** XP planning game — tasks sized for one focused session. Lean: pull from acceptance criteria, not push from ideas. Full traceability: requirement → subtask → test.
+
+**Hard gates:** No code, no file edits. No subtask without a verification step. Every acceptance criterion must have a covering subtask.
+
+---
+
+### 🔨 implement — *Disciplined craftsperson*
+
+Follows the plan unless there is a documented reason not to, writes the failing test before touching production code, records every surprise immediately. Does not claim completion without proof.
+
+**Responsibility:** Execute the plan in Red → Green → Refactor order with continuous progress tracking.
+
+**Input:** `CONSTITUTION.md`, `.agent/increment.md`, `.agent/plan.md`, current test baseline.
+
+**Output:**
+- `.agent/implementation.md` — live progress log updated after each subtask; final `status: complete` or `status: blocked`
+- `.agent/learnings.md` — decisions, deviations, surprises, and promote candidates
+
+**SDLC ideology:** XP strict TDD — test first, always. Lean: minimal code to pass the test, then refactor. Evidence over claims. Continuous state — never batch-update progress.
+
+**Hard gates:** No production code before a failing test. No subtask complete without objective evidence. No skipping subtasks without recording the reason.
+
+#### Tidy First within implement
+
+When the plan contains `[tidy]` subtasks, implement runs them **before any `[behavior]` subtasks**, in two distinct loops:
+
+**Loop 1 — Tidy (structural changes only)**
+
+Each `[tidy]` subtask is a pure structural change: rename, extract, reorganise, inline — no new observable behavior. The rule is strict: a `[tidy]` commit must leave every test green, and must not mix with any behavior change. Commit each tidy subtask separately with a message that reads `tidy: <what changed>`.
+
+This is Kent Beck's *Tidy First?* principle in practice: make the code easier to change, **then** change it. The `[tidy]` subtasks in the plan were already justified at the plan phase — if tidying doesn't directly serve the behavior change that follows, it doesn't belong in the plan.
+
+**Loop 2 — Behavior (Red → Green → Refactor)**
+
+After all `[tidy]` subtasks are committed, implement switches to `[behavior]` subtasks. Each one starts with a failing test. Constrain the AI's context to the minimum needed for that subtask — narrow context, narrow blast radius. Commit each passing subtask with a message that reads `feat: <what changed>` or `fix: <what changed>`.
+
+**Why separate commits matter:** tidy commits can be reviewed, reverted, or cherry-picked independently of behavior changes. Mixed commits obscure intent and make code review harder. The separation is a communication discipline, not a formality.
+
+---
+
+### 📚 promote — *Librarian and retrospective facilitator*
+
+Reads everything, judges what's worth keeping, proposes each promotion with a destination and rationale, only writes after explicit approval. Leaves the workspace clean.
+
+**Responsibility:** Merge durable outcomes from `.agent/` into permanent project artifacts and close the cycle.
+
+**Input:** All `.agent/` artifacts, existing `docs/`, ADR log.
+
+**Output (per approval):** Updated `CONSTITUTION.md`, new ADRs in `docs/adr/`, updated `README.md`, cleaned `.agent/`.
+
+**SDLC ideology:** Lean — only promote what's verified. XP retrospective embedded in the delivery cycle. `.agent/` is scratchpad; `docs/` is truth.
+
+**Promotion categories:**
+
+| Type | Trigger | Destination |
+|------|---------|-------------|
+| Architecture decision | Non-obvious choice with lasting impact | `docs/adr/ADR-<date>-<slug>.md` |
+| Guardrail update | Constitution rule violated or needs clarification | `CONSTITUTION.md` |
+| Behaviour change | Public API, CLI, or user-facing behaviour changed | `README.md` |
+| Test pattern | New approach worth standardising | `CONSTITUTION.md` testing section |
+| Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
+
+**Hard gates:** No permanent doc until that candidate is individually approved. No promotion of unverified work. No `.agent/` cleanup until all promotions are confirmed written.
+
+---
+
+## File contracts
+
+```
+CONSTITUTION.md              permanent · root · constitution writes it
+.agent/increment.md          transient · per cycle · increment writes it
+.agent/plan.md               transient · per cycle · plan writes it
+.agent/implementation.md     transient · per cycle · implement writes it
+.agent/learnings.md          transient · per cycle · implement appends to it
+```
+
+`.agent/` is gitignored. After promote completes, `.agent/` is cleared for the next cycle.
+
+---
+
+## Getting started
 
 ```bash
-# Reference the constitution prompt and answer questions about your project
-#4dc-constitution.prompt.md .
+# 1. Install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-skills.sh)"
+
+# 2. Open your agent — AGENTS.md is detected automatically.
+#    It will see that CONSTITUTION.md is missing and load the constitution skill.
+
+# 3. Approve the constitution, then your agent moves to increment.
+#    Or reference a skill directly:
+#    @workspace #skills/increment/SKILL.md "feature: add CSV export"
 ```
-
-The LLM asks questions about your architectural decisions:
-- "Where should domain logic live relative to UI code?"
-- "How do you handle errors?"
-- "What's your minimum testing expectation?"
-
-You answer based on your project's reality. The result is `CONSTITUTION.md` with concrete decisions:
-
-```markdown
-# CONSTITUTION.md
-
-## Layering
-- Domain logic: `src/domain/`
-- API routes: `src/api/`  
-- Infrastructure: `src/infra/`
-
-## Error Handling
-- Domain returns `Result<T, Error>`
-- API converts to HTTP status codes
-
-## Testing
-- Unit tests colocated with code
-- Integration tests in `tests/integration/`
-- All tests run in <10s locally
-```
-
-### 2. Start an Increment
-
-```bash
-# Run increment prompt with explicit work type + intent
-#4dc-increment.prompt.md "feature: add password reset"
-```
-
-The LLM asks discovery questions:
-- "Is this a feature, bugfix, refactor, or exploration?"
-- "What exact behavior or outcome do you want?"
-- "What problem are you trying to solve?"
-- "What would success look like?"
-
-Together you develop a user story and acceptance criteria (each with an inline greppable test name).
-
-The result is `.4dc/increment.md` (temporary LLM context):
-
-```markdown
-## Acceptance Criteria
-
-- [ ] Given no tasks exist, when I run `todo add "Buy milk"`, then a task is stored
-  → `TestAdd_GivenNoTasks_WhenAdd_ThenStoredWithDefaults`
-- [ ] Given tasks exist, when I run `todo list`, then all tasks are printed
-  → `TestList_GivenTasks_WhenList_ThenAllPrinted`
-```
-
-### 3. Create the Plan
-
-```bash
-#4dc-plan.prompt.md
-```
-
-The LLM reads `CONSTITUTION.md` and `.4dc/increment.md`, then guides you through creating a concrete technical plan:
-
-- **Technical approach** — how to deliver the increment safely
-- **Constraints and dependencies** — what limits the solution space
-- **Task breakdown** — ordered, actionable subtasks with verification points
-
-Each decision is reviewed before moving forward.
-
-The result is `.4dc/plan.md` — a concrete execution strategy for this increment, generated as HTML review first for approval.
-
-### 4. Implement via TDD
-
-```bash
-# Run implement prompt
-#4dc-implement.prompt.md
-```
-
-The LLM first creates `.4dc/implementation.md`—a detailed technical guide explaining what to change, where, and why for each file. You review and approve this document before any code is written.
-
-Then execution begins in **Red → Green → Refactor** cycles:
-
-```
-LLM: [creates implementation.md with full technical guidance]
-You: [reviews and approves]
-
-LLM: [drafts first failing test]
-You: [applies it, runs it — RED]
-
-LLM: "RED for the right reason. Here's the simplest implementation:"
-     [drafts minimal code]
-You: [applies it, runs it — GREEN]
-
-LLM: "GREEN. Refactor opportunity: the file path is hardcoded. Worth extracting?"
-You: "Yes"
-
-You: [red → green → refactor cycles...]
-
-LLM: "Subtask complete. Progress updated in implementation.md."
-```
-
-Progress is tracked continuously. Decisions and lessons are recorded inline for promotion.
-
-### 5. Promote Learnings Before Merging
-
-```bash
-#4dc-promote.prompt.md
-```
-
-The LLM reads all `.4dc/` artifacts and generates an HTML promotion report proposing where each learning should go:
-
-```
-LLM: "Found in implementation.md: 'Use SHA256 for tokens, bcrypt for passwords'
-      Should this go in CONSTITUTION.md Security section?"
-You: "Yes"
-
-LLM: [drafts addition to CONSTITUTION.md]
-     "Confirm?"
-You: "Yes"
-
-LLM: "New API endpoint documented. Add to docs/api/?"
-You: "Yes, create OpenAPI spec"
-
-LLM: [drafts docs/api/auth/tokens.openapi.yaml]
-     "Confirm?"
-You: "Yes"
-
-LLM: "All learnings promoted. Cleanup summary ready. Delete `.4dc/`?"
-You: "Yes"
-```
-
-```bash
-# Clean up and merge
-rm -rf .4dc/
-git add CONSTITUTION.md docs/ src/ tests/
-git commit -m "Add password reset"
-git push
-```
-
----
-
-## The Prompts
-
-### constitution
-
-**Purpose:** Capture project guardrails and SDLC standards through focused discovery.
-
-**When to use:** At project start, or when adopting 4dc.
-
-**How it works:** Reads existing repository docs and structure, then asks 3-5 high-value questions per round about concrete, testable, project-specific decisions. Uses STOP gates—generates HTML review file in `.4dc/` for approval before writing final Markdown.
-
-**What it creates:** Engineering principles (XP, lean, use-case thinking), architectural boundaries and dependency direction, testing strategy and quality gates, documentation rules and ADR policy, SDLC artifact expectations (OpenAPI specs, ADRs, visual design guide, personas, deployment strategy, testing decisions, observability, C4 diagrams).
-
-**What it does NOT create:** Abstract values, style guides (use linters).
-
-**Output:** `.4dc/constitution-review.html` (review), then `CONSTITUTION.md` (permanent, evolves with project)
-
----
-
-### increment
-
-**Purpose:** Define a narrow, testable changeset with clear WHAT and WHY for one increment.
-
-**When to use:** When starting new work—a feature, bug fix, refactoring, or exploration.
-
-**How it works:** Stays out of technical design and coding details. Keeps scope to one increment that can be completed in one focused cycle. Asks discovery questions to understand the problem, then drives acceptance criteria that are observable and specific. Each criterion gets an inline greppable test name (`→ TestFeature_Given_When_Then`) added directly beneath it. Uses STOP gates—generates HTML review file for approval before writing final Markdown.
-
-**Output:** `.4dc/increment-review.html` (review), then `.4dc/increment.md` (temporary, deleted after merge)
-
----
-
-### plan
-
-**Purpose:** Convert increment intent into a concrete implementation strategy with ordered subtasks, sequencing, and verification points.
-
-**When to use:** After increment, before implement — whenever you need to define HOW to deliver the increment safely.
-
-**How it works:** Reads `CONSTITUTION.md` and `.4dc/increment.md`, then produces a technical execution plan. Keeps every task actionable, ordered, and verifiable. Does not start implementation in this phase. Uses STOP gates—generates HTML review file for approval before writing final Markdown.
-
-**What it includes:** Technical approach summary, constraints and dependencies, task breakdown with explicit sequencing.
-
-**Output:** `.4dc/plan-review.html` (review), then `.4dc/plan.md` (temporary, deleted after merge)
-
----
-
-### implement
-
-**Purpose:** Execute the approved plan with progress tracking and evidence.
-
-**When to use:** After the plan phase, when ready to write code.
-
-**How it works:** First creates a concrete technical implementation document (`.4dc/implementation.md`) explaining what to change, where, and why for each file-level change—like a senior engineer guiding a novice. Asks for verification before execution begins. Then executes each subtask in Red → Green → Refactor order. Does not write production code before the first failing test exists. Updates implementation status after each completed subtask. Records decisions and lessons immediately. Does not mark complete without test and verification evidence. Generates HTML progress reports.
-
-**Output:** `.4dc/implementation.md` (detailed execution guide), working code + tests (permanent), promotion candidates documented inline
-
----
-
-### promote
-
-**Purpose:** Merge durable outcomes from the 4dc working set into permanent project artifacts before merge.
-
-**When to use:** Before merging, after completing an increment.
-
-**How it works:** Reviews all `.4dc` artifacts (increment.md, plan.md, implementation.md, promote.md). Presents each promotion candidate with destination and rationale. Requires explicit approval before writing permanent docs. Generates HTML promotion report for review.
-
-| Learning Type | Destination |
-|--------------|-------------|
-| Architectural decision | `CONSTITUTION.md` |
-| Design pattern | `docs/DESIGN.md` |
-| Non-obvious trade-off | `docs/adr/` |
-| Public interface | `docs/api/` (OpenAPI, schemas) |
-| Testing strategy | Testing decisions docs |
-| Observability changes | Observability docs |
-| Deployment changes | Deployment strategy docs |
-| Retrospective insight | `.4dc/promote.md` |
-
-**After promotion:** Confirms all learnings captured, provides cleanup summary for `.4dc/`, then: delete `.4dc/`, commit permanent additions, merge.
-
-**Output:** `.4dc/promotion-report.html` (review), updates to permanent docs, retrospective delta in `.4dc/promote.md`
-
----
-
-## Repository Structure
-
-```
-my-project/
-├── CONSTITUTION.md              # Permanent: architectural decisions and SDLC standards
-├── README.md                    # Permanent: project overview
-│
-├── docs/
-│   ├── DESIGN.md                # Permanent: emergent design patterns
-│   ├── adr/                     # Permanent: decision records
-│   │   └── ADR-2025-01-26-sync-email.md
-│   └── api/                     # Permanent: contracts, schemas
-│       └── auth/
-│           └── password-reset.openapi.yaml
-│
-├── src/                         # Permanent: code
-├── tests/                       # Permanent: tests
-│
-└── .4dc/                        # Temporary: working context (deleted after merge)
-    ├── increment.md             # What you're building + acceptance criteria
-    ├── plan.md                  # Technical execution strategy + subtasks
-    ├── implementation.md        # Detailed step-by-step implementation guide
-    └── promote.md               # Retrospective insights
-```
-
-**.gitignore:**
-```
-.4dc/
-```
-
----
-
-## What Lives Where
-
-| Artifact | Location | Lifecycle | Purpose |
-|----------|----------|-----------|---------|
-| **CONSTITUTION.md** | Root | Permanent | Architectural decisions and SDLC standards |
-| **docs/DESIGN.md** | `docs/` | Permanent | Emergent design patterns |
-| **README.md** | Root | Permanent | Project overview |
-| **ADRs** | `docs/adr/` | Permanent | Trade-off explanations |
-| **API Contracts** | `docs/api/` | Permanent | OpenAPI specs, schemas |
-| **Code + Tests** | `src/`, `tests/` | Permanent | The implementation |
-| **Increment context** | `.4dc/increment.md` | Temporary | User story, acceptance criteria (HTML review) |
-| **Plan context** | `.4dc/plan.md` | Temporary | Technical execution strategy + subtasks (HTML review) |
-| **Implementation guide** | `.4dc/implementation.md` | Temporary | Detailed step-by-step implementation with progress tracking |
-| **Retrospective** | `.4dc/promote.md` | Temporary | Promotion decisions and delivery insights |
-
-**Key principle:** Increment artifacts are ephemeral. After merge, only promoted decisions and working code remain.
-
----
-
-## Workflow Diagram
-
-```mermaid
-graph TB
-    Start([Feature Idea])
-
-    Constitution["CONSTITUTION.md + docs/\nHigh-level picture on main"]
-
-    Start --> Inc{increment prompt}
-    Inc -->|Discover WHAT,<br/>acceptance criteria| IncDoc[.4dc/<br/>increment.md]
-
-    IncDoc --> Plan{plan prompt}
-    Plan -->|Technical execution<br/>strategy + subtasks| PlanDoc[.4dc/<br/>plan.md]
-
-    PlanDoc --> D1[Subtask 1:<br/>implement prompt]
-    D1 -->|TDD cycles| D1Code[Code + Tests<br/>+ progress tracking]
-    D1Code --> D1Done{Subtask done?}
-    D1Done -->|More tests| D1
-    D1Done -->|Yes| D2
-
-    D2[Subtask 2:<br/>implement prompt<br/><i>informed by D1</i>]
-    D2 -->|TDD cycles| D2Code[Code + Tests<br/>+ progress tracking]
-    D2Code --> D2Done{Subtask done?}
-    D2Done -->|More tests| D2
-    D2Done -->|Yes| AllDone
-
-    AllDone{All subtasks<br/>complete?}
-    AllDone -->|Yes| Promote{promote prompt}
-    Promote -->|Update| Constitution2[CONSTITUTION.md]
-    Promote -->|Update| Design[docs/DESIGN.md]
-    Promote -->|Create| ADR[docs/adr/]
-
-    Promote --> Cleanup[Delete .4dc/]
-    Cleanup --> Merge[Merge PR]
-    Merge --> Inc
-
-    Constitution -.->|Guides| Plan
-    Constitution -.->|Guides| D1
-    Constitution -.->|Guides| D2
-
-    style IncDoc fill:#fff4e1
-    style PlanDoc fill:#fff4e1
-    style D1Code fill:#e1ffe1
-    style D2Code fill:#e1ffe1
-    style Constitution fill:#e1f5ff
-```
-
----
-
-## Why This Works
-
-**Emergent design:** Design emerges during TDD and is captured in permanent docs only when it proves valuable.
-
-**Working code as truth:** Code and tests are the primary artifacts. Docs capture only decisions that guide future work.
-
-**Fast feedback:** Increments are small and focused. HTML reviews provide clear checkpoints before artifacts are written.
-
-**No stale docs:** Increment context deleted after merge. Only promoted learnings remain.
-
-**Traceability:** Each phase produces reviewable HTML before committing to Markdown. Implementation.md tracks progress continuously.
-
-**LLM as guide:** You decide. The LLM questions, proposes, and ensures disciplined execution with explicit approval gates.
-
----
-
-## Getting Started
-
-1. **Install the prompts** (see Installation above)
-2. **Create your constitution**: `#4dc-constitution.prompt.md .`
-3. **Start your first increment**: `#4dc-increment.prompt.md "feature: your feature idea"` — discover WHAT, define acceptance criteria
-4. **Create the plan**: `#4dc-plan.prompt.md` — technical execution strategy with ordered subtasks (HTML review for approval)
-5. **Implement via TDD**: `#4dc-implement.prompt.md` — creates implementation.md guide, then Red → Green → Refactor cycles
-6. **Promote learnings before merge**: `#4dc-promote.prompt.md` — HTML promotion report, update permanent docs, clean up `.4dc/`
 
 ---
 
 ## Real-World Example: GoPomodoro
 
-[**gopomodoro**](https://github.com/co0p/gopomodoro) is a minimal Pomodoro timer built using 4dc from scratch. It demonstrates how 4dc delivers on its promise of **emergent, test-driven development**.
+[**gopomodoro**](https://github.com/co0p/gopomodoro) is a minimal Pomodoro timer built using 4dc from scratch. It demonstrates how 4dc delivers on its promise of emergent, test-driven development.
