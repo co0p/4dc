@@ -61,6 +61,7 @@ Permanent artifacts to evaluate every cycle:
 - Testing decisions
 - Observability docs
 - C4 diagrams (system, container, component)
+- Feature registry (`docs/FEATURES.md`)
 
 Transient artifacts:
 - `.4dc/increment.md`

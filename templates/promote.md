@@ -28,6 +28,7 @@ One or more of the following, per approval:
 - Updated `CONSTITUTION.md` (if guardrails need revision)
 - New ADR in `docs/adr/` (for significant architectural decisions)
 - Updated `README.md` or other docs (for changed behavior or usage)
+- Updated `docs/FEATURES.md` (new feature entries for this cycle)
 - Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
 
 ---
@@ -63,6 +64,7 @@ Present each candidate separately with destination path and rationale.
 | Architecture decision | Non-obvious choice with lasting impact | `docs/adr/ADR-<date>-<slug>.md` |
 | Guardrail update | Constitution rule violated, needs clarification | `CONSTITUTION.md` |
 | Behavior change | Public API, CLI, or user-facing behavior changed | `README.md` |
+| Feature entry | New feature implemented and verified | `docs/FEATURES.md` |
 | Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
 
