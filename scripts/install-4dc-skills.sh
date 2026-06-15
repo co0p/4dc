@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_SKILLS_DIR="skills"
-ORCHESTRATOR="AGENTS.md"
+TARGET_SKILLS_DIR=".github/skills"
+ORCHESTRATOR=".github/AGENTS.md"
 WORKING_DIR=".agent"
 REPO="https://github.com/co0p/4dc"
 BRANCH="main"
@@ -26,6 +26,7 @@ for name in "${SKILL_NAMES[@]}"; do
   echo "     - $TARGET_SKILLS_DIR/$name/SKILL.md"
 done
 echo "  3. Copy orchestrator to $ORCHESTRATOR"
+echo "  Note: Both skills and orchestrator are installed under .github/ (hidden directory)"
 echo "  4. Create working directory $WORKING_DIR/"
 echo "  5. Add $WORKING_DIR to .gitignore"
 echo ""
@@ -66,12 +67,13 @@ for name in "${SKILL_NAMES[@]}"; do
 done
 
 # Install orchestrator
-ORCH_SRC="$REPO_ROOT/$ORCHESTRATOR"
+ORCH_SRC="$REPO_ROOT/AGENTS.md"
+mkdir -p ".github"
 if [ -f "$ORCH_SRC" ]; then
-  echo "   - copying $ORCHESTRATOR -> ./$ORCHESTRATOR"
-  cp "$ORCH_SRC" "./$ORCHESTRATOR"
+  echo "   - copying AGENTS.md -> $ORCHESTRATOR"
+  cp "$ORCH_SRC" "$ORCHESTRATOR"
 else
-  echo "   - warning: $ORCHESTRATOR not found in repo; skipping"
+  echo "   - warning: AGENTS.md not found in repo; skipping"
 fi
 
 echo ">> Creating working directory $WORKING_DIR ..."
@@ -96,5 +98,5 @@ echo "   Orchestrator: $ORCHESTRATOR"
 echo "   Skills:       $TARGET_SKILLS_DIR/"
 echo "   Working dir:  $WORKING_DIR/ (gitignored)"
 echo ""
-echo "   Your agent reads AGENTS.md to detect the current phase and loads the"
-echo "   matching skill from skills/<phase>/SKILL.md automatically."
+echo "   Your agent reads .github/AGENTS.md to detect the current phase and loads the"
+echo "   matching skill from .github/skills/<phase>/SKILL.md automatically."

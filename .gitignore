@@ -8,4 +8,4 @@ examples/pomodoro/build/
 examples/pomodoro/pomodoro
 examples/pomodoro/assets/AppIcon.icns
 
-node_modules/
+.agent
