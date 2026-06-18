@@ -67,8 +67,8 @@ Present each candidate separately with destination path and rationale.
 | Feature shipped | Acceptance tests pass; feature complete | `docs/roadmap.md` — move to Done, add acceptance test link |
 | Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
-| New domain term | A term used in code/tests that has no shared definition | `docs/glossary.md` (create from `templates/glossary.md` if absent) |
-| Structural change | A container added, removed, or re-wired | `docs/architecture.md` (create from `templates/architecture.md` if absent) |
+| New domain concept | An aggregate, event, value object, or term used in code/tests that has no shared definition | `docs/domain-model.md` (create using the template in the Appendix if absent) — place in the correct section: **Aggregates**, **Events**, **Value Objects**, or **Terms** |
+| Structural change | A container added, removed, or re-wired | `docs/architecture.md` (create using the template in the Appendix if absent) |
 
 ---
 
@@ -87,3 +87,21 @@ Present each candidate separately with destination path and rationale.
 
 Terminal artifacts: permanent docs updated, `.agent/` clean
 Cycle complete. Next action: `4dc-increment` for the next cycle — load `skills/increment/SKILL.md`
+
+---
+
+## Appendix: Document Templates
+
+Use these verbatim as the starting content when creating a new document for the first time.
+
+### Template: docs/domain-model.md
+
+```markdown
+{{TEMPLATE:domain-model}}
+```
+
+### Template: docs/architecture.md
+
+```markdown
+{{TEMPLATE:architecture}}
+```

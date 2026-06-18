@@ -29,7 +29,7 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 5. Documentation rules and ADR policy
 6. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
 
-`docs/roadmap.md` (created from `templates/roadmap.md` if it does not exist yet)
+`docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
 
 ---
 
@@ -69,3 +69,15 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 
 Terminal artifacts: `CONSTITUTION.md`, `docs/roadmap.md`
 Next skill: `4dc-increment` — load `skills/increment/SKILL.md`
+
+---
+
+## Appendix: Document Templates
+
+Use these verbatim as the starting content when creating a new document for the first time.
+
+### Template: docs/roadmap.md
+
+```markdown
+{{TEMPLATE:roadmap}}
+```
