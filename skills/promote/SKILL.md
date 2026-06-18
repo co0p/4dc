@@ -28,6 +28,7 @@ One or more of the following, per approval:
 - Updated `CONSTITUTION.md` (if guardrails need revision)
 - New ADR in `docs/adr/` (for significant architectural decisions)
 - Updated `README.md` or other docs (for changed behavior or usage)
+- Updated `docs/roadmap.md` — feature moved from In Progress to Done, acceptance test link added
 - Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
 
 ---
@@ -62,8 +63,11 @@ Present each candidate separately with destination path and rationale.
 | Design optionality | A decision that bought or sold future options — worth naming for the next cycle | `docs/adr/ADR-<date>-<slug>.md` |
 | Guardrail update | Constitution rule violated, needs clarification | `CONSTITUTION.md` |
 | Behavior change | Public API, CLI, or user-facing behavior changed | `README.md` |
+| Feature shipped | Acceptance tests pass; feature complete | `docs/roadmap.md` — move from Partial to Done, add acceptance test link |
 | Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
+| New domain term | A term used in code/tests that has no shared definition | `docs/glossary.md` (create from `templates/glossary.md` if absent) |
+| Structural change | A container added, removed, or re-wired | `docs/architecture.md` (create from `templates/architecture.md` if absent) |
 
 ---
 

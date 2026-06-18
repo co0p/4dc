@@ -24,9 +24,12 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 `CONSTITUTION.md` containing:
 1. Engineering principles grounded in XP, lean software development, and use-case thinking
 2. Architectural boundaries and dependency direction
-3. Testing strategy and quality gates
-4. Documentation rules and ADR policy
-5. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
+3. **Testing strategy** — test types in scope, what must have tests, the gate that must be green before promote, naming conventions
+4. **Release and deployment** — how a release is triggered, versioning scheme, deployment target(s), rollback procedure
+5. Documentation rules and ADR policy
+6. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
+
+`docs/roadmap.md` (created from `templates/roadmap.md` if it does not exist yet)
 
 ---
 
@@ -54,14 +57,15 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 ## Checklist
 
 - [ ] Existing docs read
-- [ ] 3–5 questions asked and answered
+- [ ] 3–5 questions asked and answered — include: test strategy, deployment target, versioning scheme
 - [ ] HTML review generated and shown
 - [ ] User approval received
-- [ ] `CONSTITUTION.md` written
+- [ ] `CONSTITUTION.md` written with Testing and Release sections populated
+- [ ] `docs/roadmap.md` created if not present
 
 ---
 
 ## Handoff
 
-Terminal artifact: `CONSTITUTION.md`
+Terminal artifacts: `CONSTITUTION.md`, `docs/roadmap.md`
 Next skill: `4dc-increment` — load `skills/increment/SKILL.md`
