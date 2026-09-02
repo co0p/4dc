@@ -38,14 +38,15 @@ From the root of your project:
 This installs:
 
 ```
-skills/
-  constitution/SKILL.md
-  increment/SKILL.md
-  plan/SKILL.md
-  implement/SKILL.md
-  promote/SKILL.md
-AGENTS.md                 ← orchestrator (auto-detects phase, loads the right skill)
-.agent/                   ← working directory (gitignored)
+.agents/
+  skills/
+    constitution/SKILL.md
+    increment/SKILL.md
+    plan/SKILL.md
+    implement/SKILL.md
+    promote/SKILL.md
+  AGENTS.md                 ← orchestrator (auto-detects phase, loads the right skill)
+.agent/                     ← working directory (gitignored)
 ```
 
 ---
@@ -60,11 +61,11 @@ The orchestrator inspects your workspace and determines the current phase:
 
 | Condition | Phase | Loads |
 |-----------|-------|-------|
-| No `CONSTITUTION.md` | constitution | `skills/constitution/SKILL.md` |
-| `CONSTITUTION.md` exists, no `.agent/increment.md` | increment | `skills/increment/SKILL.md` |
-| `.agent/increment.md` exists, no `.agent/plan.md` | plan | `skills/plan/SKILL.md` |
-| `.agent/plan.md` exists, implementation not complete | implement | `skills/implement/SKILL.md` |
-| `.agent/implementation.md` status: complete | promote | `skills/promote/SKILL.md` |
+| No `CONSTITUTION.md` | constitution | `.agents/skills/constitution/SKILL.md` |
+| `CONSTITUTION.md` exists, no `.agent/increment.md` | increment | `.agents/skills/increment/SKILL.md` |
+| `.agent/increment.md` exists, no `.agent/plan.md` | plan | `.agents/skills/plan/SKILL.md` |
+| `.agent/plan.md` exists, implementation not complete | implement | `.agents/skills/implement/SKILL.md` |
+| `.agent/implementation.md` status: complete | promote | `.agents/skills/promote/SKILL.md` |
 
 You can also name a phase explicitly — the orchestrator loads it directly without checking conditions.
 
@@ -76,13 +77,13 @@ Reference any skill file in your agent's context to run that phase in isolation:
 
 ```
 # GitHub Copilot Chat
-@workspace #skills/increment/SKILL.md "feature: add CSV export"
+@workspace #.agents/skills/increment/SKILL.md "feature: add CSV export"
 
 # Claude Code
-/read skills/plan/SKILL.md
+/read .agents/skills/plan/SKILL.md
 
 # Any prompt-capable agent
-Attach skills/implement/SKILL.md to your context, then describe what to build
+Attach .agents/skills/implement/SKILL.md to your context, then describe what to build
 ```
 
 Useful when integrating 4dc into an existing workflow or running a single phase without the full cycle.
@@ -234,7 +235,7 @@ CONSTITUTION.md              permanent · root · constitution writes it
 
 # 3. Approve the constitution, then your agent moves to increment.
 #    Or reference a skill directly:
-#    @workspace #skills/increment/SKILL.md "feature: add CSV export"
+#    @workspace #.agents/skills/increment/SKILL.md "feature: add CSV export"
 ```
 
 ---

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_SKILLS_DIR=".github/skills"
-ORCHESTRATOR=".github/AGENTS.md"
+TARGET_SKILLS_DIR=".agents/skills"
+ORCHESTRATOR=".agents/AGENTS.md"
 WORKING_DIR=".agent"
 REPO="https://github.com/co0p/4dc"
 BRANCH="main"
@@ -25,8 +25,8 @@ echo "  2. Copy skill files to $TARGET_SKILLS_DIR/<name>/SKILL.md:"
 for name in "${SKILL_NAMES[@]}"; do
   echo "     - $TARGET_SKILLS_DIR/$name/SKILL.md"
 done
-echo "  3. Copy orchestrator to $ORCHESTRATOR"
-echo "  Note: Both skills and orchestrator are installed under .github/ (hidden directory)"
+echo "  3. Copy orchestrator to $ORCHESTRATOR (skipped if already exists)"
+echo "  Note: Both skills and orchestrator are installed under .agents/"
 echo "  4. Create working directory $WORKING_DIR/"
 echo "  5. Add $WORKING_DIR to .gitignore"
 echo ""
@@ -68,10 +68,14 @@ done
 
 # Install orchestrator
 ORCH_SRC="$REPO_ROOT/AGENTS.md"
-mkdir -p ".github"
+mkdir -p ".agents"
 if [ -f "$ORCH_SRC" ]; then
-  echo "   - copying AGENTS.md -> $ORCHESTRATOR"
-  cp "$ORCH_SRC" "$ORCHESTRATOR"
+  if [ -f "$ORCHESTRATOR" ]; then
+    echo "   - $ORCHESTRATOR already exists; skipping (not overriding)"
+  else
+    echo "   - copying AGENTS.md -> $ORCHESTRATOR"
+    cp "$ORCH_SRC" "$ORCHESTRATOR"
+  fi
 else
   echo "   - warning: AGENTS.md not found in repo; skipping"
 fi
@@ -98,5 +102,5 @@ echo "   Orchestrator: $ORCHESTRATOR"
 echo "   Skills:       $TARGET_SKILLS_DIR/"
 echo "   Working dir:  $WORKING_DIR/ (gitignored)"
 echo ""
-echo "   Your agent reads .github/AGENTS.md to detect the current phase and loads the"
-echo "   matching skill from .github/skills/<phase>/SKILL.md automatically."
+echo "   Your agent reads .agents/AGENTS.md to detect the current phase and loads the"
+echo "   matching skill from .agents/skills/<phase>/SKILL.md automatically."

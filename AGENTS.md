@@ -30,11 +30,11 @@ Inspect the workspace and determine the current phase:
 
 | Condition | Phase | Load skill |
 |-----------|-------|------------|
-| No `CONSTITUTION.md` | **constitution** | `.github/skills/constitution/SKILL.md` |
-| `CONSTITUTION.md` exists, no `.agent/increment.md` | **increment** | `.github/skills/increment/SKILL.md` |
-| `.agent/increment.md` exists, no `.agent/plan.md` | **plan** | `.github/skills/plan/SKILL.md` |
-| `.agent/plan.md` exists, implementation not complete | **implement** | `.github/skills/implement/SKILL.md` |
-| `.agent/implementation.md` marked `status: complete` | **promote** | `.github/skills/promote/SKILL.md` |
+| No `CONSTITUTION.md` | **constitution** | `.agents/skills/constitution/SKILL.md` |
+| `CONSTITUTION.md` exists, no `.agent/increment.md` | **increment** | `.agents/skills/increment/SKILL.md` |
+| `.agent/increment.md` exists, no `.agent/plan.md` | **plan** | `.agents/skills/plan/SKILL.md` |
+| `.agent/plan.md` exists, implementation not complete | **implement** | `.agents/skills/implement/SKILL.md` |
+| `.agent/implementation.md` marked `status: complete` | **promote** | `.agents/skills/promote/SKILL.md` |
 
 **If the user explicitly names a phase, load that skill directly without checking conditions.**
 
@@ -114,7 +114,7 @@ Canonical CSS variables:
 After determining the current phase, read the skill file fully before beginning:
 
 ```
-Read .github/skills/<phase>/SKILL.md now.
+Read .agents/skills/<phase>/SKILL.md now.
 ```
 
 The skill file contains the detailed process. This file handles orchestration only — phase detection, stop gates, shared contracts.
