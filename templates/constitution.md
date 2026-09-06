@@ -23,13 +23,25 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 
 `CONSTITUTION.md` containing:
 1. Engineering principles grounded in XP, lean software development, and use-case thinking
-2. Architectural boundaries and dependency direction
+2. Architectural boundaries, dependency direction, and performance-critical paths
 3. **Testing strategy** — test types in scope, what must have tests, the gate that must be green before promote, naming conventions
-4. **Release and deployment** — how a release is triggered, versioning scheme, deployment target(s), rollback procedure
-5. Documentation rules and ADR policy
-6. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
+4. **Performance envelope** — stated latency, throughput, cost, or scale expectations, or an explicit `N/A` with rationale
+5. **Release and deployment** — how a release is triggered, versioning scheme, deployment target(s), rollback procedure
+6. Documentation rules, architecture sync rules, and ADR policy
+7. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
 
 `docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
+
+Required `CONSTITUTION.md` headings:
+- `## Engineering Principles`
+- `## Architecture Boundaries`
+- `## Testing Strategy`
+- `## Performance Envelope`
+- `## Documentation And ADR Policy`
+- `## Release And Deployment`
+- `## Artifact Lifecycle`
+
+{{SHARED:execution-contract}}
 
 ---
 
@@ -45,7 +57,7 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 ## Process
 
 1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, any ADRs or docs
-2. **Ask 3–5 focused questions** — surface constraints, pain points, and non-negotiables one round at a time
+2. **Ask 3–5 focused questions** — surface constraints, pain points, performance goals, and non-negotiables one round at a time
 3. **Generate `.agent/constitution-review.html`** — present proposed guardrails in review format
 4. **STOP** — wait for explicit approval or revision requests
 5. **On approval** — write `CONSTITUTION.md`
@@ -57,10 +69,10 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 ## Checklist
 
 - [ ] Existing docs read
-- [ ] 3–5 questions asked and answered — include: test strategy, deployment target, versioning scheme
+- [ ] 3–5 questions asked and answered — include: test strategy, deployment target, versioning scheme, performance expectations
 - [ ] HTML review generated and shown
 - [ ] User approval received
-- [ ] `CONSTITUTION.md` written with Testing and Release sections populated
+- [ ] `CONSTITUTION.md` written with Testing, Performance, and Release sections populated
 - [ ] `docs/roadmap.md` created if not present
 
 ---

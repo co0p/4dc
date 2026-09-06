@@ -27,9 +27,17 @@ Merge durable outcomes from the `.agent/` working set into permanent project art
 One or more of the following, per approval:
 - Updated `CONSTITUTION.md` (if guardrails need revision)
 - New ADR in `docs/adr/` (for significant architectural decisions)
+- Updated `docs/architecture.md` (if runtime structure, dependencies, or performance-critical paths changed)
+- Updated `docs/domain-model.md` (if domain language changed or new durable concepts appeared)
 - Updated `README.md` or other docs (for changed behavior or usage)
 - Updated `docs/roadmap.md` — feature moved from In Progress to Done, acceptance test link added
 - Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
+
+Required review outputs:
+- Promotion candidates are listed individually with destination path, rationale, and approval status.
+- The promotion review explicitly states whether architecture, domain language, testing guidance, and performance documentation changed or stayed unchanged.
+
+{{SHARED:execution-contract}}
 
 ---
 
@@ -38,6 +46,7 @@ Do NOT write permanent docs until each promotion candidate has been individually
 Do NOT promote guesses or plans — only promote what was actually built and verified.
 Do NOT delete .agent/ files until all promotions are written and confirmed.
 Present each candidate separately with destination path and rationale.
+Do NOT leave permanent docs stale when the implementation changed architecture, domain language, or performance-critical behavior.
 </HARD-GATE>
 
 ---
@@ -45,7 +54,7 @@ Present each candidate separately with destination path and rationale.
 ## Process
 
 1. **Read all `.agent/` artifacts** — full review of increment, plan, implementation, and learnings
-2. **Identify promotion candidates** from `learnings.md`’s "Promote Candidates" section plus your own review
+2. **Identify promotion candidates** from `learnings.md`’s "Promote Candidates" section plus your own review of code, tests, and permanent docs for drift
 3. **For each candidate:**
    - State: what it is, where it goes, why it’s durable
    - Generate `.agent/promotion-review.html` covering all candidates
@@ -63,9 +72,11 @@ Present each candidate separately with destination path and rationale.
 |------|---------|-------------|
 | Architecture decision | Non-obvious choice with lasting impact | `docs/adr/ADR-<date>-<slug>.md` |
 | Guardrail update | Constitution rule violated, needs clarification | `CONSTITUTION.md` |
+| Architecture sync | Runtime containers, dependency direction, or performance-critical paths changed | `docs/architecture.md` |
 | Behavior change | Public API, CLI, or user-facing behavior changed | `README.md` |
 | Feature shipped | Acceptance tests pass; feature complete | `docs/roadmap.md` — move to Done, add acceptance test link |
 | Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |
+| Performance contract | A latency, throughput, cost, or scaling expectation changed | `CONSTITUTION.md` or `docs/architecture.md` |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
 | New domain concept | An aggregate, event, value object, or term used in code/tests that has no shared definition | `docs/domain-model.md` (create using the template in the Appendix if absent) — place in the correct section: **Aggregates**, **Events**, **Value Objects**, or **Terms** |
 | Structural change | A container added, removed, or re-wired | `docs/architecture.md` (create using the template in the Appendix if absent) |
@@ -79,6 +90,7 @@ Present each candidate separately with destination path and rationale.
 - [ ] HTML review generated covering all candidates
 - [ ] User approval received per candidate
 - [ ] Each approved artifact written to permanent location
+- [ ] Architecture, domain model, and performance documentation either updated or explicitly marked unchanged
 - [ ] `.agent/` files cleaned up
 
 ---

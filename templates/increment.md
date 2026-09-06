@@ -26,10 +26,20 @@ Define one small, outcome-focused increment with measurable acceptance criteria 
 `.agent/increment.md` containing:
 - **Use case**: job story in the form _"When [situation], I want to [action], so that [outcome]."_ Written or confirmed by the customer before criteria are defined.
 - **Goal**: one sentence — the user-observable outcome (distilled from the use case)
-- **Acceptance criteria**: 2–5 binary, verifiable conditions derived from the use case
+- **Acceptance criteria**: 2–5 binary, verifiable conditions derived from the use case; each criterion names observable proof rather than an implementation mechanism
 - **Out of scope**: explicit exclusions that prevent scope creep
 - **Constitution constraints**: which guardrails apply to this increment
 - **Roadmap entry**: the feature name and job story to add to `docs/roadmap.md` Partial section
+
+Required `.agent/increment.md` headings:
+- `## Use Case`
+- `## Goal`
+- `## Acceptance Criteria`
+- `## Out Of Scope`
+- `## Constitution Constraints`
+- `## Roadmap Entry`
+
+{{SHARED:execution-contract}}
 
 ---
 

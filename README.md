@@ -32,7 +32,7 @@ Each skill has a single responsibility, a defined input, and a hard gate before 
 From the root of your project:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-skills.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc.sh)"
 ```
 
 This installs:
@@ -47,6 +47,12 @@ This installs:
     promote/SKILL.md
   AGENTS.md                 ← orchestrator (auto-detects phase, loads the right skill)
 .agent/                     ← working directory (gitignored)
+```
+
+To regenerate the checked-in skill files from the template sources while maintaining this repository, run:
+
+```bash
+./scripts/generate-4dc.sh
 ```
 
 ---
@@ -228,7 +234,7 @@ CONSTITUTION.md              permanent · root · constitution writes it
 
 ```bash
 # 1. Install
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc-skills.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc.sh)"
 
 # 2. Open your agent — AGENTS.md is detected automatically.
 #    It will see that CONSTITUTION.md is missing and load the constitution skill.

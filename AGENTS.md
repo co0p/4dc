@@ -18,9 +18,32 @@ These apply across all phases. Skills do not repeat them.
 - Ask focused questions; never a broad questionnaire.
 - One clarifying question at a time. If evidence is missing, ask once.
 - Source code and committed docs are the source of truth.
+- Communication is the primary value stream: preserve intent, decisions, and evidence in files, tests, and permanent docs.
+- Design before code: state the desired behavior, architectural boundary, and any performance-critical constraint before implementation starts.
+- Tests before code for behavior changes. Structural tidying may come first, but only when it preserves observable behavior and keeps tests green.
+- Documentation is part of the application. Keep architecture, domain language, testing guidance, and ADRs aligned with the implemented system.
 - Never claim work is complete without objective evidence.
 - Forward-only change: do not preserve backward compatibility unless explicitly requested.
 - For work with more than three meaningful tasks or unknown dependencies: publish a short task plan, execute in verified steps, update progress after each step.
+
+## Instruction Resolution
+
+When instructions pull in different directions, resolve them in this order:
+
+1. Explicit user approval and current request
+2. Current phase stop gates and approved phase artifacts
+3. `CONSTITUTION.md`
+4. This orchestrator's defaults
+
+If a conflict still cannot be resolved, ask one focused question.
+
+## Action Risk Ladder
+
+- Low risk: reads, searches, diffs, local validation commands
+- Medium risk: local reversible edits to the current phase artifact
+- High risk: destructive operations, external side effects, or skipping a review gate
+
+High-risk actions require explicit approval.
 
 ---
 

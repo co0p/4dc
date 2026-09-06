@@ -4,7 +4,7 @@ set -euo pipefail
 # Generate all skill files from root-level templates.
 #
 # Usage (from repo root):
-#   ./templates/generate-all.sh
+#   ./scripts/generate-4dc.sh
 #
 # Output files are written to skills/<name>/SKILL.md:
 #   - skills/constitution/SKILL.md
@@ -15,6 +15,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+TEMPLATE_DIR="${ROOT_DIR}/templates"
 
 COMMIT_HASH="$(git -C "${ROOT_DIR}" rev-parse --short HEAD 2>/dev/null || echo unknown)"
 GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -28,7 +29,7 @@ splice_shared() {
   while IFS= read -r marker; do
     fragment="${marker#\{\{SHARED:}"
     fragment="${fragment%\}\}}"
-    path="${SCRIPT_DIR}/shared/${fragment}.md"
+    path="${TEMPLATE_DIR}/shared/${fragment}.md"
     if [ -f "$path" ]; then
       local replacement
       replacement="$(cat "$path")"
@@ -49,7 +50,7 @@ splice_templates() {
   while IFS= read -r marker; do
     fragment="${marker#\{\{TEMPLATE:}"
     fragment="${fragment%\}\}}"
-    path="${SCRIPT_DIR}/${fragment}.md"
+    path="${TEMPLATE_DIR}/${fragment}.md"
     if [ -f "$path" ]; then
       local replacement
       replacement="$(cat "$path")"
@@ -71,7 +72,7 @@ render() {
 # Generate a skill file from template.md into skills/<name>/SKILL.md
 generate_skill() {
   local name="$1"
-  local template="${SCRIPT_DIR}/${name}.md"
+  local template="${TEMPLATE_DIR}/${name}.md"
   local skill_dir="${ROOT_DIR}/skills/${name}"
   local output="${skill_dir}/SKILL.md"
 

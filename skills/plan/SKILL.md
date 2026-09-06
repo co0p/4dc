@@ -23,12 +23,36 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
 
 `.agent/plan.md` containing:
 - **Goal**: copied from `increment.md` — one sentence
-- **Approach**: 2–3 sentences on strategy; no code yet
+- **Approach**: 2–3 sentences on strategy, including architectural boundary and any performance-sensitive path; no code yet
 - **Subtasks**: ordered list, each with:
+  - Type: `[research]`, `[tidy]`, or `[behavior]`
   - Description (what, not how)
   - Verification step (how to confirm it’s done)
   - Dependencies on prior subtasks
+  - Acceptance criteria covered
 - **Risks**: known unknowns that could block execution
+
+Required `.agent/plan.md` headings:
+- `## Goal`
+- `## Approach`
+- `## Subtasks`
+- `## Risks`
+
+`[research]` is only for blocking unknowns.
+`[tidy]` is structural only and must preserve observable behavior.
+`[behavior]` changes observable behavior and must be verified by a failing test or failing executable check first.
+
+## Execution Contract
+
+- Produce only the artifact for this phase. Do not leak work from a later phase into this one.
+- Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
+- Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.
+- Resolve conflicts in this order: explicit user approval, approved prior-phase artifacts, `CONSTITUTION.md`, this skill.
+- Low-risk actions: reads, searches, diffs, and local validation commands.
+- Medium-risk actions: local reversible edits to phase artifacts.
+- High-risk actions: destructive file operations, external side effects, or skipping a stop gate. Require explicit approval first.
+- If a required input is missing or contradictory, ask one focused question or stop at the review gate. Do not invent missing facts.
+- Before finishing, run the phase checklist and confirm every required section is present.
 
 ---
 
@@ -37,15 +61,16 @@ Do NOT start implementation during this phase — no code, no file edits.
 Do NOT write plan.md until the HTML review is approved.
 Do NOT list subtasks without verification steps.
 Every subtask must map to at least one acceptance criterion from increment.md.
+Do NOT place a `[behavior]` subtask before the `[tidy]` subtasks it depends on.
 </HARD-GATE>
 
 ---
 
 ## Process
 
-1. **Read inputs** — `CONSTITUTION.md`, `.agent/increment.md`, relevant source files
-2. **Identify risks** — unknown dependencies, test gaps, ambiguous requirements
-3. **Draft subtasks** — ordered, each independently verifiable, sized for one focused work session
+1. **Read inputs** — `CONSTITUTION.md`, `.agent/increment.md`, relevant source files, and any current architecture or ADR docs touched by the change
+2. **Identify risks** — unknown dependencies, test gaps, ambiguous requirements, architectural tension, and performance risks
+3. **Draft subtasks** — ordered, each independently verifiable, sized for one focused work session, using `[research]` only when needed, `[tidy]` before `[behavior]`
 4. **Generate `.agent/plan-review.html`** — present the plan with full traceability to acceptance criteria
 5. **STOP** — wait for explicit approval or revision
 6. **On approval** — write `.agent/plan.md`
@@ -62,8 +87,8 @@ Before writing final Markdown artifacts, generate a reviewable HTML file in `.ag
 
 **File Naming Convention:**
 - All `.agent/` artifacts MUST use lowercase filenames
-- Examples: `increment.md`, `plan.md`, `implementation.md`, `promote.md`
-- Review files: `increment-review.html`, `plan-review.html`, `implementation-review.html`, `promotion-report.html`
+- Examples: `increment.md`, `plan.md`, `implementation.md`, `learnings.md`
+- Review files: `constitution-review.html`, `increment-review.html`, `plan-review.html`, `implementation-review.html`, `promotion-review.html`
 
 Required report sections:
 1. Objective
@@ -90,9 +115,10 @@ HTML requirements:
 - Support inline SVG rendering for diagrams when useful:
 	- allow dedicated diagram sections with embedded `<svg>`
 	- style SVG text, lines, and nodes for visual consistency with the theme
+- Tailor the phase label, reviewed inputs, and artifact filenames to the current phase. Never leave sample placeholders such as `Phase: Implement` in the final review file.
 - Do not write final Markdown artifacts until approval is explicit.
 
-Canonical HTML skeleton (recommended):
+Minimum HTML skeleton (adapt as needed for the current phase):
 
 ```html
 <!doctype html>
@@ -100,128 +126,16 @@ Canonical HTML skeleton (recommended):
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Phase Review</title>
+	<title>[Phase] Review</title>
 	<style>
 		:root {
 			--bg: #f4f3ef;
 			--panel: #ffffff;
 			--ink: #111111;
-			--muted: #4d4c45;
-			--line: #1b1b1b;
-			--accent: #234642;
-			--codeBg: #151515;
-			--codeInk: #ececec;
-			--kw: #f4c95d;
-			--str: #8dd694;
-			--fn: #8cb4ff;
-			--cm: #9aa0a6;
-			--id: #ff9f7a;
-		}
-		* { box-sizing: border-box; }
-		body {
-			margin: 0;
-			background: var(--bg);
-			color: var(--ink);
-			font-family: "IBM Plex Sans", "Segoe UI", -apple-system, sans-serif;
-			line-height: 1.45;
-		}
-		.layout {
-			max-width: 1180px;
-			margin: 0 auto;
-			display: grid;
-			grid-template-columns: 250px minmax(0, 1fr);
-			gap: 14px;
-			padding: 16px;
-		}
-		.sidebar {
-			position: sticky;
-			top: 12px;
-			align-self: start;
-			border: 2px solid var(--line);
-			background: var(--panel);
-			padding: 12px;
-		}
-		.sidebar h2 {
-			margin: 0 0 8px;
-			font-size: 0.98rem;
-			letter-spacing: 0.02em;
-		}
-		.sidebar a {
-			display: block;
-			color: var(--accent);
-			text-decoration: none;
-			margin: 7px 0;
-			font-weight: 700;
-		}
-		.content .card {
-			border: 2px solid var(--line);
-			background: var(--panel);
-			padding: 14px;
-			margin-bottom: 12px;
-		}
-		.status {
-			display: inline-block;
-			padding: 6px 10px;
-			border: 2px solid var(--line);
-			font-weight: 800;
-			background: #fff6dd;
-		}
-		table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-top: 10px;
-		}
-		th, td {
-			border: 1px solid #2f2f2f;
-			text-align: left;
-			padding: 8px;
-			vertical-align: top;
-		}
-		pre {
-			margin: 10px 0 0;
-			padding: 12px;
-			border: 1px solid #2d2d2d;
-			background: var(--codeBg);
-			color: var(--codeInk);
-			overflow-x: auto;
-		}
-		code {
-			font-family: "JetBrains Mono", Menlo, Monaco, monospace;
-			font-size: 0.92rem;
-		}
-		.kw { color: var(--kw); }
-		.str { color: var(--str); }
-		.fn { color: var(--fn); }
-		.cm { color: var(--cm); }
-		.id { color: var(--id); }
-		.diagram svg {
-			width: 100%;
-			height: auto;
-			border: 1px solid #2f2f2f;
-			background: #f9f8f4;
-		}
-		.diagram text {
-			fill: #111111;
-			font-size: 12px;
-			font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-		}
-		.diagram .node {
-			fill: #ffffff;
-			stroke: #1b1b1b;
-			stroke-width: 2;
-		}
-		.diagram .edge {
-			stroke: #1b1b1b;
-			stroke-width: 2;
-			fill: none;
-			marker-end: url(#arrow);
-		}
-		@media (max-width: 920px) {
-			.layout { grid-template-columns: 1fr; }
-			.sidebar {
-				position: static;
-				margin-bottom: 8px;
-			}
+			--accent: #1a56db;
+			--muted: #6b7280;
+			--border: #e5e7eb;
+			--radius: 4px;
 		}
 	</style>
 </head>
@@ -239,26 +153,21 @@ Canonical HTML skeleton (recommended):
 
 		<main class="content">
 			<section class="card" id="objective">
-				<h1>Phase Review</h1>
-				<p>Phase: Implement | Generated: YYYY-MM-DD HH:MM UTC</p>
+				<h1>[Phase] Review</h1>
+				<p>Phase: [phase-name] | Generated: YYYY-MM-DD HH:MM UTC</p>
 				<p><span class="status">Status: Pending Approval</span></p>
 			</section>
 
 			<section class="card" id="inputs-reviewed">
 				<h2>Inputs Reviewed</h2>
 				<ul>
-					<li>CONSTITUTION.md</li>
-					<li>.agent/increment.md</li>
-					<li>.agent/plan.md</li>
-					<li>.agent/implementation.md</li>
-					<li>.agent/learnings.md</li>
+					<li>[list only the inputs actually reviewed for this phase]</li>
 				</ul>
 			</section>
 
 			<section class="card" id="proposed-output-summary">
 				<h2>Proposed Output Summary</h2>
-				<pre><code><span class="kw">const</span> <span class="id">status</span> = <span class="str">"Pending Approval"</span>;
-<span class="cm">// Example token classes for code highlighting</span></code></pre>
+				<p>[Summarize the artifact to be written after approval.]</p>
 			</section>
 
 			<section class="card" id="risks-and-trade-offs">
@@ -275,21 +184,7 @@ Canonical HTML skeleton (recommended):
 
 			<section class="card diagram" id="open-questions">
 				<h2>Open Questions</h2>
-				<svg viewBox="0 0 520 140" role="img" aria-label="Optional flow diagram">
-					<defs>
-						<marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-							<polygon points="0 0, 10 3.5, 0 7" fill="#1b1b1b"></polygon>
-						</marker>
-					</defs>
-					<rect class="node" x="20" y="35" width="130" height="54"></rect>
-					<text x="45" y="67">Input</text>
-					<path class="edge" d="M150,62 L250,62"></path>
-					<rect class="node" x="250" y="35" width="130" height="54"></rect>
-					<text x="273" y="67">Review</text>
-					<path class="edge" d="M380,62 L500,62"></path>
-					<rect class="node" x="500" y="35" width="0" height="0" style="display:none"></rect>
-				</svg>
-				<p>Replace this sample SVG with any relevant architecture or flow graph when needed.</p>
+				<p>[List unresolved questions, or say None.]</p>
 			</section>
 
 			<section class="card" id="approval-decision">
@@ -310,6 +205,8 @@ Canonical HTML skeleton (recommended):
 - [ ] Relevant source files scanned
 - [ ] Every subtask has a verification step
 - [ ] Every acceptance criterion has a covering subtask
+- [ ] Every `[behavior]` subtask names a failing test or failing executable check as its first verification step
+- [ ] Any architectural or performance-sensitive change is reflected in the approach or risks
 - [ ] Risks documented
 - [ ] HTML review generated and shown
 - [ ] User approval received
