@@ -46,32 +46,55 @@ Required `CONSTITUTION.md` headings:
 ### Supporting Documents
 
 **`docs/testing.md`** — testing practices for this project:
-- Test types and scope (unit, integration, acceptance, performance, etc.)
-- What requires tests (behavior changes, bug fixes, refactoring rules)
-- Test location and naming conventions
-- How to run tests locally and in CI
-- Test gate before promote (constitution-level requirement)
-- Known gaps and limitations
+- The reasoning behind the testing strategy and the risks it is intended to control
+- Guidance for choosing test depth at architectural and user-facing boundaries
+- Actual commands for local, CI, acceptance, and release checks, with setup and interpretation guidance
+- Evidence required before a change is considered complete
+- Known confidence gaps, maintenance practices, and reasons for environment-specific checks
+- No inventory of individual tests, test-case lists, or coverage targets unless a project-specific decision genuinely requires one
 
 **`docs/deployment.md`** — deployment and release procedures for this project:
-- Deployment overview (what and where)
-- Release triggers and versioning scheme
-- Deployment targets (staging, production, etc.)
-- Step-by-step deployment procedure with checklist
-- Rollback procedure and recovery strategy
-- Environment configuration (secrets, variables, config files)
-- Monitoring and alerts
-- Known limitations and risks
+- The deployment model, its rationale, and the operational assumptions it relies on
+- Release triggers, versioning decisions, ownership, and required evidence
+- Actual deployment and rollback runbooks with verification and recovery guidance
+- Configuration and secret-handling principles without secret values
+- Health signals, alert actions, and meaningful operational risks
+- No historical release log or generic checklist detached from this project's procedure
 
 **`docs/adr/`** — Architecture Decision Records:
 - Decisions with rationale and consequences
 - Indexed from `CONSTITUTION.md`
 - Created using the ADR template when foundational decisions exist
 - Updated when architectural decisions emerge
+- Each ADR explains the context, decision, alternatives, trade-offs, and consequences; it is not an implementation diary
+
+**`docs/architecture.md`** — C4 architecture view:
+- Required for every project, even when the system is small
+- Must contain a current C4 Level 2 container view (or an equivalent explicitly labeled diagram)
+- Describes runtime containers, responsibilities, communication paths, and data stores
+
+**`docs/domain.md`** — Domain glossary:
+- Required for every project, even when the vocabulary is initially small
+- Defines shared concepts, domain events, and system rules in business language
+- Must not be replaced by an ADR, README, or implementation-specific notes
 
 ### Secondary Artifact
 
 `docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
+
+### Documentation Baseline
+
+Before creating or updating the constitution, audit the repository for the complete permanent documentation baseline:
+
+- `CONSTITUTION.md`
+- `docs/testing.md`
+- `docs/deployment.md`
+- `docs/architecture.md` with a C4 Level 2 container view
+- `docs/domain.md` with the project's glossary
+- `docs/adr/`
+- `docs/roadmap.md`
+
+Missing baseline documents are constitution outputs; they are not optional follow-up work. Existing documents must be checked for the required content rather than accepted solely because the path exists.
 
 ## Execution Contract
 
@@ -106,6 +129,8 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures
+   - Create or update `docs/architecture.md` with the current C4 Level 2 container view
+   - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
    - Create initial `docs/adr/` structure if foundational decisions exist
    - Create `docs/roadmap.md` if not present
 
@@ -154,118 +179,69 @@ Use these verbatim as the starting content when creating a new document for the 
 ```markdown
 # Testing
 
-Document on testing practices for this project. Updated when new test patterns emerge or when constitution-level testing rules change.
+Guide to making reliable testing decisions for this project. Explain why the test strategy is shaped this way, how a developer should choose the cheapest test that gives sufficient confidence, and how to run the relevant checks. Update when the architecture, risk profile, or test workflow changes.
 
 ---
 
-## Test Types and Scope
+## Testing Approach and Rationale
+
+Explain the risks the test strategy is designed to control and the boundaries where each kind of test provides confidence. Prefer principles and decision guidance over inventories. For example, explain why domain rules are tested without infrastructure, why persistence boundaries need integration checks, or why an acceptance test exercises a complete user job story.
+
+---
+
+## Choosing Test Depth
 
 <!--
-Define the types of tests used in this project and what is required for each change.
-Example categories:
-- **Unit tests** — test single functions or methods in isolation
-- **Integration tests** — test components working together
-- **Acceptance tests** — test user-visible behavior against job stories
-- **Performance tests** — test latency, throughput, or resource constraints
-- **Contract tests** — test API or data contracts
+Describe how to decide whether a change needs a focused check, an integration check, an acceptance scenario, a performance measurement, or no new test. Tie the decision to user risk, architectural boundaries, determinism, and failure cost.
+Do not maintain a catalog of individual tests or report a coverage percentage here.
 -->
 
 ---
 
-## What Requires Tests
+## Test Design Conventions
 
 <!--
-State clearly what _must_ have test coverage:
-- All behavior changes must have a failing test first (Red → Green → Refactor)
-- Bug fixes must have a regression test before the fix
-- Refactoring must keep existing tests green
-- Structural tidying (`[tidy]` subtasks) must not change observable behavior
+Describe conventions that make tests communicate behavior: naming, fixture ownership, isolation, determinism, test data, and how user-facing assertions should avoid implementation details. Keep examples small and illustrative rather than listing the suite.
 -->
 
 ---
 
-## Test Location and Naming Conventions
+## Running the Checks
 
 <!--
-Example:
-- Test files live next to production code or in a `tests/` directory
-- Test file naming: `<module>_test.<ext>` or `test_<module>.<ext>`
-- Test function naming: `test_<unit>_<scenario>` or `describe('<unit>', () => { it('...')
-- Helper functions: `setup_<fixture>()`, `assert_<condition>()`
+Document the actual commands for fast local feedback, the complete pre-merge gate, and any setup required for acceptance or environment-dependent checks. Explain when to use each command and how to interpret failures. Commands must be maintained as executable guidance, not illustrative placeholders.
 -->
 
 ---
 
-## Running Tests
+## Evidence Required Before Promotion
 
 <!--
-How do developers run tests locally?
-Example:
-```bash
-npm test              # All tests
-npm test -- --watch  # Watch mode
-npm test -- <pattern> # Filter by pattern
-```
-
-Or for other languages:
-```bash
-go test ./...
-pytest
-python -m unittest discover
-```
+State the evidence required before a change is considered complete. Focus on behavior, risk, and reproducibility. Do not use line coverage or a list of passing tests as a substitute for explaining why the evidence is sufficient.
 -->
 
 ---
 
-## Test Gate Before Promote
+## Automation and Feedback Loops
 
 <!--
-What must be green before code is promoted to permanent docs?
-This is the _constitution-level gate_.
-Example:
-- All unit and integration tests must pass
-- Code coverage must be ≥ 80% for changed files
-- No flaky tests
-- Performance tests must not regress
+Explain where checks run (local, CI, release), what feedback each loop provides, and how failures are triaged. Record the rationale for any intentionally manual or environment-specific check.
 -->
 
 ---
 
-## Continuous Integration / Testing Automation
+## Known Risks and Gaps
 
 <!--
-Is there a CI/CD pipeline? What does it test?
-Example:
-- GitHub Actions / GitLab CI / Jenkins runs tests on every PR
-- Coverage reports generated and must meet threshold
-- Performance benchmarks tracked
-- Linting and static analysis gates the merge
+Document meaningful confidence gaps, why they exist, and what signal would justify changing the approach. Do not turn this section into a test inventory or coverage report.
 -->
 
 ---
 
-## Known Test Gaps or Limitations
+## Maintenance Guidance
 
 <!--
-Document any areas where testing is incomplete or infeasible.
-Example:
-- Real-time features are not tested because [reason]
-- External service integrations use mocks, not real endpoints
-- UI tests are manual because [reason]
-- Performance testing only covers [scenario], not [scenario]
--->
-
----
-
-## Test Maintenance and Flakiness
-
-<!--
-How do you keep tests reliable?
-Example:
-- Flaky tests are tracked in [location] and fixed before merge
-- Tests with external dependencies use retries with [strategy]
-- Test data is seeded from [source], reset after each test
-- Slow tests are isolated and run separately
+Explain how tests are kept deterministic, how flakiness is handled, when fixtures or helpers should be changed, and how this guide itself is updated when the testing rationale changes.
 -->
 ```
 
@@ -274,43 +250,20 @@ Example:
 ```markdown
 # Deployment
 
-Document on deployment practices and runbooks for this project. Updated whenever deployment procedure, target environment, or rollback strategy changes.
+Guide to releasing and operating this project. Explain the deployment model, why it is appropriate, how to execute it safely, and how to recover. Update whenever the release or operational model changes.
 
----
-
-## Deployment Overview
-
-<!--
-One-sentence summary of what gets deployed and where.
-Example:
+Describe the release unit, the target, ownership, and the operational assumptions. Explain why this deployment shape is used.
 - This is a Node.js backend service deployed to AWS Lambda
 - This is a React frontend deployed to Vercel
 - This is a Go CLI tool distributed via Homebrew and GitHub Releases
 -->
 
----
-
-## Release Triggers and Versioning
-
-<!--
-How is a release triggered? How is it versioned?
-Example:
+Explain the release trigger and versioning decision, including who can release and what evidence is required first. Avoid a changelog or release-history list here.
 - Manual: Tag a commit with `v<major>.<minor>.<patch>` and push to origin; CI builds and publishes
 - Automatic: Merge to `main` triggers a release with semantic versioning based on conventional commits
 - Versioning scheme: Semantic Versioning (SemVer) for libraries, CalVer for applications
 -->
-
----
-
-## Deployment Target(s)
-
-<!--
-Where does code run in production?
-Example:
-- Production: `https://api.example.com` (AWS ECS, us-east-1)
-- Staging: `https://staging-api.example.com` (AWS ECS, us-east-1)
-- Development: Local development environment only
-
+Describe the environments and their purpose, including the differences that matter for safe verification. Do not use this section as an environment inventory without explaining the deployment model.
 Or for CLI:
 - macOS: Homebrew tap `example/tap/tool`
 - Linux: GitHub Releases, apt repository
@@ -321,45 +274,8 @@ Or for CLI:
 
 ## Deployment Procedure
 
-<!--
-Step-by-step runbook for deploying a release.
-Example:
-
-### Prerequisites
-- [ ] All tests pass locally and in CI
-- [ ] Code reviewed and merged to `main`
-- [ ] Tag pushed with `git tag -a v<version> -m "Release <version>" && git push origin v<version>`
-
-### Deploy Steps
-1. CI pipeline is triggered by the tag push
-2. Build artifacts are created: `dist/` for frontend, Docker image for backend
-3. Artifact is published to target registry (npm, Docker Hub, GitHub Releases)
-4. If deployment to production is automatic:
-   - ECS task definition is updated with new image tag
-   - Service is updated and old tasks are drained gracefully (30s drain timeout)
-   - Health checks pass before considering deployment complete
-5. If manual approval is needed:
-   - Ops team receives notification in [Slack/email/deployment dashboard]
-   - Approval triggers the above steps
-
-### Verification
-- [ ] Health checks pass on target environment
-- [ ] Smoke tests pass (e.g., `curl https://api.example.com/health`)
-- [ ] Logs show no errors
-- [ ] Key metrics (latency, error rate) are nominal
--->
-
----
-
-## Rollback Procedure
-
-<!--
-How do you undo a bad deployment?
-Example:
-- Automatic rollback: If health checks fail, ECS automatically reverts to previous task definition
-- Manual rollback: `git revert <commit>`, tag with `v<version>-hotfix.1`, push; CI redeploys
-- Database migrations: Forward-only; data rollback requires [process]
-- Feature flags: Bad behavior can be disabled without redeployment via [system]
+Document the actual release procedure as a short runbook, with prerequisites, commands or links, verification signals, and ownership. Explain why the ordering protects users and data. Keep the checklist operational; put rationale in surrounding prose.
+Describe rollback triggers, the recovery action, data implications, and who decides. Explain any forward-only or irreversible operation and the recovery alternative.
 
 For CLI releases:
 - Yanked versions: Tag with `v<version>` and mark as yanked in release notes
@@ -370,43 +286,13 @@ For CLI releases:
 
 ## Deployment Checklist
 
-<!--
-Copy and use before each deployment:
+Keep only the small set of release decisions and checks that are specific to this project. Do not turn this into a repeated list of every test, deployment, or release ever performed.
 
-- [ ] Code committed and pushed
-- [ ] All tests pass in CI
-- [ ] Code reviewed
-- [ ] Changelog updated (docs/CHANGELOG.md or RELEASES.md)
-- [ ] Version bumped and tagged
-- [ ] Staging deployment succeeds
-- [ ] Smoke tests pass on staging
-- [ ] Approval given for production deployment
-- [ ] Production deployment succeeds
-- [ ] Health checks pass
-- [ ] Metrics are nominal
-- [ ] Announcement posted to [team channel]
--->
-
----
-
-## Environment Configuration
-
-<!--
-How are environment variables, secrets, and configuration managed?
-Example:
-- Secrets are stored in [AWS Secrets Manager / HashiCorp Vault / GitHub Secrets]
+Explain configuration ownership, secret handling, safe defaults, and the reason for separating deploy-time configuration from source code. Never record secret values.
 - Environment variables are injected at deployment time from [source]
 - Configuration file: `.env.production` (not checked in), managed by [process]
 - Database connection string: Retrieved from [secrets manager] at startup
--->
-
----
-
-## Monitoring and Alerts
-
-<!--
-What happens after code is deployed? How do you know if it's broken?
-Example:
+Explain how operators know a release is healthy, which signals matter, and what action an alert should trigger. Record thresholds only when they are real, justified, and maintained.
 - Error rates are monitored in Datadog; alert if error rate > 1% for 5 min
 - Latency p99 is tracked; alert if > [threshold]
 - Database connection pool is monitored; alert if exhausted
@@ -414,14 +300,7 @@ Example:
 - Deployment notifications sent to [Slack channel]
 -->
 
----
-
-## Known Deployment Limitations or Risks
-
-<!--
-Document any deployment constraints or gotchas.
-Example:
-- Database migrations are applied separately; code must be backward-compatible
+Document constraints that materially affect release safety and the mitigation or follow-up needed. Do not preserve obsolete procedures as historical reference.
 - Deployment is not atomic: old and new code may run simultaneously for [duration]
 - Secrets rotation requires [manual step]
 - Large deployments > 100MB take [N] minutes; monitor for timeout
@@ -435,7 +314,7 @@ When creating a new Architecture Decision Record, use this template:
 ```markdown
 # Architecture Decision Record (ADR) Template
 
-ADRs document significant architectural decisions and their rationale. They serve as a permanent record of _why_ the system is structured a particular way, not just _what_ was built.
+ADRs document significant architectural decisions and their rationale. They serve as a concise guide to _why_ the system is structured a particular way, not a changelog, implementation diary, or list of completed work.
 
 ---
 
@@ -476,7 +355,7 @@ Example:
 
 **Decision**
 
-[What did we decide to do? Be specific.]
+[What did we decide to do? Be specific about the boundary or principle, but avoid duplicating implementation details that belong in code or runbooks.]
 
 Example:
 - Store user preferences in a transactional SQL database (PostgreSQL on AWS RDS)
@@ -486,7 +365,7 @@ Example:
 
 **Consequences (Positive)**
 
-[What gets better?]
+[What gets better, and why is that useful to the project?]
 
 - Preferences survive application restarts
 - Easy to query and report on user behavior
@@ -495,7 +374,7 @@ Example:
 
 **Consequences (Negative)**
 
-[What gets harder or more complex?]
+[What gets harder, riskier, or more constrained?]
 
 - Added operational burden: database backups, monitoring, security patching
 - Network latency: every preference lookup requires a round trip (mitigated by cache)
@@ -571,7 +450,7 @@ Before an ADR is merged:
 3. Status must be set to "Accepted" (or "Deferred" if not yet implemented)
 
 After it is merged:
-- Link it from `docs/ARCHITECTURE.md` or an index
+- Link it from the project's architecture or ADR index
 - Update any related ADRs with "Supersedes" or "Related Decisions" links
 - If a related decision is reversed, update the old ADR's status to "Superseded"
 ```
@@ -581,9 +460,9 @@ After it is merged:
 ```markdown
 # Roadmap
 
-Living product roadmap. Each section is one delivered or planned increment.
+Product direction and sequencing guide. Each entry explains the user outcome, current confidence, and ordering rationale. Keep it concise and decision-oriented; detailed implementation status belongs in phase artifacts and code evidence.
 
-> A feature moves to **Done** only when its acceptance tests pass and are linked here.
+> A feature moves to **Done** only when its user outcome is verified and the evidence is linked here.
 > Source of truth: if a feature is not in Done with a passing test link, it is not considered shipped.
 
 ---
@@ -595,7 +474,7 @@ Each entry follows this pattern:
 
 ### [Feature name — short, user-visible]
 - **Job story:** When [situation], I want to [action], so that [outcome].
-- **Acceptance tests:** [path/to/test_file.ext#test_name](path/to/test_file.ext)
+- **Evidence:** [link to the smallest durable verification record](path/to/evidence)
 - **Use case:** [docs/usecases/use-case-slug.md](docs/usecases/use-case-slug.md) *(if promoted)*
 - **Delivered:** [increment slug or YYYY-MM-DD]
 -->
@@ -607,7 +486,7 @@ Each entry follows this pattern:
 <!--
 ### [Feature name]
 - **Job story:** When [situation], I want to [action], so that [outcome].
-- **Acceptance tests:** pending — being written this cycle
+- **Evidence:** pending — define the verification approach in the approved plan
 - **Increment:** [increment slug]
 -->
 
@@ -618,7 +497,7 @@ Each entry follows this pattern:
 <!--
 ### [Feature name]
 - **Job story:** When [situation], I want to [action], so that [outcome].
-- **Notes:** [optional — dependencies, open questions, or ordering rationale]
+- **Why now / ordering:** [dependencies, user value, open questions, or sequencing rationale]
 -->
 
 ---
@@ -627,7 +506,7 @@ Each entry follows this pattern:
 
 - Features move left to right: Planned → Partial → Done. Never skip Partial.
 - A feature enters Partial when its increment is approved.
-- A feature enters Done only when its acceptance test link resolves to a passing test.
+- A feature enters Done only when its evidence link resolves to a current verification record.
 - Do not add implementation detail here — link to the use case or ADR for that.
 - If a planned feature is no longer needed, remove it and note the removal in `learnings.md` for that cycle.
 ```

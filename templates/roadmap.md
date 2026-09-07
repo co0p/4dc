@@ -1,8 +1,8 @@
 # Roadmap
 
-Living product roadmap. Each section is one delivered or planned increment.
+Product direction and sequencing guide. Each entry explains the user outcome, current confidence, and ordering rationale. Keep it concise and decision-oriented; detailed implementation status belongs in phase artifacts and code evidence.
 
-> A feature moves to **Done** only when its acceptance tests pass and are linked here.
+> A feature moves to **Done** only when its user outcome is verified and the evidence is linked here.
 > Source of truth: if a feature is not in Done with a passing test link, it is not considered shipped.
 
 ---
@@ -14,7 +14,7 @@ Each entry follows this pattern:
 
 ### [Feature name — short, user-visible]
 - **Job story:** When [situation], I want to [action], so that [outcome].
-- **Acceptance tests:** [path/to/test_file.ext#test_name](path/to/test_file.ext)
+- **Evidence:** [link to the smallest durable verification record](path/to/evidence)
 - **Use case:** [docs/usecases/use-case-slug.md](docs/usecases/use-case-slug.md) *(if promoted)*
 - **Delivered:** [increment slug or YYYY-MM-DD]
 -->
@@ -26,7 +26,7 @@ Each entry follows this pattern:
 <!--
 ### [Feature name]
 - **Job story:** When [situation], I want to [action], so that [outcome].
-- **Acceptance tests:** pending — being written this cycle
+- **Evidence:** pending — define the verification approach in the approved plan
 - **Increment:** [increment slug]
 -->
 
@@ -37,7 +37,7 @@ Each entry follows this pattern:
 <!--
 ### [Feature name]
 - **Job story:** When [situation], I want to [action], so that [outcome].
-- **Notes:** [optional — dependencies, open questions, or ordering rationale]
+- **Why now / ordering:** [dependencies, user value, open questions, or sequencing rationale]
 -->
 
 ---
@@ -46,6 +46,6 @@ Each entry follows this pattern:
 
 - Features move left to right: Planned → Partial → Done. Never skip Partial.
 - A feature enters Partial when its increment is approved.
-- A feature enters Done only when its acceptance test link resolves to a passing test.
+- A feature enters Done only when its evidence link resolves to a current verification record.
 - Do not add implementation detail here — link to the use case or ADR for that.
 - If a planned feature is no longer needed, remove it and note the removal in `learnings.md` for that cycle.

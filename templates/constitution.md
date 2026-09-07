@@ -46,32 +46,55 @@ Required `CONSTITUTION.md` headings:
 ### Supporting Documents
 
 **`docs/testing.md`** — testing practices for this project:
-- Test types and scope (unit, integration, acceptance, performance, etc.)
-- What requires tests (behavior changes, bug fixes, refactoring rules)
-- Test location and naming conventions
-- How to run tests locally and in CI
-- Test gate before promote (constitution-level requirement)
-- Known gaps and limitations
+- The reasoning behind the testing strategy and the risks it is intended to control
+- Guidance for choosing test depth at architectural and user-facing boundaries
+- Actual commands for local, CI, acceptance, and release checks, with setup and interpretation guidance
+- Evidence required before a change is considered complete
+- Known confidence gaps, maintenance practices, and reasons for environment-specific checks
+- No inventory of individual tests, test-case lists, or coverage targets unless a project-specific decision genuinely requires one
 
 **`docs/deployment.md`** — deployment and release procedures for this project:
-- Deployment overview (what and where)
-- Release triggers and versioning scheme
-- Deployment targets (staging, production, etc.)
-- Step-by-step deployment procedure with checklist
-- Rollback procedure and recovery strategy
-- Environment configuration (secrets, variables, config files)
-- Monitoring and alerts
-- Known limitations and risks
+- The deployment model, its rationale, and the operational assumptions it relies on
+- Release triggers, versioning decisions, ownership, and required evidence
+- Actual deployment and rollback runbooks with verification and recovery guidance
+- Configuration and secret-handling principles without secret values
+- Health signals, alert actions, and meaningful operational risks
+- No historical release log or generic checklist detached from this project's procedure
 
 **`docs/adr/`** — Architecture Decision Records:
 - Decisions with rationale and consequences
 - Indexed from `CONSTITUTION.md`
 - Created using the ADR template when foundational decisions exist
 - Updated when architectural decisions emerge
+- Each ADR explains the context, decision, alternatives, trade-offs, and consequences; it is not an implementation diary
+
+**`docs/architecture.md`** — C4 architecture view:
+- Required for every project, even when the system is small
+- Must contain a current C4 Level 2 container view (or an equivalent explicitly labeled diagram)
+- Describes runtime containers, responsibilities, communication paths, and data stores
+
+**`docs/domain.md`** — Domain glossary:
+- Required for every project, even when the vocabulary is initially small
+- Defines shared concepts, domain events, and system rules in business language
+- Must not be replaced by an ADR, README, or implementation-specific notes
 
 ### Secondary Artifact
 
 `docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
+
+### Documentation Baseline
+
+Before creating or updating the constitution, audit the repository for the complete permanent documentation baseline:
+
+- `CONSTITUTION.md`
+- `docs/testing.md`
+- `docs/deployment.md`
+- `docs/architecture.md` with a C4 Level 2 container view
+- `docs/domain.md` with the project's glossary
+- `docs/adr/`
+- `docs/roadmap.md`
+
+Missing baseline documents are constitution outputs; they are not optional follow-up work. Existing documents must be checked for the required content rather than accepted solely because the path exists.
 
 {{SHARED:execution-contract}}
 
@@ -96,6 +119,8 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures
+   - Create or update `docs/architecture.md` with the current C4 Level 2 container view
+   - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
    - Create initial `docs/adr/` structure if foundational decisions exist
    - Create `docs/roadmap.md` if not present
 

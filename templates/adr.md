@@ -1,6 +1,6 @@
 # Architecture Decision Record (ADR) Template
 
-ADRs document significant architectural decisions and their rationale. They serve as a permanent record of _why_ the system is structured a particular way, not just _what_ was built.
+ADRs document significant architectural decisions and their rationale. They serve as a concise guide to _why_ the system is structured a particular way, not a changelog, implementation diary, or list of completed work.
 
 ---
 
@@ -41,7 +41,7 @@ Example:
 
 **Decision**
 
-[What did we decide to do? Be specific.]
+[What did we decide to do? Be specific about the boundary or principle, but avoid duplicating implementation details that belong in code or runbooks.]
 
 Example:
 - Store user preferences in a transactional SQL database (PostgreSQL on AWS RDS)
@@ -51,7 +51,7 @@ Example:
 
 **Consequences (Positive)**
 
-[What gets better?]
+[What gets better, and why is that useful to the project?]
 
 - Preferences survive application restarts
 - Easy to query and report on user behavior
@@ -60,7 +60,7 @@ Example:
 
 **Consequences (Negative)**
 
-[What gets harder or more complex?]
+[What gets harder, riskier, or more constrained?]
 
 - Added operational burden: database backups, monitoring, security patching
 - Network latency: every preference lookup requires a round trip (mitigated by cache)
@@ -136,6 +136,6 @@ Before an ADR is merged:
 3. Status must be set to "Accepted" (or "Deferred" if not yet implemented)
 
 After it is merged:
-- Link it from `docs/ARCHITECTURE.md` or an index
+- Link it from the project's architecture or ADR index
 - Update any related ADRs with "Supersedes" or "Related Decisions" links
 - If a related decision is reversed, update the old ADR's status to "Superseded"

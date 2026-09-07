@@ -2,7 +2,7 @@
 
 C4 Level 2: Container diagram. Updated when structural boundaries change.
 
-> This is not a design doc. It answers one question: what are the runtime containers, what do they do, and how do they communicate?
+> This is a durable orientation guide, not a component inventory. It explains the system boundary, runtime containers, important communication paths, and constraints so a reader can reason about change safely.
 
 ---
 
@@ -81,6 +81,10 @@ Constraints that affect all containers and must not be violated:
 - [e.g. "Single binary, no install step"]
 - [e.g. "All state is held in browser memory; nothing is written to a server"]
 
+## Reading and Update Guidance
+
+Explain the architectural reasoning that matters to contributors: why the containers are separated, which boundaries must remain stable, and what kinds of changes require an ADR or an update to this document. Do not duplicate class lists, endpoint lists, or deployment instructions.
+
 ---
 
 ## Out of Scope
@@ -101,5 +105,7 @@ Update this file when:
 - A new external system dependency is added
 
 Do NOT update for internal refactors, new features within an existing container, or test changes.
+
+The diagram is a current model, not a historical record. Remove stale paths and obsolete containers rather than preserving them for context.
 
 **Last updated:** [YYYY-MM-DD] — [brief reason]

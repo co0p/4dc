@@ -37,6 +37,20 @@ Required review outputs:
 - Promotion candidates are listed individually with destination path, rationale, and approval status.
 - The promotion review explicitly states whether architecture, domain language, testing guidance, and performance documentation changed or stayed unchanged.
 
+### Permanent Documentation Baseline
+
+Every promotion must verify that the project's permanent documentation baseline exists and is usable:
+
+- `CONSTITUTION.md`
+- `docs/testing.md`
+- `docs/deployment.md`
+- `docs/architecture.md` containing a current C4 Level 2 container view (or an explicitly labeled equivalent)
+- `docs/domain.md` containing the current domain glossary
+- `docs/adr/`
+- `docs/roadmap.md`
+
+The check is semantic, not just a file-existence check. A generic architecture narrative does not satisfy the C4 requirement, and a glossary hidden in an ADR or README does not satisfy the domain-document requirement. Missing or inadequate documents become promotion candidates and must be created or corrected before the cycle can close.
+
 ## Execution Contract
 
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
@@ -57,6 +71,7 @@ Do NOT promote guesses or plans — only promote what was actually built and ver
 Do NOT delete .agent/ files until all promotions are written and confirmed.
 Present each candidate separately with destination path and rationale.
 Do NOT leave permanent docs stale when the implementation changed architecture, domain language, or performance-critical behavior.
+Do NOT close promotion while any required permanent documentation baseline item is missing or inadequate. If runtime structure and domain vocabulary are unchanged, still verify that `docs/architecture.md` and `docs/domain.md` exist and satisfy their C4 and glossary requirements.
 </HARD-GATE>
 
 ---
@@ -64,11 +79,13 @@ Do NOT leave permanent docs stale when the implementation changed architecture, 
 ## Process
 
 1. **Read all `.agent/` artifacts** — full review of increment, plan, implementation, and learnings.
-2. **Conversation: Propose promotions** — identify candidates and state what each is, its destination, and why it is durable. Iterate until the user says to proceed.
-3. **Generate `.agent/promotion-review.md`** — include the required Markdown review sections and an individual approval checkbox for every candidate.
-4. **STOP** — present the review and wait for explicit per-candidate approval.
-5. **On approval** — write each approved permanent artifact.
-6. **Clean up** — archive or delete `.agent/` files for this cycle.
+2. **Audit the permanent documentation baseline** — inspect each required path and verify the architecture document contains a C4 Level 2 container view and the domain document contains the glossary. Add missing or inadequate documents to the candidate list.
+3. **Conversation: Propose promotions** — identify candidates and state what each is, its destination, and why it is durable. Iterate until the user says to proceed.
+4. **Generate `.agent/promotion-review.md`** — include the required Markdown review sections and an individual approval checkbox for every candidate.
+5. **STOP** — present the review and wait for explicit per-candidate approval.
+6. **On approval** — write each approved permanent artifact.
+7. **Re-audit the baseline** — confirm every required document exists and satisfies its content requirement before cleanup.
+8. **Clean up** — archive or delete `.agent/` files for this cycle.
 
 ## Markdown Review Contract
 
@@ -97,9 +114,11 @@ Use `.agent/promotion-review.md`. Include **Objective**, **Inputs Reviewed**, **
 
 - [ ] All `.agent/` artifacts read
 - [ ] Promotion candidates identified and categorized
+- [ ] Permanent documentation baseline audited for existence and required content
 - [ ] Markdown review generated covering all candidates
 - [ ] User approval received per candidate
 - [ ] Each approved artifact written to permanent location
+- [ ] Final baseline audit passes: glossary and C4 architecture view are present and current
 - [ ] Architecture, domain language, testing guidance, and performance documentation either updated or explicitly marked unchanged
 - [ ] `.agent/` files cleaned up
 
@@ -121,7 +140,7 @@ Use these verbatim as the starting content when creating a new document for the 
 ```markdown
 # Domain Vocabulary
 
-Shared language for this project. Update when the product's domain vocabulary changes.
+Shared business language for this project. Use this as a reference when requirements, code, tests, and conversations use the same concept. Update when meaning, rules, or relationships change; do not use it as a data dictionary or implementation catalog.
 
 ---
 
@@ -131,15 +150,14 @@ Shared language for this project. Update when the product's domain vocabulary ch
 
 **Definition:** [One sentence in domain terms].
 
-**State:**
-- `[field]` — [what it represents and valid values]
+**Meaningful state:**
+- [Only state that changes how people understand or use the concept]
 
 **Rules:**
 - [Invariant or constraint in domain language]
 
 **Related:**
-- [Other concepts this connects to]
-- [Events it raises]
+- [Concepts or events that clarify the meaning]
 
 ---
 
@@ -148,76 +166,23 @@ Shared language for this project. Update when the product's domain vocabulary ch
 ### [EventName]
 
 **When:** [What triggers this event in domain terms]
-**Payload:** [Key fields involved]
+**Information carried:** [Business information, not an implementation payload schema]
 **Consumers:** [Who or what reacts in the domain]
 
 ---
 
 ## Rules and Constraints
 
-[System-wide invariants, state transitions, cross-concept rules described in domain language, not implementation details]
+[System-wide invariants, state transitions, and cross-concept rules described in domain language.]
 
 ---
 
-## Example
+## Writing Rules
 
-### User
-
-**Definition:** A person who has authenticated and is interacting with the system.
-
-**State:**
-- `email` — contact address; must be unique
-- `status` — `active`, `suspended`, or `deleted`
-
-**Rules:**
-- Email uniqueness enforced across the system
-- Status can transition: `active` ↔ `suspended` → `deleted` (one-way)
-- Cannot be deleted if currently has active sessions
-
-**Related:**
-- Session (one User has many Sessions)
-- UserCreated, UserSuspended, UserDeleted (events raised)
-
-
-### Session
-
-**Definition:** An authenticated connection between a User and the system.
-
-**State:**
-- `user_id` — reference to owning User
-- `status` — `active`, `expired`, or `revoked`
-- `expires_at` — when the session becomes invalid
-
-**Rules:**
-- Expiry time is set at creation and cannot be changed
-- Session cannot outlive the User who owns it
-- Multiple Sessions can exist for one User
-
-**Related:**
-- User (many Sessions per User)
-- SessionCreated, SessionExpired, SessionRevoked (events raised)
-
-### UserCreated
-
-**When:** A new User completes authentication for the first time.
-**Payload:** `user_id`, `email`, timestamp
-**Consumers:** Email service, audit log, user preference initialization
-
-### SessionExpired
-
-**When:** A Session's expiry time elapses or is explicitly revoked.
-**Payload:** `session_id`, `user_id`, reason (timeout, logout, or user deletion)
-**Consumers:** Cache invalidation, session cleanup, session analytics
-
----
-
-## System Rules
-
-**User Deletion:** When a User is deleted, all their Sessions are revoked in the same operation.
-
-**Session Lifetime:** A Session cannot outlast the User who created it. If a User is deleted while Sessions exist, those Sessions are revoked.
-
-**Email Uniqueness:** No two active Users can share an email address.
+- Define terms in language a product owner and implementer can both use.
+- Record rules and relationships only when they affect decisions or outcomes.
+- Do not list database columns, code paths, test cases, APIs, or historical introductions.
+- If a term is still uncertain, record the ambiguity in the relevant phase review instead of inventing a definition.
 ```
 
 ### Template: docs/architecture.md
@@ -227,7 +192,7 @@ Shared language for this project. Update when the product's domain vocabulary ch
 
 C4 Level 2: Container diagram. Updated when structural boundaries change.
 
-> This is not a design doc. It answers one question: what are the runtime containers, what do they do, and how do they communicate?
+> This is a durable orientation guide, not a component inventory. It explains the system boundary, runtime containers, important communication paths, and constraints so a reader can reason about change safely.
 
 ---
 
@@ -306,6 +271,10 @@ Constraints that affect all containers and must not be violated:
 - [e.g. "Single binary, no install step"]
 - [e.g. "All state is held in browser memory; nothing is written to a server"]
 
+## Reading and Update Guidance
+
+Explain the architectural reasoning that matters to contributors: why the containers are separated, which boundaries must remain stable, and what kinds of changes require an ADR or an update to this document. Do not duplicate class lists, endpoint lists, or deployment instructions.
+
 ---
 
 ## Out of Scope
@@ -326,6 +295,8 @@ Update this file when:
 - A new external system dependency is added
 
 Do NOT update for internal refactors, new features within an existing container, or test changes.
+
+The diagram is a current model, not a historical record. Remove stale paths and obsolete containers rather than preserving them for context.
 
 **Last updated:** [YYYY-MM-DD] — [brief reason]
 ```

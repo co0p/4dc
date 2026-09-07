@@ -1,115 +1,66 @@
 # Testing
 
-Document on testing practices for this project. Updated when new test patterns emerge or when constitution-level testing rules change.
+Guide to making reliable testing decisions for this project. Explain why the test strategy is shaped this way, how a developer should choose the cheapest test that gives sufficient confidence, and how to run the relevant checks. Update when the architecture, risk profile, or test workflow changes.
 
 ---
 
-## Test Types and Scope
+## Testing Approach and Rationale
+
+Explain the risks the test strategy is designed to control and the boundaries where each kind of test provides confidence. Prefer principles and decision guidance over inventories. For example, explain why domain rules are tested without infrastructure, why persistence boundaries need integration checks, or why an acceptance test exercises a complete user job story.
+
+---
+
+## Choosing Test Depth
 
 <!--
-Define the types of tests used in this project and what is required for each change.
-Example categories:
-- **Unit tests** — test single functions or methods in isolation
-- **Integration tests** — test components working together
-- **Acceptance tests** — test user-visible behavior against job stories
-- **Performance tests** — test latency, throughput, or resource constraints
-- **Contract tests** — test API or data contracts
+Describe how to decide whether a change needs a focused check, an integration check, an acceptance scenario, a performance measurement, or no new test. Tie the decision to user risk, architectural boundaries, determinism, and failure cost.
+Do not maintain a catalog of individual tests or report a coverage percentage here.
 -->
 
 ---
 
-## What Requires Tests
+## Test Design Conventions
 
 <!--
-State clearly what _must_ have test coverage:
-- All behavior changes must have a failing test first (Red → Green → Refactor)
-- Bug fixes must have a regression test before the fix
-- Refactoring must keep existing tests green
-- Structural tidying (`[tidy]` subtasks) must not change observable behavior
+Describe conventions that make tests communicate behavior: naming, fixture ownership, isolation, determinism, test data, and how user-facing assertions should avoid implementation details. Keep examples small and illustrative rather than listing the suite.
 -->
 
 ---
 
-## Test Location and Naming Conventions
+## Running the Checks
 
 <!--
-Example:
-- Test files live next to production code or in a `tests/` directory
-- Test file naming: `<module>_test.<ext>` or `test_<module>.<ext>`
-- Test function naming: `test_<unit>_<scenario>` or `describe('<unit>', () => { it('...')
-- Helper functions: `setup_<fixture>()`, `assert_<condition>()`
+Document the actual commands for fast local feedback, the complete pre-merge gate, and any setup required for acceptance or environment-dependent checks. Explain when to use each command and how to interpret failures. Commands must be maintained as executable guidance, not illustrative placeholders.
 -->
 
 ---
 
-## Running Tests
+## Evidence Required Before Promotion
 
 <!--
-How do developers run tests locally?
-Example:
-```bash
-npm test              # All tests
-npm test -- --watch  # Watch mode
-npm test -- <pattern> # Filter by pattern
-```
-
-Or for other languages:
-```bash
-go test ./...
-pytest
-python -m unittest discover
-```
+State the evidence required before a change is considered complete. Focus on behavior, risk, and reproducibility. Do not use line coverage or a list of passing tests as a substitute for explaining why the evidence is sufficient.
 -->
 
 ---
 
-## Test Gate Before Promote
+## Automation and Feedback Loops
 
 <!--
-What must be green before code is promoted to permanent docs?
-This is the _constitution-level gate_.
-Example:
-- All unit and integration tests must pass
-- Code coverage must be ≥ 80% for changed files
-- No flaky tests
-- Performance tests must not regress
+Explain where checks run (local, CI, release), what feedback each loop provides, and how failures are triaged. Record the rationale for any intentionally manual or environment-specific check.
 -->
 
 ---
 
-## Continuous Integration / Testing Automation
+## Known Risks and Gaps
 
 <!--
-Is there a CI/CD pipeline? What does it test?
-Example:
-- GitHub Actions / GitLab CI / Jenkins runs tests on every PR
-- Coverage reports generated and must meet threshold
-- Performance benchmarks tracked
-- Linting and static analysis gates the merge
+Document meaningful confidence gaps, why they exist, and what signal would justify changing the approach. Do not turn this section into a test inventory or coverage report.
 -->
 
 ---
 
-## Known Test Gaps or Limitations
+## Maintenance Guidance
 
 <!--
-Document any areas where testing is incomplete or infeasible.
-Example:
-- Real-time features are not tested because [reason]
-- External service integrations use mocks, not real endpoints
-- UI tests are manual because [reason]
-- Performance testing only covers [scenario], not [scenario]
--->
-
----
-
-## Test Maintenance and Flakiness
-
-<!--
-How do you keep tests reliable?
-Example:
-- Flaky tests are tracked in [location] and fixed before merge
-- Tests with external dependencies use retries with [strategy]
-- Test data is seeded from [source], reset after each test
-- Slow tests are isolated and run separately
+Explain how tests are kept deterministic, how flakiness is handled, when fixtures or helpers should be changed, and how this guide itself is updated when the testing rationale changes.
 -->
