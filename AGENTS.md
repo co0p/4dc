@@ -22,6 +22,7 @@ These apply across all phases. Skills do not repeat them.
 - Design before code: state the desired behavior, architectural boundary, and any performance-critical constraint before implementation starts.
 - Tests before code for behavior changes. Structural tidying may come first, but only when it preserves observable behavior and keeps tests green.
 - Documentation is part of the application. Keep architecture, domain language, testing guidance, and ADRs aligned with the implemented system.
+- Project artifacts are product-specific. Do not copy this repository's internal workflow name, phase sequence, or orchestrator terminology into an application's `CONSTITUTION.md`, README, ADRs, or other project documentation.
 - Never claim work is complete without objective evidence.
 - Forward-only change: do not preserve backward compatibility unless explicitly requested.
 - For work with more than three meaningful tasks or unknown dependencies: publish a short task plan, execute in verified steps, update progress after each step.

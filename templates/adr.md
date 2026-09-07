@@ -118,11 +118,11 @@ Do **not** write an ADR for:
 
 ---
 
-## How ADRs Connect to 4dc Phases
+## How ADRs Connect to Project Work
 
-**Constitution phase:** High-level architectural principles and boundaries are documented in `CONSTITUTION.md`. ADRs extend this with decisions about _specific_ components or patterns.
+**Project initialization:** High-level architectural principles and boundaries are documented in `CONSTITUTION.md`. ADRs extend this with decisions about _specific_ components or patterns.
 
-**Promote phase:** When a significant decision emerges during implementation, it is captured in `.agent/learnings.md` and promoted as a new ADR file in `docs/adr/` during the promote phase.
+**Later development:** When a significant decision emerges during implementation, it is captured in project decision notes and recorded as a new ADR file in `docs/adr/`.
 
 **Reference:** `CONSTITUTION.md` points to `docs/adr/` as the permanent log of architectural decisions; newly added ADRs are linked from there.
 

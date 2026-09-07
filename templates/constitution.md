@@ -9,6 +9,8 @@ description: "Use when CONSTITUTION.md is missing or needs updating. Reads proje
 
 Create or update `CONSTITUTION.md` — the project's durable engineering guardrails.
 
+The generated constitution must describe only the application. Do not include this repository's internal workflow name, phase sequence, agent names, or transient artifact paths.
+
 ---
 
 ## Expected Input
@@ -30,7 +32,7 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 4. **Performance envelope** — stated latency, throughput, cost, or scale expectations, or an explicit `N/A` with rationale
 5. **Release and deployment reference** — points to `docs/deployment.md` (how a release is triggered, versioning scheme, deployment target(s), rollback procedure)
 6. Documentation rules, architecture sync rules, and ADR policy
-7. SDLC artifact expectations: the `.agent/` contract (which files, what lifecycle)
+7. Documentation and delivery expectations appropriate to the project
 
 Required `CONSTITUTION.md` headings:
 - `## Engineering Principles`
@@ -39,7 +41,7 @@ Required `CONSTITUTION.md` headings:
 - `## Performance Envelope`
 - `## Documentation And ADR Policy`
 - `## Release And Deployment`
-- `## Artifact Lifecycle`
+- `## Delivery and Documentation`
 
 ### Supporting Documents
 
@@ -64,8 +66,8 @@ Required `CONSTITUTION.md` headings:
 **`docs/adr/`** — Architecture Decision Records:
 - Decisions with rationale and consequences
 - Indexed from `CONSTITUTION.md`
-- Created using the ADR template during constitution phase if foundational decisions exist
-- Updated during promote phases when architectural decisions emerge
+- Created using the ADR template when foundational decisions exist
+- Updated when architectural decisions emerge
 
 ### Secondary Artifact
 
@@ -127,9 +129,9 @@ Terminal artifacts:
 - `docs/adr/` structure — architectural decisions
 - `docs/roadmap.md` — product roadmap
 
-All future increments will reference the testing and deployment documents from their constitution. New ADRs are added during promote phases.
+Future work should reference the testing, deployment, and architecture documents defined by the project constitution. New ADRs should be added when architectural decisions emerge.
 
-Next skill: `4dc-increment` — load `skills/increment/SKILL.md`
+After this skill, continue with the next approved work item using the applicable project workflow.
 
 ---
 

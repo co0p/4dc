@@ -121,7 +121,7 @@ Use these verbatim as the starting content when creating a new document for the 
 ```markdown
 # Domain Vocabulary
 
-Shared language for this project. Updated during promote phases.
+Shared language for this project. Update when the product's domain vocabulary changes.
 
 ---
 
