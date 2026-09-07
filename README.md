@@ -15,7 +15,7 @@
 
 ## What is 4dc?
 
-4dc is a **four-discipline cycle** grounded in Extreme Programming, Lean Software Development, and use-case thinking. It is delivered as a set of composable **skills** — one skill per phase, one concrete output artifact per skill.
+4dc is a **four-discipline cycle** grounded in Extreme Programming, Lean Software Development, and use-case thinking. It is delivered as a set of composable **skills** — one bounded responsibility and defined artifact set per phase.
 
 Each skill has a single responsibility, a defined input, and a hard gate before it produces output. Skills are composable: use them individually via any prompt-capable agent, or use the included **orchestrator** (`AGENTS.md`) to automate phase detection and skill loading.
 
@@ -61,7 +61,7 @@ To regenerate the checked-in skill files from the template sources while maintai
 
 ### Option A — Orchestrator (recommended)
 
-`AGENTS.md` is the entry point. Any compatible agent (GitHub Copilot, Claude Code, Cursor, etc.) reads it automatically on startup.
+`.agents/AGENTS.md` is the installed entry point. Agent support for automatic instruction discovery varies; when it is not discovered automatically, explicitly attach or ask the agent to read `.agents/AGENTS.md` before starting.
 
 The orchestrator inspects your workspace and determines the current phase:
 
@@ -112,15 +112,20 @@ Each arrow is a stop gate — explicit human approval before the next skill star
 
 Asks probing questions, synthesises project-specific constraints into enforceable rules, and refuses to write a law that can't be tested. Never prescribes implementation — only guardrails.
 
-**Responsibility:** Create or update `CONSTITUTION.md` — the project's durable engineering guardrails.
+**Responsibility:** Create or update `CONSTITUTION.md` and supporting documentation — the project's durable engineering guardrails.
 
-**Input:** Existing `CONSTITUTION.md` (if any), `README.md`, project structure.
+**Input:** Existing `CONSTITUTION.md` (if any), `README.md`, project structure, existing docs, testing/deployment practices, ADRs.
 
-**Output:** `CONSTITUTION.md` with engineering principles, architectural boundaries, testing strategy, documentation rules, and the `.agent/` lifecycle contract.
+**Output:**
+- `CONSTITUTION.md` with engineering principles, architectural boundaries, testing strategy, documentation rules, and the `.agent/` lifecycle contract
+- `docs/testing.md` — testing strategy, types, scope, gates, naming conventions
+- `docs/deployment.md` — release triggers, versioning, deployment targets, rollback, monitoring
+- `docs/adr/` — architecture decision records (if foundational decisions exist)
+- `docs/roadmap.md` — feature tracking template (if not present)
 
 **SDLC ideology:** XP — team agreements before code. Lean — eliminate ambiguity upstream. Every rule must be verifiable; no abstract slogans, no generic internet copy-paste.
 
-**Hard gates:** No output until HTML review is approved. No implementation detail. No rule that isn't grounded in this project's specific context.
+**Hard gates:** No output until markdown review (`.agent/constitution-review.md`) is approved. No implementation detail. No rule that isn't grounded in this project's specific context.
 
 ---
 
@@ -130,13 +135,13 @@ Relentlessly scopes down, insists on measurable acceptance criteria, refuses to 
 
 **Responsibility:** Define one small, outcome-focused increment: WHAT and WHY only, no technical detail.
 
-**Input:** `CONSTITUTION.md`, user intent (one sentence).
+**Input:** `CONSTITUTION.md`, `docs/roadmap.md`, customer job story (When / I want / So that), user intent.
 
-**Output:** `.agent/increment.md` — single-sentence goal, 2–5 binary acceptance criteria, explicit out-of-scope list, applicable constitution constraints.
+**Output:** `.agent/increment.md` — use case, single-sentence goal, 2–5 binary acceptance criteria, explicit out-of-scope list, applicable constitution constraints, roadmap entry.
 
 **SDLC ideology:** XP user stories with binary acceptance criteria. Lean smallest shippable slice. Use-case thinking: observable user outcome — no technical vocabulary in this artifact.
 
-**Hard gates:** No file names, approaches, or code. No vague acceptance criteria. One increment per cycle.
+**Hard gates:** No file names, approaches, or code. No vague acceptance criteria. One increment per cycle. Acceptance criteria must derive from the use case, not be invented during this phase.
 
 ---
 
@@ -146,13 +151,13 @@ Reads the codebase before saying anything, surfaces risks, writes subtasks preci
 
 **Responsibility:** Define HOW — an ordered sequence of verifiable subtasks traceable to acceptance criteria.
 
-**Input:** `CONSTITUTION.md`, `.agent/increment.md`, current codebase structure.
+**Input:** `CONSTITUTION.md`, `.agent/increment.md` (approved), current codebase structure and relevant source files.
 
-**Output:** `.agent/plan.md` — goal, 2–3 sentence strategy, ordered subtasks each with a verification step and dependency mapping, risks.
+**Output:** `.agent/plan.md` — goal, 2–3 sentence strategy, ordered subtasks (each marked `[research]`, `[tidy]`, or `[behavior]`) with verification step and dependency mapping, risks.
 
 **SDLC ideology:** XP planning game — tasks sized for one focused session. Lean: pull from acceptance criteria, not push from ideas. Full traceability: requirement → subtask → test.
 
-**Hard gates:** No code, no file edits. No subtask without a verification step. Every acceptance criterion must have a covering subtask.
+**Hard gates:** No code, no file edits. No subtask without a verification step. Every acceptance criterion must have a covering subtask. Markdown review (`.agent/plan-review.md`) must be approved before writing plan.md.
 
 ---
 
@@ -171,6 +176,8 @@ Follows the plan unless there is a documented reason not to, writes the failing 
 **SDLC ideology:** XP strict TDD — test first, always. Lean: minimal code to pass the test, then refactor. Evidence over claims. Continuous state — never batch-update progress.
 
 **Hard gates:** No production code before a failing test. No subtask complete without objective evidence. No skipping subtasks without recording the reason.
+
+Before marking implementation complete, the agent creates `.agent/implementation-review.md`, presents the final evidence and risks, and waits for explicit approval.
 
 #### Tidy First within implement
 
@@ -196,9 +203,9 @@ Reads everything, judges what's worth keeping, proposes each promotion with a de
 
 **Responsibility:** Merge durable outcomes from `.agent/` into permanent project artifacts and close the cycle.
 
-**Input:** All `.agent/` artifacts, existing `docs/`, ADR log.
+**Input:** `CONSTITUTION.md`, `.agent/increment.md`, `.agent/plan.md`, `.agent/implementation.md` (status: complete), `.agent/learnings.md`, existing `docs/`, ADR log.
 
-**Output (per approval):** Updated `CONSTITUTION.md`, new ADRs in `docs/adr/`, updated `README.md`, cleaned `.agent/`.
+**Output (per approval):** Updated `CONSTITUTION.md` (if guardrails need revision), new ADRs in `docs/adr/`, updated `docs/architecture.md` / `docs/domain.md` / `README.md` (for behavior or structure changes), updated `docs/roadmap.md` (feature moved from Partial to Done with test link), cleaned `.agent/`.
 
 **SDLC ideology:** Lean — only promote what's verified. XP retrospective embedded in the delivery cycle. `.agent/` is scratchpad; `docs/` is truth.
 
@@ -212,7 +219,7 @@ Reads everything, judges what's worth keeping, proposes each promotion with a de
 | Test pattern | New approach worth standardising | `CONSTITUTION.md` testing section |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
 
-**Hard gates:** No permanent doc until that candidate is individually approved. No promotion of unverified work. No `.agent/` cleanup until all promotions are confirmed written.
+**Hard gates:** No permanent doc until each candidate is individually approved. No promotion of unverified work. No `.agent/` cleanup until all promotions are confirmed written. Markdown review (`.agent/promotion-review.md`) must be approved before writing permanent docs.
 
 ---
 
@@ -227,6 +234,47 @@ CONSTITUTION.md              permanent · root · constitution writes it
 ```
 
 `.agent/` is gitignored. After promote completes, `.agent/` is cleared for the next cycle.
+
+---
+
+## Why This Matters
+
+| Principle | What it prevents |
+|-----------|------------------|
+| **WHAT before HOW before CODE** | Building the wrong thing well. Scope is locked before implementation starts. |
+| **Files are the source of truth** | Decisions living only in chat history or someone's memory. |
+| **Evidence over claims** | Features marked "done" that don't actually pass their tests. |
+| **Human approval at every gate** | Scope creep and silent, unreviewed changes. |
+| **Durable docs, promoted deliberately** | Documentation rot — docs are only updated when something durable actually changed. |
+
+---
+
+## What Gets Created
+
+### 📚 Permanent Documentation
+
+These documents survive every cycle and form the project's permanent knowledge base:
+
+| Document | Purpose |
+|----------|---------|
+| `CONSTITUTION.md` | Engineering guardrails — testing, architecture, release policy. Created once, revised rarely. |
+| `docs/testing.md` | How we test, what needs coverage, the gate every feature must pass. |
+| `docs/deployment.md` | How we release, roll back, and monitor. |
+| `docs/architecture.md` | How the system is structured; updated when structure changes. |
+| `docs/domain.md` | Shared vocabulary — the words the team and the product agree on. |
+| `docs/adr/*.md` | A permanent record of significant decisions and why they were made. |
+| `docs/roadmap.md` | Feature status with proof — the single source of truth for "what's shipped." |
+
+### ⏳ Working Files (Temporary)
+
+These files live in `.agent/` during the cycle and are cleared after promote:
+
+| Document | Purpose |
+|----------|---------|
+| `.agent/increment.md` | This cycle's feature definition — goal and acceptance criteria. |
+| `.agent/plan.md` | This cycle's technical execution steps. |
+| `.agent/implementation.md` | Live progress log with evidence for every step. |
+| `.agent/learnings.md` | Decisions and surprises captured for the promote phase. |
 
 ---
 

@@ -19,22 +19,23 @@ When a user attaches this file and asks whether their changes validate, do this:
 ```bash
 ./scripts/generate-4dc.sh
 find skills -name SKILL.md | sort
-rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md VALIDATION.md scripts templates skills
+rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md scripts templates skills
 ```
 
 5. If a documented check fails, inspect the referenced files and explain which rules failed and why.
 6. If a documented check cannot run because of missing tools or environment limits, perform a manual validation using the rules below and say that the result is manual.
-7. Report findings in this order:
+7. Treat literal search patterns in this validation document as documentation, not stale active-contract references.
+8. Report findings in this order:
 	- Overall verdict: `Validates` or `Does not validate`
 	- Check summary: documented commands run, passed checks, failed checks
 	- Findings: each failed rule with file evidence
 	- Gaps: checks this file cannot prove
-8. If there are no findings, say that explicitly.
-9. Do not claim alignment with vendor guidance unless the rules below pass.
+9. If there are no findings, say that explicitly.
+10. Do not claim alignment with vendor guidance unless the rules below pass.
 
 ## Scope
 
-Validate these active instruction surfaces:
+Validate these active instruction surfaces, including:
 - `AGENTS.md`
 - `VALIDATION.md`
 - `templates/`
@@ -58,7 +59,7 @@ Use these commands when shell access is available:
 ```bash
 ./scripts/generate-4dc.sh
 find skills -name SKILL.md | sort
-rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md VALIDATION.md scripts templates skills
+rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md scripts templates skills
 ```
 
 Interpretation:
@@ -90,24 +91,24 @@ find skills -name SKILL.md | sort
 ## Phase Requirements
 
 ### constitution
-- Produces `.agent/constitution-review.html` before writing `CONSTITUTION.md`
+- Produces `.agent/constitution-review.md` before writing `CONSTITUTION.md`
 - Defines engineering guardrails, performance expectations, and SDLC artifact policy
 
 ### increment
-- Produces `.agent/increment-review.html` before writing `.agent/increment.md`
+- Produces `.agent/increment-review.md` before writing `.agent/increment.md`
 - Stays at WHAT/WHY and avoids technical design detail
 
 ### plan
-- Produces `.agent/plan-review.html` before writing `.agent/plan.md`
+- Produces `.agent/plan-review.md` before writing `.agent/plan.md`
 - Converts requirements to ordered, verifiable technical subtasks with `[research]`, `[tidy]`, and `[behavior]` separation when needed
 
 ### implement
-- Produces `.agent/implementation-review.html`
+- Produces `.agent/implementation-review.md` before marking `.agent/implementation.md` complete
 - Maintains `.agent/implementation.md` and `.agent/learnings.md`
 - Records objective verification evidence and follows Tidy First plus Red→Green→Refactor
 
 ### promote
-- Produces `.agent/promotion-review.html`
+- Produces `.agent/promotion-review.md`
 - Applies only approved updates to permanent artifacts
 - Suggests emptying `.agent/` after each promote
 - Confirms `.agent` cleanup decision and documentation sync
@@ -115,7 +116,7 @@ find skills -name SKILL.md | sort
 ## Review-First Rule
 
 For every phase, verify:
-1. HTML report exists in `.agent/`
+1. Markdown review exists in `.agent/`
 2. Status is pending approval before final write
 3. Final Markdown write occurs only after explicit approval
 
@@ -136,7 +137,7 @@ Transient artifacts:
 - `.agent/plan.md`
 - `.agent/implementation.md`
 - `.agent/learnings.md`
-- phase review HTML files
+- phase review Markdown files
 
 ## Installer Validation
 
@@ -150,12 +151,12 @@ Run installer in a test repository and confirm:
 Run a targeted text check after generation:
 
 ```bash
-rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md VALIDATION.md scripts templates skills
+rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md scripts templates skills
 ```
 
 Expected result:
-- No `.4dc` references in active repo instructions or validation docs
-- No `promotion-report` references in active repo instructions or validation docs
+- No `.4dc` references in active repo instructions
+- No `promotion-report` references in active repo instructions
 - No rendered `Phase: Implement` placeholder lines left in generated skill contracts
 
 ## Vendor Alignment Rules
@@ -190,7 +191,7 @@ These rules reflect current Anthropic guidance for clear instructions, structure
 - Each skill stays focused on one job and names that responsibility explicitly.
 - Each skill uses a stable section schema: responsibility, inputs, outputs, hard gate, process, checklist, handoff.
 - Each skill contains explicit hard gates instead of relying on implied behavior.
-- The HTML review contract is present and phase-specific rather than copied with misleading placeholders.
+- The Markdown review contract is present and phase-specific rather than copied with misleading placeholders.
 - Implement explicitly encodes Red→Green→Refactor and Tidy First behavior.
 - Promote explicitly requires durable documentation sync, not just code completion.
 

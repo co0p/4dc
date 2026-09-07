@@ -46,6 +46,7 @@ Do NOT mark a subtask complete without objective evidence (test output, command 
 Do NOT skip or reorder subtasks without documenting the reason in learnings.md.
 Do NOT proceed to the next subtask if the current one fails verification.
 Do NOT mix structural tidying and behavior change in the same subtask.
+Do NOT combine tidy and behavior work in the same commit. Commit each completed `[tidy]` subtask as `tidy: <what changed>` and each completed `[behavior]` subtask as `feat: <what changed>` or `fix: <what changed>`.
 </HARD-GATE>
 
 ---
@@ -59,6 +60,7 @@ Do NOT mix structural tidying and behavior change in the same subtask.
    b. Run the relevant tests — confirm they stay green
    c. Update `implementation.md` with evidence
    d. Record any design or architecture implications in `learnings.md`
+   e. Commit the completed tidy subtask as `tidy: <what changed>`
 4. **For each `[behavior]` subtask in plan.md:**
    a. Write the failing test (Red)
    b. Run it — confirm it fails for the right reason
@@ -67,8 +69,11 @@ Do NOT mix structural tidying and behavior change in the same subtask.
    e. Refactor if needed — run tests again
    f. Update `implementation.md`: mark subtask complete with evidence
    g. Append any decisions, deviations, surprises, or promote candidates to `learnings.md`
+   h. Commit the completed behavior subtask as `feat: <what changed>` or `fix: <what changed>`
 5. **Final verification** — run the full test suite or constitution-defined release gate; confirm all acceptance criteria from `increment.md` are met
-6. **Mark complete** — set `status: complete` in `implementation.md`
+6. **Generate `.agent/implementation-review.md`** — summarize objective evidence, remaining risks, and proposed final implementation status.
+7. **STOP** — present the review and wait for explicit approval.
+8. **Mark complete** — record approval in the review and set `status: complete` in `implementation.md`
 
 ## Tidy First Rule
 
@@ -122,7 +127,9 @@ status: in-progress
 - <ADR, architecture update, domain-language update, test pattern, or performance contract worth keeping>
 ```
 
-{{TEMPLATE:html}}
+## Markdown Review Contract
+
+Before marking the implementation complete, use `.agent/implementation-review.md`. Include **Objective**, **Inputs Reviewed**, **Proposed Output Summary**, **Risks and Trade-offs**, **Open Questions**, and **Approval Decision**. An explicit conversational approval is sufficient; record it in the Approval Decision section.
 
 ---
 
@@ -132,7 +139,10 @@ status: in-progress
 - [ ] `[tidy]` subtasks, if any, stayed behavior-preserving and test-green
 - [ ] Each subtask follows Red→Green→Refactor
 - [ ] Each subtask has objective completion evidence
+- [ ] Each tidy and behavior subtask was committed separately with the required message prefix
 - [ ] All acceptance criteria met
+- [ ] Markdown review generated and shown
+- [ ] User approval received
 - [ ] `implementation.md` status set to `complete`
 - [ ] `learnings.md` has promote candidates listed
 

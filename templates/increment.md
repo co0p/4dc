@@ -55,14 +55,15 @@ One increment per cycle — if scope expands, split into separate increments.
 
 ## Process
 
-1. **Read context** — `CONSTITUTION.md`, `docs/roadmap.md`, any prior `.agent/` files from the last cycle
-2. **Elicit the use case** — ask the customer for a job story (_When / I want / So that_); if they provide only a vague intent, help them shape it into a job story before proceeding
-3. **Derive acceptance criteria** from the job story — ask 1–2 clarifying questions if criteria are not yet binary
-4. **Generate `.agent/increment-review.html`** — show use case, goal, acceptance criteria, and roadmap entry
-5. **STOP** — wait for explicit approval or revision requests
-6. **On approval** — write `.agent/increment.md` and move the feature to Partial in `docs/roadmap.md`
+1. **Read context** — `CONSTITUTION.md`, `docs/roadmap.md`, and any prior `.agent/` files from the last cycle.
+2. **Conversation: Elicit and propose the increment** — shape the job story, derive binary criteria, propose the scope, and iterate until the user confirms it.
+3. **Generate `.agent/increment-review.md`** — include the required Markdown review sections, use case, criteria, out-of-scope list, and roadmap entry.
+4. **STOP** — present the review and wait for explicit approval.
+5. **On approval** — write `.agent/increment.md` and move the feature to Partial in `docs/roadmap.md`.
 
-{{TEMPLATE:html}}
+## Markdown Review Contract
+
+Use `.agent/increment-review.md`. Include **Objective**, **Inputs Reviewed**, **Proposed Output Summary**, **Risks and Trade-offs**, **Open Questions**, and **Approval Decision**. An explicit conversational approval is sufficient; record it in the Approval Decision section.
 
 ---
 
@@ -74,7 +75,7 @@ One increment per cycle — if scope expands, split into separate increments.
 - [ ] Acceptance criteria are binary and verifiable
 - [ ] Out-of-scope list is non-empty
 - [ ] Roadmap entry (feature name + job story) identified
-- [ ] HTML review generated and shown
+- [ ] Markdown review generated and shown
 - [ ] User approval received
 - [ ] `.agent/increment.md` written
 - [ ] `docs/roadmap.md` updated: feature moved to Partial

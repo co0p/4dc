@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>4dc — How We Build & Document Features</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f3ef;
+    --panel: #ffffff;
+    --ink: #111111;
+    --accent: #1a56db;
+    --accent-soft: #e8eefc;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --radius: 6px;
+    --green: #15803d;
+    --green-soft: #e8f5ec;
+    --amber: #b45309;
+    --amber-soft: #fdf3e3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 2.5rem 2rem 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+  header p {
+    color: var(--muted);
+    font-size: 1rem;
+    margin: 0;
+    max-width: 70ch;
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.75rem;
+  }
+  section h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.25rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  section .kicker {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+  }
+  section p.lead {
+    color: var(--muted);
+    margin: 0.25rem 0 1.25rem;
+    max-width: 80ch;
+  }
+  .diagram-container {
+    overflow-x: auto;
+    padding: 0.5rem 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  code {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .badge-permanent { background: var(--green-soft); color: var(--green); }
+  .badge-transient { background: var(--amber-soft); color: var(--amber); }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .stat-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    background: #fbfbfa;
+  }
+  .stat-card h3 {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+  }
+  .stat-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .footer-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  @media (max-width: 800px) {
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>4dc — How We Build &amp; Document Features</h1>
+  <p>A repeatable cycle that separates <strong>what</strong> we're building from <strong>how</strong> it's built and <strong>proof</strong> that it works — with a paper trail every step of the way.</p>
+</header>
+
+<main>
+
+  <!-- ============ SECTION 1: THE CYCLE ============ -->
+  <section>
+    <p class="kicker">The Process</p>
+    <h2>One Cycle, Five Phases</h2>
+    <p class="lead">Each feature moves through the same five phases. Every phase produces one clear artifact, and nothing moves forward without explicit human approval.</p>
+    <div class="diagram-container">
+      <pre class="mermaid">
+flowchart LR
+    A["⚖️<br/><b>Constitution</b><br/>project ground rules<br/><i>(once, or when rules change)</i>"] --> B
+    B["🔬<br/><b>Increment</b><br/>define WHAT &amp; WHY<br/><i>one small feature slice</i>"] --> C
+    C["🏗️<br/><b>Plan</b><br/>define HOW<br/><i>ordered technical steps</i>"] --> D
+    D["🔨<br/><b>Implement</b><br/>build it<br/><i>test-first, tracked</i>"] --> E
+    E["📚<br/><b>Promote</b><br/>make it permanent<br/><i>docs updated, cycle closed</i>"]
+    E -.->|"next feature"| B
+
+    classDef phase fill:#ffffff,stroke:#1a56db,stroke-width:1.5px,color:#111111,rx:6,ry:6;
+    class A,B,C,D,E phase;
+      </pre>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2: CONVERSATION + APPROVAL ============ -->
+  <section>
+    <p class="kicker">Inside Every Phase</p>
+    <h2>Nothing Ships Without a Human Saying Yes</h2>
+    <p class="lead">Each phase follows the same rhythm: gather context, propose a direction in conversation, write it up for review, and stop. Work never silently proceeds — the human is always the approval gate.</p>
+    <div class="diagram-container">
+      <pre class="mermaid">
+flowchart TD
+    S1(["Read context"]) --> S2(["Propose direction<br/>(conversation)"])
+    S2 --> S3{"Aligned?"}
+    S3 -- "no, adjust" --> S2
+    S3 -- "yes" --> S4["Write review.md<br/>(objective, risks, open questions)"]
+    S4 --> S5{"Approved?"}
+    S5 -- "revise" --> S2
+    S5 -- "yes" --> S6(["Write final artifact"])
+
+    classDef step fill:#ffffff,stroke:#e5e7eb,stroke-width:1px,color:#111111,rx:6,ry:6;
+    classDef gate fill:#fdf3e3,stroke:#b45309,stroke-width:1.5px,color:#111111,rx:6,ry:6;
+    classDef out fill:#e8f5ec,stroke:#15803d,stroke-width:1.5px,color:#111111,rx:6,ry:6;
+    class S1,S2,S4 step;
+    class S3,S5 gate;
+    class S6 out;
+      </pre>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3: DOCUMENT MAP ============ -->
+  <section>
+    <p class="kicker">What Gets Created</p>
+    <h2>Two Kinds of Documents</h2>
+    <p class="lead">Working notes live in a temporary workspace and are discarded once a cycle closes. Durable knowledge is promoted into permanent project documentation that outlives any single feature.</p>
+    <div class="diagram-container">
+      <pre class="mermaid">
+flowchart TB
+    subgraph WORK["⏳ Working Files — .agent/ (temporary, cleared each cycle)"]
+        direction TB
+        W1["increment.md<br/><span style='font-size:11px;color:#6b7280'>what &amp; why</span>"]
+        W2["plan.md<br/><span style='font-size:11px;color:#6b7280'>how, step by step</span>"]
+        W3["implementation.md<br/><span style='font-size:11px;color:#6b7280'>live progress + evidence</span>"]
+        W4["learnings.md<br/><span style='font-size:11px;color:#6b7280'>decisions, surprises</span>"]
+        W5["*-review.md<br/><span style='font-size:11px;color:#6b7280'>approval checkpoints</span>"]
+    end
+
+    subgraph PERM["📚 Permanent Documentation — survives every cycle"]
+        direction TB
+        P1["CONSTITUTION.md<br/><span style='font-size:11px;color:#6b7280'>engineering guardrails</span>"]
+        P2["docs/testing.md<br/><span style='font-size:11px;color:#6b7280'>how we test, gate before ship</span>"]
+        P3["docs/deployment.md<br/><span style='font-size:11px;color:#6b7280'>release &amp; rollback procedure</span>"]
+        P4["docs/architecture.md<br/><span style='font-size:11px;color:#6b7280'>system structure</span>"]
+        P5["docs/domain.md<br/><span style='font-size:11px;color:#6b7280'>shared business vocabulary</span>"]
+        P6["docs/adr/*.md<br/><span style='font-size:11px;color:#6b7280'>why key decisions were made</span>"]
+        P7["docs/roadmap.md<br/><span style='font-size:11px;color:#6b7280'>feature status, proof of delivery</span>"]
+    end
+
+    WORK -- "promote phase:<br/>durable outcomes only" --> PERM
+
+    classDef work fill:#fdf3e3,stroke:#b45309,stroke-width:1px,color:#111111,rx:6,ry:6;
+    classDef perm fill:#e8f5ec,stroke:#15803d,stroke-width:1px,color:#111111,rx:6,ry:6;
+    class W1,W2,W3,W4,W5 work;
+    class P1,P2,P3,P4,P5,P6,P7 perm;
+      </pre>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Document</th><th>Type</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CONSTITUTION.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>Engineering guardrails — testing, architecture, release policy. Created once, revised rarely.</td></tr>
+        <tr><td><code>docs/testing.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>How we test, what needs coverage, the gate every feature must pass.</td></tr>
+        <tr><td><code>docs/deployment.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>How we release, roll back, and monitor.</td></tr>
+        <tr><td><code>docs/architecture.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>How the system is structured; updated when structure changes.</td></tr>
+        <tr><td><code>docs/domain.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>Shared vocabulary — the words the team and the product agree on.</td></tr>
+        <tr><td><code>docs/adr/*.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>A permanent record of significant decisions and why they were made.</td></tr>
+        <tr><td><code>docs/roadmap.md</code></td><td><span class="badge badge-permanent">permanent</span></td><td>Feature status with proof — the single source of truth for "what's shipped."</td></tr>
+        <tr><td><code>.agent/increment.md</code></td><td><span class="badge badge-transient">working</span></td><td>This cycle's feature definition — goal and acceptance criteria.</td></tr>
+        <tr><td><code>.agent/plan.md</code></td><td><span class="badge badge-transient">working</span></td><td>This cycle's technical execution steps.</td></tr>
+        <tr><td><code>.agent/implementation.md</code></td><td><span class="badge badge-transient">working</span></td><td>Live progress log with evidence for every step.</td></tr>
+        <tr><td><code>.agent/learnings.md</code></td><td><span class="badge badge-transient">working</span></td><td>Decisions and surprises captured for the promote phase.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ SECTION 4: FEATURE LIFECYCLE ============ -->
+  <section>
+    <p class="kicker">Tracking Delivery</p>
+    <h2>Every Feature Has a Visible, Provable Status</h2>
+    <p class="lead"><code>docs/roadmap.md</code> is the single place to see what's shipped. A feature is only "Done" when its acceptance test passes and is linked — no feature is called finished on trust alone.</p>
+    <div class="diagram-container">
+      <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Planned : idea proposed
+    Planned --> Partial : increment approved
+    Partial --> Done : acceptance tests pass
+    Done --> [*]
+
+    note right of Planned
+      Job story only.
+      No commitment yet.
+    end note
+    note right of Partial
+      Increment cycle underway.
+      Tests being written.
+    end note
+    note right of Done
+      Passing test linked.
+      This is the proof.
+    end note
+      </pre>
+    </div>
+    <div class="grid-3">
+      <div class="stat-card">
+        <h3>📝 Planned</h3>
+        <p>A job story exists. Nothing is committed. Can be reprioritized freely.</p>
+      </div>
+      <div class="stat-card">
+        <h3>🚧 Partial</h3>
+        <p>An increment has been approved and is actively being built and tested.</p>
+      </div>
+      <div class="stat-card">
+        <h3>✅ Done</h3>
+        <p>Acceptance test passes and is linked. This is what "shipped" means — provable, not assumed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5: WHY IT MATTERS ============ -->
+  <section>
+    <p class="kicker">Why This Matters</p>
+    <h2>What This Buys the Team</h2>
+    <table>
+      <thead>
+        <tr><th>Principle</th><th>What it prevents</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>WHAT before HOW before CODE</strong></td><td>Building the wrong thing well. Scope is locked before implementation starts.</td></tr>
+        <tr><td><strong>Files are the source of truth</strong></td><td>Decisions living only in chat history or someone's memory.</td></tr>
+        <tr><td><strong>Evidence over claims</strong></td><td>Features marked "done" that don't actually pass their tests.</td></tr>
+        <tr><td><strong>Human approval at every gate</strong></td><td>Scope creep and silent, unreviewed changes.</td></tr>
+        <tr><td><strong>Durable docs, promoted deliberately</strong></td><td>Documentation rot — docs are only updated when something durable actually changed.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<p class="footer-note">4dc — four discipline cycle · constitution → increment → plan → implement → promote</p>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#ffffff',
+      primaryTextColor: '#111111',
+      primaryBorderColor: '#1a56db',
+      lineColor: '#6b7280',
+      fontFamily: 'system-ui, sans-serif',
+      fontSize: '14px'
+    }
+  });
+</script>
+
+</body>
+</html>

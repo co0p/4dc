@@ -28,9 +28,9 @@ One or more of the following, per approval:
 - Updated `CONSTITUTION.md` (if guardrails need revision)
 - New ADR in `docs/adr/` (for significant architectural decisions)
 - Updated `docs/architecture.md` (if runtime structure, dependencies, or performance-critical paths changed)
-- Updated `docs/domain-model.md` (if domain language changed or new durable concepts appeared)
+- Updated `docs/domain.md` (if domain language changed or new concepts appeared)
 - Updated `README.md` or other docs (for changed behavior or usage)
-- Updated `docs/roadmap.md` — feature moved from In Progress to Done, acceptance test link added
+- Updated `docs/roadmap.md` — feature moved from Partial to Done, acceptance test link added
 - Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
 
 Required review outputs:
@@ -53,16 +53,16 @@ Do NOT leave permanent docs stale when the implementation changed architecture, 
 
 ## Process
 
-1. **Read all `.agent/` artifacts** — full review of increment, plan, implementation, and learnings
-2. **Identify promotion candidates** from `learnings.md`’s "Promote Candidates" section plus your own review of code, tests, and permanent docs for drift
-3. **For each candidate:**
-   - State: what it is, where it goes, why it’s durable
-   - Generate `.agent/promotion-review.html` covering all candidates
-4. **STOP** — present HTML review, await per-candidate approval
-5. **On approval** — write each approved permanent artifact
-6. **Clean up** — archive or delete `.agent/` files for this cycle
+1. **Read all `.agent/` artifacts** — full review of increment, plan, implementation, and learnings.
+2. **Conversation: Propose promotions** — identify candidates and state what each is, its destination, and why it is durable. Iterate until the user says to proceed.
+3. **Generate `.agent/promotion-review.md`** — include the required Markdown review sections and an individual approval checkbox for every candidate.
+4. **STOP** — present the review and wait for explicit per-candidate approval.
+5. **On approval** — write each approved permanent artifact.
+6. **Clean up** — archive or delete `.agent/` files for this cycle.
 
-{{TEMPLATE:html}}
+## Markdown Review Contract
+
+Use `.agent/promotion-review.md`. Include **Objective**, **Inputs Reviewed**, **Proposed Output Summary**, **Promotion Candidates** (type, destination, rationale, approval), **Risks and Trade-offs**, **Open Questions**, and **Approval Decision**. Record each explicit conversational approval in the review.
 
 ---
 
@@ -78,7 +78,7 @@ Do NOT leave permanent docs stale when the implementation changed architecture, 
 | Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |
 | Performance contract | A latency, throughput, cost, or scaling expectation changed | `CONSTITUTION.md` or `docs/architecture.md` |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
-| New domain concept | An aggregate, event, value object, or term used in code/tests that has no shared definition | `docs/domain-model.md` (create using the template in the Appendix if absent) — place in the correct section: **Aggregates**, **Events**, **Value Objects**, or **Terms** |
+| New domain concept | A concept, event, or rule used in code/tests that has no shared definition | `docs/domain.md` (create using the template in the Appendix if absent) |
 | Structural change | A container added, removed, or re-wired | `docs/architecture.md` (create using the template in the Appendix if absent) |
 
 ---
@@ -87,10 +87,10 @@ Do NOT leave permanent docs stale when the implementation changed architecture, 
 
 - [ ] All `.agent/` artifacts read
 - [ ] Promotion candidates identified and categorized
-- [ ] HTML review generated covering all candidates
+- [ ] Markdown review generated covering all candidates
 - [ ] User approval received per candidate
 - [ ] Each approved artifact written to permanent location
-- [ ] Architecture, domain model, and performance documentation either updated or explicitly marked unchanged
+- [ ] Architecture, domain language, testing guidance, and performance documentation either updated or explicitly marked unchanged
 - [ ] `.agent/` files cleaned up
 
 ---
@@ -106,10 +106,10 @@ Cycle complete. Next action: `4dc-increment` for the next cycle — load `skills
 
 Use these verbatim as the starting content when creating a new document for the first time.
 
-### Template: docs/domain-model.md
+### Template: docs/domain.md
 
 ```markdown
-{{TEMPLATE:domain-model}}
+{{TEMPLATE:domain}}
 ```
 
 ### Template: docs/architecture.md

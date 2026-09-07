@@ -89,17 +89,18 @@ All `.agent/` files are lowercase. The `.agent/` directory is gitignored by defa
 
 ---
 
-## HTML Review Contract
+## Markdown Review Contract
 
-Before writing any final Markdown artifact, generate a reviewable HTML file in `.agent/` and pause for explicit approval. This applies in every phase.
+Before writing a phase's final artifacts, create `.agent/<phase>-review.md`, show its contents, and pause for explicit approval. This applies in every phase.
 
 **Workflow (MANDATORY):**
-1. Generate `<phase>-review.html` in `.agent/`
-2. Show the user what it contains
-3. STOP — wait for explicit approval
-4. Only after approval: write the final Markdown artifact
+1. Discuss and refine the proposed outcome with the user.
+2. Generate `.agent/<phase>-review.md`.
+3. Show the review and STOP for explicit approval.
+4. Record the approval in the review's Approval Decision section.
+5. Only then write the phase's final artifacts.
 
-**Required HTML sections:**
+**Required review sections:**
 1. Objective
 2. Inputs Reviewed
 3. Proposed Output Summary
@@ -107,28 +108,7 @@ Before writing any final Markdown artifact, generate a reviewable HTML file in `
 5. Open Questions
 6. Approval Decision
 
-**HTML requirements:**
-
-- Human-readable headings and tables where useful
-- Timestamp and phase name in the header
-- `Status: Pending Approval` until approved
-- Two-column layout: left sidebar with anchor links to all sections
-- CSS theme: clear spacing scale, strong contrast, no noisy effects, mobile-friendly
-- Code highlighting classes: `kw`, `str`, `fn`, `cm`, `id`; styled `pre`/`code` blocks
-- SVG support: dedicated diagram sections with embedded `<svg>`, styled nodes/lines
-
-Canonical CSS variables:
-```css
-:root {
-  --bg: #f4f3ef;
-  --panel: #ffffff;
-  --ink: #111111;
-  --accent: #1a56db;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --radius: 4px;
-}
-```
+**Approval semantics:** An explicit user statement in the conversation, such as “looks good” or “proceed,” is approval. Record that decision in the review file; the user does not need to edit a checkbox themselves.
 
 ---
 
