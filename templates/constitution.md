@@ -11,6 +11,16 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 
 The generated constitution must describe only the application. Do not include this repository's internal workflow name, phase sequence, agent names, or transient artifact paths.
 
+Before writing it, check that it contains no internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths.
+
+---
+
+## Foundations
+
+- **Beck — team agreements before code.** The constitution is the set of rules the team agrees to operate under. It is written before implementation, not retrofitted after.
+- **Poppendieck — eliminate ambiguity upstream.** Decide the guardrails early so later phases do not rediscover the same constraints. For reversible choices, leave the decision late; for structural rules, fix them now.
+- **Fowler — evolutionary architecture.** Guardrails, not blueprints. The constitution sets the boundaries that let the design evolve safely, not a fixed architecture that must be followed verbatim.
+
 ---
 
 ## Expected Input
@@ -78,6 +88,11 @@ Required `CONSTITUTION.md` headings:
 - Defines shared concepts, domain events, and system rules in business language
 - Must not be replaced by an ADR, README, or implementation-specific notes
 
+**`docs/ui.md`** — Permanent UI decisions (required when the project has a user interface):
+- Shared user flows, interaction patterns, visual principles, accessibility rules, and content conventions
+- Rationale and consequences of recurring UI decisions
+- No component inventory, CSS catalog, or one-off screen notes
+
 ### Secondary Artifact
 
 `docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
@@ -91,6 +106,7 @@ Before creating or updating the constitution, audit the repository for the compl
 - `docs/deployment.md`
 - `docs/architecture.md` with a C4 Level 2 container view
 - `docs/domain.md` with the project's glossary
+- `docs/ui.md` with the project's UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
 - `docs/roadmap.md`
 
@@ -101,7 +117,7 @@ Missing baseline documents are constitution outputs; they are not optional follo
 ---
 
 <HARD-GATE>
-Do NOT write `CONSTITUTION.md` until the Markdown review in `.agent/constitution-review.md` has been explicitly approved.
+Do NOT write `CONSTITUTION.md` until the user explicitly approves the proposed guardrails.
 Do NOT ask more than 5 questions per round.
 Do NOT include implementation details — CONSTITUTION.md contains guardrails, not recipes.
 Do NOT copy generic principles from the internet. Every rule must be justified by this project's specific context.
@@ -113,20 +129,15 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 
 1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, any ADRs or docs, and existing deployment or testing practices
 2. **Conversation: Propose the guardrails** — summarize the proposed testing and deployment strategies, identify foundational ADR candidates, and ask whether the direction feels right. Iterate until the user says “looks good” or “proceed.”
-3. **Generate `.agent/constitution-review.md`** — include the required Markdown review sections and proposed outputs.
-4. **STOP** — present the review and wait for explicit approval.
-5. **On approval:**
+3. **On approval:**
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures
-   - Create or update `docs/architecture.md` with the current C4 Level 2 container view
-   - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
+    - Create or update `docs/architecture.md` with the current C4 Level 2 container view
+    - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
+    - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
    - Create initial `docs/adr/` structure if foundational decisions exist
    - Create `docs/roadmap.md` if not present
-
-## Markdown Review Contract
-
-Use `.agent/constitution-review.md`. Include **Objective**, **Inputs Reviewed**, **Proposed Output Summary**, **Risks and Trade-offs**, **Open Questions**, and **Approval Decision**. An explicit conversational approval is sufficient; record it in the Approval Decision section.
 
 ---
 
@@ -135,7 +146,6 @@ Use `.agent/constitution-review.md`. Include **Objective**, **Inputs Reviewed**,
 - [ ] Existing docs read (including any deployment or testing practices)
 - [ ] Foundational ADRs identified (if any exist)
 - [ ] Proposed testing strategy, deployment strategy, and ADR candidates discussed
-- [ ] Markdown review generated and shown
 - [ ] User approval received
 - [ ] `CONSTITUTION.md` written with Testing, Performance, and Release sections populated (with references to supporting docs)
 - [ ] `docs/testing.md` created with project-specific practices

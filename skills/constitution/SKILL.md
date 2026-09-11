@@ -11,6 +11,16 @@ Create or update `CONSTITUTION.md` — the project's durable engineering guardra
 
 The generated constitution must describe only the application. Do not include this repository's internal workflow name, phase sequence, agent names, or transient artifact paths.
 
+Before writing it, check that it contains no internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths.
+
+---
+
+## Foundations
+
+- **Beck — team agreements before code.** The constitution is the set of rules the team agrees to operate under. It is written before implementation, not retrofitted after.
+- **Poppendieck — eliminate ambiguity upstream.** Decide the guardrails early so later phases do not rediscover the same constraints. For reversible choices, leave the decision late; for structural rules, fix them now.
+- **Fowler — evolutionary architecture.** Guardrails, not blueprints. The constitution sets the boundaries that let the design evolve safely, not a fixed architecture that must be followed verbatim.
+
 ---
 
 ## Expected Input
@@ -78,6 +88,11 @@ Required `CONSTITUTION.md` headings:
 - Defines shared concepts, domain events, and system rules in business language
 - Must not be replaced by an ADR, README, or implementation-specific notes
 
+**`docs/ui.md`** — Permanent UI decisions (required when the project has a user interface):
+- Shared user flows, interaction patterns, visual principles, accessibility rules, and content conventions
+- Rationale and consequences of recurring UI decisions
+- No component inventory, CSS catalog, or one-off screen notes
+
 ### Secondary Artifact
 
 `docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
@@ -91,6 +106,7 @@ Before creating or updating the constitution, audit the repository for the compl
 - `docs/deployment.md`
 - `docs/architecture.md` with a C4 Level 2 container view
 - `docs/domain.md` with the project's glossary
+- `docs/ui.md` with the project's UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
 - `docs/roadmap.md`
 
@@ -98,6 +114,16 @@ Missing baseline documents are constitution outputs; they are not optional follo
 
 ## Execution Contract
 
+- Use plain, direct language. Keep output scannable.
+- Prefer short sentences and bullets.
+- State only decisions, actions, blockers, and evidence relevant to this task.
+- Do not repeat inputs, instructions, or handover contents.
+- Do not add motivational language, generic advice, or decorative explanation.
+- Explain choices only when they affect the task, risk, or handoff.
+- Never copy internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths into permanent product artifacts.
+- Before writing a permanent artifact, scan it for internal workflow references and remove them.
+- Ask one focused question when blocked.
+- End with the next action or handoff.
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
 - Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
 - Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.
@@ -105,13 +131,13 @@ Missing baseline documents are constitution outputs; they are not optional follo
 - Low-risk actions: reads, searches, diffs, and local validation commands.
 - Medium-risk actions: local reversible edits to phase artifacts.
 - High-risk actions: destructive file operations, external side effects, or skipping a stop gate. Require explicit approval first.
-- If a required input is missing or contradictory, ask one focused question or stop at the review gate. Do not invent missing facts.
+- If a required input is missing or contradictory, ask one focused question or stop and wait for explicit approval. Do not invent missing facts.
 - Before finishing, run the phase checklist and confirm every required section is present.
 
 ---
 
 <HARD-GATE>
-Do NOT write `CONSTITUTION.md` until the Markdown review in `.agent/constitution-review.md` has been explicitly approved.
+Do NOT write `CONSTITUTION.md` until the user explicitly approves the proposed guardrails.
 Do NOT ask more than 5 questions per round.
 Do NOT include implementation details — CONSTITUTION.md contains guardrails, not recipes.
 Do NOT copy generic principles from the internet. Every rule must be justified by this project's specific context.
@@ -123,20 +149,15 @@ Do NOT copy generic principles from the internet. Every rule must be justified b
 
 1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, any ADRs or docs, and existing deployment or testing practices
 2. **Conversation: Propose the guardrails** — summarize the proposed testing and deployment strategies, identify foundational ADR candidates, and ask whether the direction feels right. Iterate until the user says “looks good” or “proceed.”
-3. **Generate `.agent/constitution-review.md`** — include the required Markdown review sections and proposed outputs.
-4. **STOP** — present the review and wait for explicit approval.
-5. **On approval:**
+3. **On approval:**
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures
-   - Create or update `docs/architecture.md` with the current C4 Level 2 container view
-   - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
+    - Create or update `docs/architecture.md` with the current C4 Level 2 container view
+    - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
+    - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
    - Create initial `docs/adr/` structure if foundational decisions exist
    - Create `docs/roadmap.md` if not present
-
-## Markdown Review Contract
-
-Use `.agent/constitution-review.md`. Include **Objective**, **Inputs Reviewed**, **Proposed Output Summary**, **Risks and Trade-offs**, **Open Questions**, and **Approval Decision**. An explicit conversational approval is sufficient; record it in the Approval Decision section.
 
 ---
 
@@ -145,7 +166,6 @@ Use `.agent/constitution-review.md`. Include **Objective**, **Inputs Reviewed**,
 - [ ] Existing docs read (including any deployment or testing practices)
 - [ ] Foundational ADRs identified (if any exist)
 - [ ] Proposed testing strategy, deployment strategy, and ADR candidates discussed
-- [ ] Markdown review generated and shown
 - [ ] User approval received
 - [ ] `CONSTITUTION.md` written with Testing, Performance, and Release sections populated (with references to supporting docs)
 - [ ] `docs/testing.md` created with project-specific practices
@@ -312,147 +332,117 @@ Document constraints that materially affect release safety and the mitigation or
 When creating a new Architecture Decision Record, use this template:
 
 ```markdown
-# Architecture Decision Record (ADR) Template
+---
+name: 4dc-adr
+description: "On-demand. Write one Architecture Decision Record when a structural, hard-to-reverse, or non-obvious choice emerges. Single decision, single file, with rationale and consequences."
+---
 
-ADRs document significant architectural decisions and their rationale. They serve as a concise guide to _why_ the system is structured a particular way, not a changelog, implementation diary, or list of completed work.
+# ADR Skill
+
+## One Responsibility
+
+Capture one architectural decision in a single ADR file with context, alternatives, rationale, and consequences. Nothing else.
 
 ---
 
-## File Naming Convention
+## Foundations
 
-Save ADRs in `docs/adr/` with a timestamp and slug:
-
-```
-docs/adr/ADR-YYYYMMDD-slug.md
-```
-
-Example:
-- `docs/adr/ADR-20260907-split-testing-from-constitution.md`
-- `docs/adr/ADR-20260905-cache-invalidation-strategy.md`
+- **Fowler — evolutionary architecture.** The system evolves; irreversible decisions need a decision log so future change is informed, not blind.
+- **Poppendieck — decide as late as possible, but decide.** Record the decision at the moment commitment becomes necessary, with the options that were live at that moment.
+- **Beck — make irreversible decisions visible.** A decision worth recording is one a newcomer would not infer from the code.
 
 ---
 
-## Template: Use This Structure
+## Expected Input
 
-```markdown
-# ADR-YYYYMMDD — [Decision Title]
+- `CONSTITUTION.md` (architectural boundaries the decision must respect)
+- The decision itself — what was chosen, what was rejected, why now
+- `docs/adr/` (existing ADRs, to link related or superseded decisions)
 
-**Decision:** [One-sentence statement of what you decided]
+---
 
-**Date:** YYYY-MM-DD
+## Concrete Output
 
-**Status:** Accepted | Rejected | Superseded | Deferred
+`docs/adr/ADR-YYYYMMDD-<slug>.md` containing:
+- **Decision**: one sentence stating what was decided
+- **Status**: Accepted | Superseded | Deferred
+- **Context**: why this decision matters now; what constraint or problem forces it
+- **Alternatives**: the options that were live, each with its trade-off
+- **Rationale**: why the chosen option wins over the others, grounded in this project's context
+- **Consequences**: what gets better and what gets harder (both sides)
+- **Related**: links to related or superseded ADRs
 
-**Context**
+Required headings (see the ADR template in `templates/adr.md` for the full structure):
+- `# ADR-YYYYMMDD — [Decision Title]`
+- `**Decision:**`
+- `**Status:**`
+- `**Context**`
+- `**Alternatives**`
+- `**Rationale**`
+- `**Consequences**`
+- `**Related**`
 
-[Why does this decision matter? What problem are we solving? What constraints exist?]
+{{SHARED:execution-contract}}
 
-Example:
-- A new feature requires storing user preferences; we need to decide where and how.
-- Current approach (in-memory cache) does not survive application restarts.
-- Performance requirement: lookups must be < 10ms on average.
-- Team skill: no DBA expertise; prefer managed services.
+---
 
-**Decision**
-
-[What did we decide to do? Be specific about the boundary or principle, but avoid duplicating implementation details that belong in code or runbooks.]
-
-Example:
-- Store user preferences in a transactional SQL database (PostgreSQL on AWS RDS)
-- Use an ORM (SQLAlchemy / Prisma / Entity Framework) to manage schema and migrations
-- Cache in-process with TTL of 5 minutes to meet latency requirement
-- Implement read replicas for analytics queries to avoid impacting transactional workload
-
-**Consequences (Positive)**
-
-[What gets better, and why is that useful to the project?]
-
-- Preferences survive application restarts
-- Easy to query and report on user behavior
-- Horizontal scaling: multiple app servers share same database
-- Standard tooling and team knowledge
-
-**Consequences (Negative)**
-
-[What gets harder, riskier, or more constrained?]
-
-- Added operational burden: database backups, monitoring, security patching
-- Network latency: every preference lookup requires a round trip (mitigated by cache)
-- Cost: managed database service is not free
-- Schema migrations: changes require careful coordination with application deployments
-
-**Alternatives Considered**
-
-1. **Keep in-memory cache** — Simple but data loss on restart; ruled out by requirement.
-2. **Use Redis** — Fast and battle-tested, but adds another infrastructure service to operate.
-3. **Use file-based storage (SQLite)** — No operational overhead but poor multi-process scaling.
-4. **Use cloud document store (Firestore / DynamoDB)** — Pay-per-request pricing could be costly at scale.
-
-**Rationale for Decision Over Alternatives**
-
-We chose PostgreSQL because:
-- Team has existing RDS infrastructure and operational patterns
-- SQL queries are predictable for future analytics
-- Cost is predictable and lower than document databases at our anticipated scale
-- ORM options provide familiar abstractions
-
-**Related Decisions**
-
-- [ADR-YYYYMMDD-caching-strategy.md](#) — explains the in-process cache layer
-- [ADR-YYYYMMDD-database-migrations.md](#) — explains schema versioning approach
-
-**References**
-
-- [Relevant architecture doc](#)
-- [Relevant RFC or issue link](#)
-- [External standard or reference](#)
-
-**Questions for Review**
-
-- Is this the right data model for future use cases? (Reviewers: [name])
-- Should we add read replicas from day one? (Ops: [name])
-- Migration strategy: how do we backfill existing users? (Tech lead: [name])
-```
+<HARD-GATE>
+Do NOT write an ADR for implementation details (variable names, argument ordering, small refactors).
+Do NOT write an ADR for a decision already captured in `CONSTITUTION.md` or an existing ADR.
+Do NOT write the ADR until the user confirms the decision and its rationale.
+One ADR per decision — if two decisions are entangled, write two ADRs and cross-link them.
+</HARD-GATE>
 
 ---
 
 ## When to Write an ADR
 
-Write an ADR when:
+Write one when the choice is:
+- **Structural** — affects multiple parts of the system (new layer, new service, new dependency direction)
+- **Hard to reverse** — schema design, language choice, external dependency, data migration
+- **Non-obvious** — a newcomer would not infer it from reading the code
+- **Trade-off-laden** — performance vs. simplicity, flexibility vs. cost
 
-- You make a **structural choice** that affects multiple parts of the system (new layer, new service, new tech)
-- The choice involves **trade-offs** (performance vs. simplicity, flexibility vs. cost)
-- The choice is **difficult to reverse** (schema design, language choice, external dependency)
-- The choice is **not obvious** to someone new to the codebase
-
-Do **not** write an ADR for:
-- Small implementation details (choice of variable name, ordering of function arguments)
+Do **not** write one for:
 - Bug fixes or maintenance patches
-- Decisions that are already captured in CONSTITUTION.md or public docs
+- Implementation details that live in code
+- Decisions fully captured by `CONSTITUTION.md` guardrails
 
 ---
 
-## How ADRs Connect to Project Work
+## Process
 
-**Project initialization:** High-level architectural principles and boundaries are documented in `CONSTITUTION.md`. ADRs extend this with decisions about _specific_ components or patterns.
-
-**Later development:** When a significant decision emerges during implementation, it is captured in project decision notes and recorded as a new ADR file in `docs/adr/`.
-
-**Reference:** `CONSTITUTION.md` points to `docs/adr/` as the permanent log of architectural decisions; newly added ADRs are linked from there.
+1. **Name the decision** — one sentence: what was decided. If you cannot state it in one sentence, the decision is not yet crisp.
+2. **State the context** — what problem forces this decision now? What constraint from `CONSTITUTION.md` or the codebase applies?
+3. **List alternatives** — the options that were genuinely live. Each needs a one-line trade-off, not a strawman.
+4. **Record the rationale** — why the chosen option wins, grounded in this project's context (not generic best-practice claims).
+5. **State consequences** — what gets better and what gets harder. Both sides.
+6. **Check related ADRs** — link any related or superseded decisions in `docs/adr/`. If this supersedes an existing ADR, update the old one's status to `Superseded`.
+7. **STOP** — present the ADR. Wait for the user to confirm the decision and rationale.
+8. **On approval** — write `docs/adr/ADR-YYYYMMDD-<slug>.md` and link it from `CONSTITUTION.md` or `docs/architecture.md` if appropriate.
 
 ---
 
-## ADR Review and Approval
+## Checklist
 
-Before an ADR is merged:
-1. It must be reviewed by at least one person familiar with the affected system
-2. All "Questions for Review" must be answered or marked as deferred
-3. Status must be set to "Accepted" (or "Deferred" if not yet implemented)
+- [ ] Decision stated in one sentence
+- [ ] Context explains why now
+- [ ] Alternatives are genuine, not strawmen
+- [ ] Rationale grounded in project context
+- [ ] Consequences cover both positive and negative
+- [ ] Related ADRs cross-linked (superseded ones updated)
+- [ ] User confirmed the decision and rationale
+- [ ] ADR file written to `docs/adr/ADR-YYYYMMDD-<slug>.md`
+- [ ] ADR linked from `CONSTITUTION.md` or `docs/architecture.md` if architectural
 
-After it is merged:
-- Link it from the project's architecture or ADR index
-- Update any related ADRs with "Supersedes" or "Related Decisions" links
-- If a related decision is reversed, update the old ADR's status to "Superseded"
+---
+
+## Handoff
+
+Terminal artifact: `docs/adr/ADR-YYYYMMDD-<slug>.md` (permanent)
+Return to the skill that invoked this one — typically `4dc-plan` or `4dc-tdd-green`.
+
+This skill is a utility, not a sequential phase. It is invoked on demand when a decision worth recording emerges during any phase.
 ```
 
 ### Template: docs/roadmap.md

@@ -42,4 +42,4 @@ Shared business language for this project. Use this as a reference when requirem
 - Define terms in language a product owner and implementer can both use.
 - Record rules and relationships only when they affect decisions or outcomes.
 - Do not list database columns, code paths, test cases, APIs, or historical introductions.
-- If a term is still uncertain, record the ambiguity in the relevant phase review instead of inventing a definition.
+- If a term is still uncertain, record the ambiguity in the project decision record instead of inventing a definition.

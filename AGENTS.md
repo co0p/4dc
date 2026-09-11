@@ -3,8 +3,14 @@
 You operate under the **4dc methodology** — a four-discipline cycle:
 
 ```
-constitution → increment → plan → implement → promote
+constitution → increment → [prototype?] → plan → [tidy] → tdd-red → tdd-green → refactor → promote
+                                                     ↑___________________________________|
+                                                     [adr?]              [research → tdd-green]
 ```
+
+- `prototype` is optional — load it only when a blocking unknown needs a throwaway spike before planning.
+- `adr` is on-demand — load it whenever a structural, hard-to-reverse decision emerges during any phase.
+- `tidy`, `tdd-red`, `tdd-green`, and `refactor` loop per subtask until all are `state: complete`.
 
 Read this file completely before doing any work, then load the skill for the current phase.
 
@@ -13,6 +19,8 @@ Read this file completely before doing any work, then load the skill for the cur
 ## Core Principles
 
 These apply across all phases. Skills do not repeat them.
+
+The methodology draws on three traditions: **Kent Beck** (XP — test-first, team agreements, Tidy First, the planning game), **Mary Poppendieck** (Lean Software Development — eliminate waste, decide as late as possible, pull from value, small batches), and **Martin Fowler** (evolutionary architecture, refactoring as behavior-preserving design improvement, two-hats discipline).
 
 - Use plain, direct language. Keep output scannable.
 - Ask focused questions; never a broad questionnaire.
@@ -56,11 +64,24 @@ Inspect the workspace and determine the current phase:
 |-----------|-------|------------|
 | No `CONSTITUTION.md` | **constitution** | `.agents/skills/constitution/SKILL.md` |
 | `CONSTITUTION.md` exists, no `.agent/increment.md` | **increment** | `.agents/skills/increment/SKILL.md` |
+| `.agent/increment.md` exists, user requests a spike | **prototype** *(optional)* | `.agents/skills/prototype/SKILL.md` |
 | `.agent/increment.md` exists, no `.agent/plan.md` | **plan** | `.agents/skills/plan/SKILL.md` |
-| `.agent/plan.md` exists, implementation not complete | **implement** | `.agents/skills/implement/SKILL.md` |
+| User names a structural decision to capture | **adr** *(on-demand)* | `.agents/skills/adr/SKILL.md` |
+| `.agent/plan.md` exists, current `[tidy]` subtask `state: pending` | **tidy** | `.agents/skills/tidy/SKILL.md` |
+| `.agent/plan.md` exists, current `[behavior]` subtask `state: pending` | **tdd-red** | `.agents/skills/tdd-red/SKILL.md` |
+| `.agent/plan.md` exists, current `active_test` `state: red` or `[research]` `state: pending` | **tdd-green** | `.agents/skills/tdd-green/SKILL.md` |
+| `.agent/plan.md` exists, current `active_test` `state: green` | **refactor** | `.agents/skills/refactor/SKILL.md` |
 | `.agent/implementation.md` marked `status: complete` | **promote** | `.agents/skills/promote/SKILL.md` |
 
 **If the user explicitly names a phase, load that skill directly without checking conditions.**
+
+**Implementation loop:** during the implementation phase, read `.agent/implementation.md` to find the current subtask by type and state:
+- `[tidy]` + `state: pending` → load `tidy`
+- `[behavior]` with `active_test: pending` → load `tdd-red`
+- `[behavior]` with `active_test: red` → load `tdd-green` (writes minimal code to pass, sets active test `state: green`)
+- `[behavior]` with `active_test: green` → load `refactor` (improves design, sets active test `state: complete`, activates the next test or completes the subtask)
+- `[research]` + `state: pending` → load `tdd-green` (investigates, sets `state: complete`)
+- All subtasks `state: complete` → `refactor` runs final verification and sets `status: complete`
 
 ---
 
@@ -82,34 +103,21 @@ Files used as handoff contracts between phases:
 |------|-------|-------|
 | `CONSTITUTION.md` | permanent, root | `constitution` skill writes it |
 | `.agent/increment.md` | transient, per cycle | `increment` skill writes it |
+| `.agent/prototype.md` | transient, per cycle (optional) | `prototype` skill writes it |
 | `.agent/plan.md` | transient, per cycle | `plan` skill writes it |
-| `.agent/implementation.md` | transient, per cycle | `implement` skill writes it |
-| `.agent/learnings.md` | transient, per cycle | `implement` skill appends to it |
+| `.agent/implementation.md` | transient, per cycle | `tidy`, `tdd-red`, `tdd-green`, and `refactor` skills write it |
+| `.agent/learnings.md` | transient, per cycle | `tidy`, `tdd-red`, `tdd-green`, `refactor`, and `adr` skills append to it |
+| `docs/adr/ADR-*.md` | permanent | `adr` skill writes it |
 
 All `.agent/` files are lowercase. The `.agent/` directory is gitignored by default.
 
 ---
 
-## Markdown Review Contract
+## Approval
 
-Before writing a phase's final artifacts, create `.agent/<phase>-review.md`, show its contents, and pause for explicit approval. This applies in every phase.
+Before writing a phase's final artifact, propose the outcome in the conversation and pause for explicit approval. This applies in every phase.
 
-**Workflow (MANDATORY):**
-1. Discuss and refine the proposed outcome with the user.
-2. Generate `.agent/<phase>-review.md`.
-3. Show the review and STOP for explicit approval.
-4. Record the approval in the review's Approval Decision section.
-5. Only then write the phase's final artifacts.
-
-**Required review sections:**
-1. Objective
-2. Inputs Reviewed
-3. Proposed Output Summary
-4. Risks and Trade-offs
-5. Open Questions
-6. Approval Decision
-
-**Approval semantics:** An explicit user statement in the conversation, such as “looks good” or “proceed,” is approval. Record that decision in the review file; the user does not need to edit a checkbox themselves.
+**Approval semantics:** An explicit user statement in the conversation, such as "looks good" or "proceed," is approval. Silence is not approval. When in doubt, ask.
 
 ---
 

@@ -1,5 +1,15 @@
 ## Execution Contract
 
+- Use plain, direct language. Keep output scannable.
+- Prefer short sentences and bullets.
+- State only decisions, actions, blockers, and evidence relevant to this task.
+- Do not repeat inputs, instructions, or handover contents.
+- Do not add motivational language, generic advice, or decorative explanation.
+- Explain choices only when they affect the task, risk, or handoff.
+- Never copy internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths into permanent product artifacts.
+- Before writing a permanent artifact, scan it for internal workflow references and remove them.
+- Ask one focused question when blocked.
+- End with the next action or handoff.
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
 - Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
 - Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.
@@ -7,5 +17,5 @@
 - Low-risk actions: reads, searches, diffs, and local validation commands.
 - Medium-risk actions: local reversible edits to phase artifacts.
 - High-risk actions: destructive file operations, external side effects, or skipping a stop gate. Require explicit approval first.
-- If a required input is missing or contradictory, ask one focused question or stop at the review gate. Do not invent missing facts.
+- If a required input is missing or contradictory, ask one focused question or stop and wait for explicit approval. Do not invent missing facts.
 - Before finishing, run the phase checklist and confirm every required section is present.

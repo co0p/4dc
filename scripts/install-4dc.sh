@@ -1,17 +1,34 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+for command in curl tar mktemp grep; do
+  if ! command -v "$command" >/dev/null 2>&1; then
+    echo "Error: required command not found: $command" >&2
+    exit 1
+  fi
+done
+
 TARGET_SKILLS_DIR=".agents/skills"
 ORCHESTRATOR=".agents/AGENTS.md"
 WORKING_DIR=".agent"
 REPO="https://github.com/co0p/4dc"
 BRANCH="main"
+FORCE_INSTALL=0
+
+if [ "${1:-}" = "--force" ]; then
+  FORCE_INSTALL=1
+fi
 
 SKILL_NAMES=(
   "constitution"
   "increment"
+  "prototype"
   "plan"
-  "implement"
+  "adr"
+  "tidy"
+  "tdd-red"
+  "tdd-green"
+  "refactor"
   "promote"
 )
 
@@ -25,7 +42,7 @@ echo "  2. Copy skill files to $TARGET_SKILLS_DIR/<name>/SKILL.md:"
 for name in "${SKILL_NAMES[@]}"; do
   echo "     - $TARGET_SKILLS_DIR/$name/SKILL.md"
 done
-echo "  3. Copy orchestrator to $ORCHESTRATOR (skipped if already exists)"
+echo "  3. Copy orchestrator to $ORCHESTRATOR (skipped if it already exists; use --force to update it)"
 echo "  Note: Both skills and orchestrator are installed under .agents/"
 echo "  4. Create working directory $WORKING_DIR/"
 echo "  5. Add $WORKING_DIR to .gitignore"
@@ -62,22 +79,25 @@ for name in "${SKILL_NAMES[@]}"; do
     echo "   - copying skills/$name/SKILL.md -> $DEST"
     cp "$SRC" "$DEST"
   else
-    echo "   - warning: skills/$name/SKILL.md not found in repo; skipping"
+    echo "Error: required skill not found in downloaded archive: skills/$name/SKILL.md" >&2
+    exit 1
   fi
 done
 
-# Install orchestrator
+# Install orchestrator. Preserve a project-local customization by default;
+# --force is explicit because replacing it can discard local instructions.
 ORCH_SRC="$REPO_ROOT/AGENTS.md"
 mkdir -p ".agents"
 if [ -f "$ORCH_SRC" ]; then
-  if [ -f "$ORCHESTRATOR" ]; then
-    echo "   - $ORCHESTRATOR already exists; skipping (not overriding)"
+  if [ -f "$ORCHESTRATOR" ] && [ "$FORCE_INSTALL" -ne 1 ]; then
+    echo "   - $ORCHESTRATOR already exists; skipping (use --force to update)"
   else
     echo "   - copying AGENTS.md -> $ORCHESTRATOR"
     cp "$ORCH_SRC" "$ORCHESTRATOR"
   fi
 else
-  echo "   - warning: AGENTS.md not found in repo; skipping"
+  echo "Error: AGENTS.md not found in downloaded archive" >&2
+  exit 1
 fi
 
 echo ">> Creating working directory $WORKING_DIR ..."

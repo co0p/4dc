@@ -9,8 +9,13 @@ set -euo pipefail
 # Output files are written to skills/<name>/SKILL.md:
 #   - skills/constitution/SKILL.md
 #   - skills/increment/SKILL.md
+#   - skills/prototype/SKILL.md
 #   - skills/plan/SKILL.md
-#   - skills/implement/SKILL.md
+#   - skills/adr/SKILL.md
+#   - skills/tidy/SKILL.md
+#   - skills/tdd-red/SKILL.md
+#   - skills/tdd-green/SKILL.md
+#   - skills/refactor/SKILL.md
 #   - skills/promote/SKILL.md
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -89,8 +94,13 @@ generate_skill() {
 # Generate all skills
 generate_skill "constitution"
 generate_skill "increment"
+generate_skill "prototype"
 generate_skill "plan"
-generate_skill "implement"
+generate_skill "adr"
+generate_skill "tidy"
+generate_skill "tdd-red"
+generate_skill "tdd-green"
+generate_skill "refactor"
 generate_skill "promote"
 
 echo

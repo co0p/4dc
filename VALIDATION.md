@@ -37,10 +37,13 @@ rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md REA
 
 Validate these active instruction surfaces, including:
 - `AGENTS.md`
-- `VALIDATION.md`
 - `templates/`
 - `skills/`
 - `scripts/`
+
+`VALIDATION.md` is a repository-maintainer document. It is not installed into consuming projects and is included here only as the validation contract for changes to 4dc itself.
+
+Permanent documentation validation also checks `docs/ui.md` when the target project has a user interface. It must contain recurring UI, interaction, visual, accessibility, and content decisions rather than a component or CSS inventory.
 
 Do not treat generated drift inside `examples/` as a failure for this validation prompt.
 
@@ -77,8 +80,13 @@ Use this checklist to validate the fresh 4dc prompt suite.
 Expected generated files:
 - `skills/constitution/SKILL.md`
 - `skills/increment/SKILL.md`
+- `skills/prototype/SKILL.md`
 - `skills/plan/SKILL.md`
-- `skills/implement/SKILL.md`
+- `skills/adr/SKILL.md`
+- `skills/tidy/SKILL.md`
+- `skills/tdd-red/SKILL.md`
+- `skills/tdd-green/SKILL.md`
+- `skills/refactor/SKILL.md`
 - `skills/promote/SKILL.md`
 
 Check command:
@@ -91,34 +99,56 @@ find skills -name SKILL.md | sort
 ## Phase Requirements
 
 ### constitution
-- Produces `.agent/constitution-review.md` before writing `CONSTITUTION.md`
+- Writes `CONSTITUTION.md` only after the user explicitly approves the proposed guardrails
 - Defines engineering guardrails, performance expectations, and SDLC artifact policy
 
 ### increment
-- Produces `.agent/increment-review.md` before writing `.agent/increment.md`
+- Writes `.agent/increment.md` only after the user explicitly approves the proposed increment
 - Stays at WHAT/WHY and avoids technical design detail
 
 ### plan
-- Produces `.agent/plan-review.md` before writing `.agent/plan.md`
+- Writes `.agent/plan.md` only after the user explicitly approves the proposed plan
 - Converts requirements to ordered, verifiable technical subtasks with `[research]`, `[tidy]`, and `[behavior]` separation when needed
+- May define optional acceptance scenarios for larger increments; scenarios are advisory by default and must not become implicit blockers
 
-### implement
-- Produces `.agent/implementation-review.md` before marking `.agent/implementation.md` complete
-- Maintains `.agent/implementation.md` and `.agent/learnings.md`
-- Records objective verification evidence and follows Tidy First plus Red→Green→Refactor
+### tdd-red
+- Writes exactly one failing test for the current `[behavior]` subtask
+- Confirms the test fails for the right reason before handing off
+- Does not write production code
+
+### tdd-green
+- Makes the failing test pass with minimal code (no refactoring)
+- Sets `state: green` and hands off to `refactor`
+- Handles `[research]` subtasks (which skip Red and Refactor, set `state: complete` directly)
+- Commits behavior work as `feat:` or `fix:`, research as `research:`
+
+### tidy
+- Executes one `[tidy]` subtask: behavior-preserving structural change
+- Tests must stay green before and after
+- Commits as `tidy: <what changed>`
+
+### refactor
+- Improves design without changing behavior (Fowler two-hats)
+- Tests must stay green throughout
+- Commits as `refactor: <what changed>` (or skips commit if no refactoring needed)
+- Sets `implementation.md` status to `complete` only after final verification and user approval
+
+### prototype
+- Builds a throwaway spike to resolve one named unknown
+- No production code merged; finding recorded in `.agent/prototype.md`
+- Time-boxed; disposed after the finding is captured
+
+### adr
+- Writes one ADR per decision with context, alternatives, rationale, and consequences
+- Does not write ADRs for implementation details or decisions already in `CONSTITUTION.md`
+- User confirms the decision before the ADR is written
 
 ### promote
-- Produces `.agent/promotion-review.md`
+- Writes permanent artifacts only after each candidate is individually approved
 - Applies only approved updates to permanent artifacts
 - Suggests emptying `.agent/` after each promote
 - Confirms `.agent` cleanup decision and documentation sync
-
-## Review-First Rule
-
-For every phase, verify:
-1. Markdown review exists in `.agent/`
-2. Status is pending approval before final write
-3. Final Markdown write occurs only after explicit approval
+- Records optional acceptance-scenario evidence without treating advisory scenarios as default promotion gates
 
 ## Artifact Policy
 
@@ -134,17 +164,10 @@ Permanent artifacts to evaluate every cycle:
 
 Transient artifacts:
 - `.agent/increment.md`
+- `.agent/prototype.md`
 - `.agent/plan.md`
 - `.agent/implementation.md`
 - `.agent/learnings.md`
-- phase review Markdown files
-
-## Installer Validation
-
-Run installer in a test repository and confirm:
-- skill files are copied into `.agents/skills/<phase>/SKILL.md`
-- `.agent/` is created
-- `.agent` is present in `.gitignore`
 
 ## Consistency Sweep
 
@@ -191,7 +214,7 @@ These rules reflect current Anthropic guidance for clear instructions, structure
 - Each skill stays focused on one job and names that responsibility explicitly.
 - Each skill uses a stable section schema: responsibility, inputs, outputs, hard gate, process, checklist, handoff.
 - Each skill contains explicit hard gates instead of relying on implied behavior.
-- The Markdown review contract is present and phase-specific rather than copied with misleading placeholders.
+- Each skill pauses for explicit conversational approval before writing its final artifact, rather than generating an intermediate review file.
 - Implement explicitly encodes Red→Green→Refactor and Tidy First behavior.
 - Promote explicitly requires durable documentation sync, not just code completion.
 
