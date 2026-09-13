@@ -35,7 +35,7 @@ Document the actual commands for fast local feedback, the complete pre-merge gat
 
 ---
 
-## Evidence Required Before Promotion
+## Evidence Required Before Merge
 
 <!--
 State the evidence required before a change is considered complete. Focus on behavior, risk, and reproducibility. Do not use line coverage or a list of passing tests as a substitute for explaining why the evidence is sufficient.

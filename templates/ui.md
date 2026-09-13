@@ -45,9 +45,13 @@ Permanent record of recurring user interface, interaction, visual, accessibility
 
 - [Keyboard, screen reader, focus, contrast, motion, or touch-target rule]
 
-## Content and Microcopy
+## Voice and Tone
 
-- [Voice, tone, labeling, error, or confirmation rule]
+- [The principle behind the voice — e.g. "labels must be playful, never neutral" or "error messages address the user directly"]
+- [Why this tone serves the product — the reason, not examples of copy]
+
+<!-- Do NOT record specific copy strings here. Those live in the code and templates.
+     Record the rule that governs the choices, not the choices themselves. -->
 
 ## Decision Records
 
@@ -66,6 +70,7 @@ Permanent record of recurring user interface, interaction, visual, accessibility
 - Record decisions that recur or affect multiple features.
 - Explain why a pattern exists: user goal, accessibility, performance, or consistency.
 - Do not list CSS classes, component props, exhaustive states, or one-off styling.
+- Do not record specific copy strings, label text, or microcopy examples — those live in the code. Record the rule or principle that governs them.
 
 ## Update Policy
 

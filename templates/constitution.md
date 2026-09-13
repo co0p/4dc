@@ -73,7 +73,7 @@ Required `CONSTITUTION.md` headings:
 
 **`docs/adr/`** — Architecture Decision Records:
 - Decisions with rationale and consequences
-- Indexed from `CONSTITUTION.md`
+- The `docs/adr/` directory is the index; do not duplicate that list in `CONSTITUTION.md`
 - Created using the ADR template when foundational decisions exist
 - Updated when architectural decisions emerge
 - Each ADR explains the context, decision, alternatives, trade-offs, and consequences; it is not an implementation diary
