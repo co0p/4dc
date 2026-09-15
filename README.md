@@ -62,6 +62,7 @@ It installs:
     increment/SKILL.md
     prototype/SKILL.md
     plan/SKILL.md
+    implement/SKILL.md
     adr/SKILL.md
     tidy/SKILL.md
     tdd-red/SKILL.md
@@ -103,7 +104,7 @@ The files are the memory between skills. Read the current handover before acting
 | `.agent/increment.md` | `increment` | The user outcome, acceptance criteria, and scope boundary. |
 | `.agent/prototype.md` | `prototype` | Finding from an optional throwaway experiment. |
 | `.agent/plan.md` | `plan` | Detailed file-level implementation map. |
-| `.agent/implementation.md` | implementation skills | Current subtask, active test, state, and evidence. |
+| `.agent/implementation.md` | `implement` (creates); implementation skills (update) | Current subtask, active test, state, and evidence. |
 | `.agent/learnings.md` | implementation skills | Decisions, deviations, surprises, and promotion candidates. |
 
 The temporary files are cleared or archived after `promote` completes. The plan is deliberately detailed so implementation skills can load only the files and references needed for the current subtask.
@@ -111,8 +112,16 @@ The temporary files are cleared or archived after `promote` completes. The plan 
 ## The Cycle
 
 ```text
-constitution -> increment -> [prototype?] -> plan -> [tidy?]
-                                      -> tdd-red -> tdd-green -> refactor -> promote
+constitution -> increment -> [prototype?] -> plan -> implement -> [tidy?]
+                    |                                    -> tdd-red -> tdd-green -> refactor
+                    |                                    ↑__________________________________|
+                    ↓
+             branch: increment/<slug>  (all subtask commits land here)
+                    ↓
+                promote:
+             1. docs promotion
+             2. final tidy pass
+             3. squash-merge -> main, OR push branch -> PR
 ```
 
 `adr` is on-demand whenever a structural, hard-to-reverse, or non-obvious decision emerges. Each phase has an explicit approval gate. Silence is not approval.
@@ -167,13 +176,16 @@ Use after the increment, and after the prototype if one was needed.
 
 **Does:** Reads the codebase broadly and creates the implementation map:
 
+- Goal and branch name
 - Approach and architecture boundary
+- Design: data models, call/data flow, error/edge-case inventory, observability intent, architecture delta
 - Complete file list: new, modify, touch, delete
 - Ordered `[research]`, `[tidy]`, and `[behavior]` subtasks
 - Symbols, line ranges, and document references
 - Test file and test cases for behavior work
 - One `active_test` at a time for multi-case behavior subtasks
 - Dependencies, risks, and acceptance-criteria coverage
+- Planning decisions: options chosen, alternatives rejected, reasons
 - Optional, non-blocking acceptance scenarios for larger features
 
 **Does not:** Edit production code.
@@ -192,9 +204,21 @@ Use when a decision changes a lasting boundary, dependency direction, technology
 
 **Handoff:** `docs/adr/ADR-YYYYMMDD-<slug>.md`.
 
-### 6. Implementation Loop
+### 6. Implement
 
-The implementation skills work one subtask at a time. They read only the files named by the plan.
+**Skill:** `implement`
+
+Use once after the plan is approved, before any code is written.
+
+**Does:** Scaffolds `.agent/implementation.md` from the approved plan — every subtask in its initial state, test lists copied verbatim. Populates the internal todo list with one item per subtask so progress is visible throughout the loop. Hands off to the first implementation skill.
+
+**Does not:** Write code, write tests, or make any structural change to the codebase.
+
+**Handoff:** `.agent/implementation.md` (all subtasks `state: pending`).
+
+### 7. Implementation Loop
+
+The implementation skills work one subtask at a time. They read only the files named by the plan. The todo list is updated at every subtask transition.
 
 #### Tidy
 
@@ -229,13 +253,13 @@ green -> refactor -> complete
 repeat for the next test case
 ```
 
-### 7. Promote
+### 8. Promote
 
 **Skill:** `promote`
 
 Use after all implementation subtasks pass final verification and `.agent/implementation.md` is approved as complete.
 
-**Does:** Moves durable knowledge into permanent documentation, updates the roadmap, records ADRs or architecture changes, and cleans the temporary cycle files.
+**Does:** Promotes durable outcomes to permanent documentation, updates the roadmap, records ADRs or architecture changes. Runs a final behavior-preserving tidy pass on the branch. Then asks the user to choose how to land the increment: squash-merge to `main` as a single summary commit, or push the branch for a pull request on the project's hosting platform.
 
 **Does not:** Promote guesses or unverified plans. Optional acceptance scenarios provide supplementary evidence and do not block by default.
 
@@ -246,6 +270,7 @@ The orchestrator is recommended. You can also load a skill directly:
 ```text
 Read `.agents/skills/increment/SKILL.md` and define the next increment.
 Read `.agents/skills/plan/SKILL.md` and create the approved implementation plan.
+Read `.agents/skills/implement/SKILL.md` and scaffold the implementation tracker.
 Read `.agents/skills/tdd-red/SKILL.md` and handle the current active test.
 ```
 

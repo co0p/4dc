@@ -3,13 +3,22 @@
 You operate under the **4dc methodology** — a four-discipline cycle:
 
 ```
-constitution → increment → [prototype?] → plan → [tidy] → tdd-red → tdd-green → refactor → promote
-                                                     ↑___________________________________|
-                                                     [adr?]              [research → tdd-green]
+constitution → increment → [prototype?] → plan → implement → [tidy] → tdd-red → tdd-green → refactor → promote
+                   |                                              ↑___________________________________|
+                   |                                              [adr?]              [research → tdd-green]
+                   ↓
+            branch: increment/<slug>
+            (all subtask commits land here)
+                   ↓
+               promote:
+            1. docs promotion
+            2. final tidy pass
+            3. squash-merge → main, OR push branch → PR
 ```
 
 - `prototype` is optional — load it only when a blocking unknown needs a throwaway spike before planning.
 - `adr` is on-demand — load it whenever a structural, hard-to-reverse decision emerges during any phase.
+- `implement` runs exactly once per cycle — it scaffolds `.agent/implementation.md` and populates the todo list.
 - `tidy`, `tdd-red`, `tdd-green`, and `refactor` loop per subtask until all are `state: complete`.
 
 Read this file completely before doing any work, then load the skill for the current phase.
@@ -34,6 +43,7 @@ The methodology draws on three traditions: **Kent Beck** (XP — test-first, tea
 - Never claim work is complete without objective evidence.
 - Forward-only change: do not preserve backward compatibility unless explicitly requested.
 - For work with more than three meaningful tasks or unknown dependencies: publish a short task plan, execute in verified steps, update progress after each step.
+- **Use the internal todo list throughout the implementation loop.** The `implement` skill populates it; every subsequent skill keeps it current. Mark `in_progress` when a subtask starts, `completed` only when `implementation.md` records `state: complete` with a commit hash. One item `in_progress` at a time. The todo list is the user's live progress view — accuracy is not optional.
 
 ## Instruction Resolution
 
@@ -62,16 +72,17 @@ Inspect the workspace and determine the current phase:
 
 | Condition | Phase | Load skill |
 |-----------|-------|------------|
-| No `CONSTITUTION.md` | **constitution** | `.agents/skills/constitution/SKILL.md` |
-| `CONSTITUTION.md` exists, no `.agent/increment.md` | **increment** | `.agents/skills/increment/SKILL.md` |
-| `.agent/increment.md` exists, user requests a spike | **prototype** *(optional)* | `.agents/skills/prototype/SKILL.md` |
-| `.agent/increment.md` exists, no `.agent/plan.md` | **plan** | `.agents/skills/plan/SKILL.md` |
-| User names a structural decision to capture | **adr** *(on-demand)* | `.agents/skills/adr/SKILL.md` |
-| `.agent/plan.md` exists, current `[tidy]` subtask `state: pending` | **tidy** | `.agents/skills/tidy/SKILL.md` |
-| `.agent/plan.md` exists, current `[behavior]` subtask `state: pending` | **tdd-red** | `.agents/skills/tdd-red/SKILL.md` |
-| `.agent/plan.md` exists, current `active_test` `state: red` or `[research]` `state: pending` | **tdd-green** | `.agents/skills/tdd-green/SKILL.md` |
-| `.agent/plan.md` exists, current `active_test` `state: green` | **refactor** | `.agents/skills/refactor/SKILL.md` |
-| `.agent/implementation.md` marked `status: complete` | **promote** | `.agents/skills/promote/SKILL.md` |
+| No `CONSTITUTION.md` | **constitution** | `skills/constitution/SKILL.md` |
+| `CONSTITUTION.md` exists, no `.agent/increment.md` | **increment** | `skills/increment/SKILL.md` |
+| `.agent/increment.md` exists, user requests a spike | **prototype** *(optional)* | `skills/prototype/SKILL.md` |
+| `.agent/increment.md` exists, no `.agent/plan.md` | **plan** | `skills/plan/SKILL.md` |
+| User names a structural decision to capture | **adr** *(on-demand)* | `skills/adr/SKILL.md` |
+| `.agent/plan.md` exists, no `.agent/implementation.md` | **implement** | `skills/implement/SKILL.md` |
+| `.agent/plan.md` exists, current `[tidy]` subtask `state: pending` | **tidy** | `skills/tidy/SKILL.md` |
+| `.agent/plan.md` exists, current `[behavior]` subtask `state: pending` | **tdd-red** | `skills/tdd-red/SKILL.md` |
+| `.agent/plan.md` exists, current `active_test` `state: red` or `[research]` `state: pending` | **tdd-green** | `skills/tdd-green/SKILL.md` |
+| `.agent/plan.md` exists, current `active_test` `state: green` | **refactor** | `skills/refactor/SKILL.md` |
+| `.agent/implementation.md` marked `status: complete` | **promote** | `skills/promote/SKILL.md` |
 
 **If the user explicitly names a phase, load that skill directly without checking conditions.**
 
@@ -82,6 +93,8 @@ Inspect the workspace and determine the current phase:
 - `[behavior]` with `active_test: green` → load `refactor` (improves design, sets active test `state: complete`, activates the next test or completes the subtask)
 - `[research]` + `state: pending` → load `tdd-green` (investigates, sets `state: complete`)
 - All subtasks `state: complete` → `refactor` runs final verification and sets `status: complete`
+
+At every subtask transition: mark the current todo item `in_progress` before starting, `completed` only after `implementation.md` records `state: complete` with a commit hash.
 
 ---
 
@@ -105,7 +118,7 @@ Files used as handoff contracts between phases:
 | `.agent/increment.md` | transient, per cycle | `increment` skill writes it |
 | `.agent/prototype.md` | transient, per cycle (optional) | `prototype` skill writes it |
 | `.agent/plan.md` | transient, per cycle | `plan` skill writes it |
-| `.agent/implementation.md` | transient, per cycle | `tidy`, `tdd-red`, `tdd-green`, and `refactor` skills write it |
+| `.agent/implementation.md` | transient, per cycle | `implement` skill creates it; `tidy`, `tdd-red`, `tdd-green`, and `refactor` update it |
 | `.agent/learnings.md` | transient, per cycle | `tidy`, `tdd-red`, `tdd-green`, `refactor`, and `adr` skills append to it |
 | `docs/adr/ADR-*.md` | permanent | `adr` skill writes it |
 
@@ -126,7 +139,7 @@ Before writing a phase's final artifact, propose the outcome in the conversation
 After determining the current phase, read the skill file fully before beginning:
 
 ```
-Read .agents/skills/<phase>/SKILL.md now.
+Read skills/<phase>/SKILL.md now.
 ```
 
 The skill file contains the detailed process. This file handles orchestration only — phase detection, stop gates, shared contracts.

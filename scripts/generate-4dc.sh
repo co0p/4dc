@@ -17,6 +17,34 @@ set -euo pipefail
 #   - skills/tdd-green/SKILL.md
 #   - skills/refactor/SKILL.md
 #   - skills/promote/SKILL.md
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# IMPORTANT: Do NOT edit skills/<name>/SKILL.md directly.
+#
+# Those files are generated outputs. Any direct edits will be overwritten the
+# next time this script runs.
+#
+# To change a skill:
+#   1. Edit the corresponding source in templates/<name>.md
+#   2. For shared content used across multiple skills, edit templates/shared/<fragment>.md
+#   3. Run this script to regenerate: ./scripts/generate-4dc.sh
+#   4. Review the diff in skills/ and commit both the template change and the
+#      regenerated skill together.
+#
+# File map:
+#   templates/constitution.md       → skills/constitution/SKILL.md
+#   templates/increment.md          → skills/increment/SKILL.md
+#   templates/implement.md          → skills/implement/SKILL.md
+#   templates/prototype.md          → skills/prototype/SKILL.md
+#   templates/plan.md               → skills/plan/SKILL.md
+#   templates/adr.md                → skills/adr/SKILL.md
+#   templates/tidy.md               → skills/tidy/SKILL.md
+#   templates/tdd-red.md            → skills/tdd-red/SKILL.md
+#   templates/tdd-green.md          → skills/tdd-green/SKILL.md
+#   templates/refactor.md           → skills/refactor/SKILL.md
+#   templates/promote.md            → skills/promote/SKILL.md
+#   templates/shared/execution-contract.md  → spliced into every skill via {{SHARED:execution-contract}}
+# ─────────────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -96,6 +124,7 @@ generate_skill "constitution"
 generate_skill "increment"
 generate_skill "prototype"
 generate_skill "plan"
+generate_skill "implement"
 generate_skill "adr"
 generate_skill "tidy"
 generate_skill "tdd-red"

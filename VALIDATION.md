@@ -82,6 +82,7 @@ Expected generated files:
 - `skills/increment/SKILL.md`
 - `skills/prototype/SKILL.md`
 - `skills/plan/SKILL.md`
+- `skills/implement/SKILL.md`
 - `skills/adr/SKILL.md`
 - `skills/tidy/SKILL.md`
 - `skills/tdd-red/SKILL.md`
@@ -109,7 +110,16 @@ find skills -name SKILL.md | sort
 ### plan
 - Writes `.agent/plan.md` only after the user explicitly approves the proposed plan
 - Converts requirements to ordered, verifiable technical subtasks with `[research]`, `[tidy]`, and `[behavior]` separation when needed
+- Includes `## Design` section (data models, call/data flow, error/edge-case inventory, observability intent, architecture delta) when the increment changes behavior or data shapes
+- Records `## Planning Decisions` capturing non-obvious choices made during planning
 - May define optional acceptance scenarios for larger increments; scenarios are advisory by default and must not become implicit blockers
+
+### implement
+- Runs exactly once per cycle, after `plan.md` is approved and before any code is written
+- Scaffolds `.agent/implementation.md` from the approved plan with all subtasks `state: pending`; copies subtask names and test lists verbatim
+- Populates the internal todo list with one item per subtask, all `pending`
+- Does not write production code, tests, or make structural changes
+- Hands off to the first implementation skill detected by the orchestrator
 
 ### tdd-red
 - Writes exactly one failing test for the current `[behavior]` subtask
@@ -146,6 +156,9 @@ find skills -name SKILL.md | sort
 ### promote
 - Writes permanent artifacts only after each candidate is individually approved
 - Applies only approved updates to permanent artifacts
+- Runs a final behavior-preserving tidy pass on the branch before landing
+- Asks the user to choose between squash-merge to `main` or push branch for a PR; does not hardcode either strategy
+- Squash commit message or PR body is derived from `implementation.md` (goal, branch, criteria, subtasks, evidence)
 - Suggests emptying `.agent/` after each promote
 - Confirms `.agent` cleanup decision and documentation sync
 - Records optional acceptance-scenario evidence without treating advisory scenarios as default promotion gates
@@ -215,7 +228,7 @@ These rules reflect current Anthropic guidance for clear instructions, structure
 - Each skill uses a stable section schema: responsibility, inputs, outputs, hard gate, process, checklist, handoff.
 - Each skill contains explicit hard gates instead of relying on implied behavior.
 - Each skill pauses for explicit conversational approval before writing its final artifact, rather than generating an intermediate review file.
-- Implement explicitly encodes Red→Green→Refactor and Tidy First behavior.
+- The `implement` skill scaffolds `implementation.md` and the todo list; the loop skills (tidy, tdd-red, tdd-green, refactor) explicitly encode Red→Green→Refactor and Tidy First behavior.
 - Promote explicitly requires durable documentation sync, not just code completion.
 
 ### Google Alignment

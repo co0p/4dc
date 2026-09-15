@@ -24,6 +24,7 @@ SKILL_NAMES=(
   "increment"
   "prototype"
   "plan"
+  "implement"
   "adr"
   "tidy"
   "tdd-red"
