@@ -118,7 +118,7 @@ Do NOT leave `## Planning Decisions` empty — if the approach was obvious with 
 8. **Optionally define acceptance scenarios** — for a larger feature, describe the user action, precondition, expected outcome, criterion covered, likely test location, and whether the scenario is advisory or a required release gate. Default to advisory.
 9. **Record `## Planning Decisions`** — before proposing the plan, capture every non-obvious choice made during planning: approach selection, subtask sequencing decisions, trade-offs accepted. If the approach was unambiguous with no real alternatives, state that.
 10. **Conversation: Propose the plan** — present the plan and iterate until the user confirms it covers the increment and the file scope is correct.
-11. **On approval** — write `.agent/plan.md`.
+11. **On approval** — write `.agent/plan.md`. Then load `skills/implement/SKILL.md` to scaffold `.agent/implementation.md` and populate the todo list.
 
 ---
 
@@ -336,5 +336,7 @@ These scenarios are optional feature-level evidence. They do not block implement
 ## Handoff
 
 Terminal artifact: `.agent/plan.md`
-The implement skills (`tidy`, `tdd-red`, `tdd-green`, `refactor`) read the plan and load only the files named in their subtask's Files and References fields — no broad codebase scanning.
-Next skill: detected by the orchestrator from the first subtask's type and state.
+
+Next phase: **implement**
+
+Load `skills/implement/SKILL.md`. The implement skill scaffolds `.agent/implementation.md` from this plan, populates the todo list, and hands off to the first implement skill (`tidy`, `tdd-red`, or `tdd-green`). Only after `implementation.md` exists can the orchestrator route to the appropriate implementation skill.
