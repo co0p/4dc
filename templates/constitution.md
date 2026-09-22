@@ -161,17 +161,35 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 
 1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, ADRs, and current SDLC documentation. Use specifics to identify decisions, but route those specifics to `docs/`.
 2. **Conversation: Decide guardrails one category at a time** — architecture; testing and quality; observability; security and privacy; reliability; performance and efficiency; documentation and ADRs; release and deployment. Ask one focused question, summarize the decision, then continue. Do not silently choose defaults when evidence is missing.
-3. **Boundary review** — present the proposed constitution rules separately from the project-specific documentation updates. Flag every concrete fact and its `docs/` destination. Wait for explicit approval of both lists.
-4. **On approval:**
+3. **Deployment conversation using the Concept Menu** — when the release and deployment category is reached, walk the user through the ten deployment axes below. Present each axis with its options, ask one focused question, and record the chosen option as a guardrail sentence in `docs/deployment.md`. Do not write the concept name (e.g. "continuous", "blue-green") into the durable document — only the guardrail sentence derived from the chosen option.
+4. **Boundary review** — present the proposed constitution rules separately from the project-specific documentation updates. Flag every concrete fact and its `docs/` destination. Wait for explicit approval of both lists.
+5. **On approval:**
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
-   - Create `docs/deployment.md` with project-specific deployment procedures
+   - Create `docs/deployment.md` with project-specific deployment procedures, section by section, using the answers from the Concept Menu
    - Create `docs/observability.md` with project-specific operational signals and response guidance
     - Create or update `docs/architecture.md` with the current C4 Level 2 container view
     - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
     - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
    - Create initial `docs/adr/` structure if foundational decisions exist
    - Create `docs/roadmap.md` if not present
+
+### Deployment Concept Menu
+
+Use during step 3. Present each axis with its options; the user picks one per axis. The chosen option becomes a guardrail sentence in the corresponding section of `docs/deployment.md`. Concept names are conversation aids only — do not write them into the durable document.
+
+1. **Release cadence** — Continuous / Batched / On-demand
+2. **Release trigger** — Automated event / Manual action / Hybrid
+3. **Environment progression** — Direct to production / One pre-production environment / Multiple environments with promotion gates
+4. **Verification depth** — Automated only / Automated plus manual gate / Automated plus operator sign-off plus staged rollout
+5. **Failure response** — Roll back / Roll forward / Both allowed
+6. **Deployment safety model** — Atomic / Rolling / Blue-green
+7. **Configuration boundary** — Injected at deploy time / Baked into the artifact / Hybrid
+8. **Secret handling** — Managed secret store / Operator-injected environment variables / Retrieved at startup
+9. **Observability trigger** — Health signal drives release confidence / Time-based confidence / Manual confirmation
+10. **Update policy trigger** — On every release model change / On every material incident / Both
+
+Each axis maps to one section of `docs/deployment.md`. The scaffold at `templates/deployment.md` names the sections and states the durable guardrail; the user's choice fills in the specifics.
 
 ---
 
@@ -185,7 +203,7 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 - [ ] User approval received
 - [ ] `CONSTITUTION.md` written with all required guardrail headings populated
 - [ ] `docs/testing.md` created with project-specific practices
-- [ ] `docs/deployment.md` created with project-specific procedures
+- [ ] `docs/deployment.md` created with project-specific procedures; every deployment axis (release cadence, release trigger, environment progression, verification depth, failure response, deployment safety model, configuration boundary, secret handling, observability trigger, update policy trigger) has an answer recorded as a guardrail sentence
 - [ ] `docs/observability.md` created with project-specific signals and operating guidance
 - [ ] `docs/adr/` directory created with index link from `CONSTITUTION.md` (populate with foundational decisions if identified)
 - [ ] `docs/roadmap.md` created if not present

@@ -186,17 +186,35 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 
 1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, ADRs, and current SDLC documentation. Use specifics to identify decisions, but route those specifics to `docs/`.
 2. **Conversation: Decide guardrails one category at a time** — architecture; testing and quality; observability; security and privacy; reliability; performance and efficiency; documentation and ADRs; release and deployment. Ask one focused question, summarize the decision, then continue. Do not silently choose defaults when evidence is missing.
-3. **Boundary review** — present the proposed constitution rules separately from the project-specific documentation updates. Flag every concrete fact and its `docs/` destination. Wait for explicit approval of both lists.
-4. **On approval:**
+3. **Deployment conversation using the Concept Menu** — when the release and deployment category is reached, walk the user through the ten deployment axes below. Present each axis with its options, ask one focused question, and record the chosen option as a guardrail sentence in `docs/deployment.md`. Do not write the concept name (e.g. "continuous", "blue-green") into the durable document — only the guardrail sentence derived from the chosen option.
+4. **Boundary review** — present the proposed constitution rules separately from the project-specific documentation updates. Flag every concrete fact and its `docs/` destination. Wait for explicit approval of both lists.
+5. **On approval:**
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
-   - Create `docs/deployment.md` with project-specific deployment procedures
+   - Create `docs/deployment.md` with project-specific deployment procedures, section by section, using the answers from the Concept Menu
    - Create `docs/observability.md` with project-specific operational signals and response guidance
     - Create or update `docs/architecture.md` with the current C4 Level 2 container view
     - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
     - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
    - Create initial `docs/adr/` structure if foundational decisions exist
    - Create `docs/roadmap.md` if not present
+
+### Deployment Concept Menu
+
+Use during step 3. Present each axis with its options; the user picks one per axis. The chosen option becomes a guardrail sentence in the corresponding section of `docs/deployment.md`. Concept names are conversation aids only — do not write them into the durable document.
+
+1. **Release cadence** — Continuous / Batched / On-demand
+2. **Release trigger** — Automated event / Manual action / Hybrid
+3. **Environment progression** — Direct to production / One pre-production environment / Multiple environments with promotion gates
+4. **Verification depth** — Automated only / Automated plus manual gate / Automated plus operator sign-off plus staged rollout
+5. **Failure response** — Roll back / Roll forward / Both allowed
+6. **Deployment safety model** — Atomic / Rolling / Blue-green
+7. **Configuration boundary** — Injected at deploy time / Baked into the artifact / Hybrid
+8. **Secret handling** — Managed secret store / Operator-injected environment variables / Retrieved at startup
+9. **Observability trigger** — Health signal drives release confidence / Time-based confidence / Manual confirmation
+10. **Update policy trigger** — On every release model change / On every material incident / Both
+
+Each axis maps to one section of `docs/deployment.md`. The scaffold at `templates/deployment.md` names the sections and states the durable guardrail; the user's choice fills in the specifics.
 
 ---
 
@@ -210,7 +228,7 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 - [ ] User approval received
 - [ ] `CONSTITUTION.md` written with all required guardrail headings populated
 - [ ] `docs/testing.md` created with project-specific practices
-- [ ] `docs/deployment.md` created with project-specific procedures
+- [ ] `docs/deployment.md` created with project-specific procedures; every deployment axis (release cadence, release trigger, environment progression, verification depth, failure response, deployment safety model, configuration boundary, secret handling, observability trigger, update policy trigger) has an answer recorded as a guardrail sentence
 - [ ] `docs/observability.md` created with project-specific signals and operating guidance
 - [ ] `docs/adr/` directory created with index link from `CONSTITUTION.md` (populate with foundational decisions if identified)
 - [ ] `docs/roadmap.md` created if not present
@@ -313,60 +331,117 @@ Explain how tests are kept deterministic, how flakiness is handled, when fixture
 ```markdown
 # Deployment
 
-Guide to releasing and operating this project. Explain the deployment model, why it is appropriate, how to execute it safely, and how to recover. Update whenever the release or operational model changes.
+Guide to how this project releases and operates. Each section states a durable guardrail — the rule that survives specific technology choices. Fill in the project-specific details during constitution creation. Update this document when the release model or operational shape changes.
 
-Describe the release unit, the target, ownership, and the operational assumptions. Explain why this deployment shape is used.
-- This is a Node.js backend service deployed to AWS Lambda
-- This is a React frontend deployed to Vercel
-- This is a Go CLI tool distributed via Homebrew and GitHub Releases
--->
+---
 
-Explain the release trigger and versioning decision, including who can release and what evidence is required first. Avoid a changelog or release-history list here.
-- Manual: Tag a commit with `v<major>.<minor>.<patch>` and push to origin; CI builds and publishes
-- Automatic: Merge to `main` triggers a release with semantic versioning based on conventional commits
-- Versioning scheme: Semantic Versioning (SemVer) for libraries, CalVer for applications
--->
-Describe the environments and their purpose, including the differences that matter for safe verification. Do not use this section as an environment inventory without explaining the deployment model.
-Or for CLI:
-- macOS: Homebrew tap `example/tap/tool`
-- Linux: GitHub Releases, apt repository
-- Windows: GitHub Releases, Scoop bucket
+## Deployment Shape
+
+State the release unit and where it runs. All later deployment decisions inherit from this shape and must be re-evaluated when it changes.
+
+<!--
+Answer before completing this section:
+- What is the release unit? (application, service, library, artifact, script)
+- Where does it run? (managed platform, self-hosted runtime, distributed to end users, embedded)
+- Who is the operator responsible for a live release?
+- What operational assumptions does this shape make? (network, uptime, scaling model, data locality)
 -->
 
 ---
 
-## Deployment Procedure
+## Release Trigger and Cadence
 
-Document the actual release procedure as a short runbook, with prerequisites, commands or links, verification signals, and ownership. Explain why the ordering protects users and data. Keep the checklist operational; put rationale in surrounding prose.
-Describe rollback triggers, the recovery action, data implications, and who decides. Explain any forward-only or irreversible operation and the recovery alternative.
+State how releases start and how often they happen. Releases are predictable events driven by an explicit trigger, not by mood or availability.
 
-For CLI releases:
-- Yanked versions: Tag with `v<version>` and mark as yanked in release notes
-- Users on old version: Keep supporting previous major version for [N] months
+<!--
+Answer before completing this section:
+- What starts a release? (automated event, manual action, hybrid)
+- How often are releases expected? (per merge, batched on a schedule, on demand)
+- Who is authorized to initiate a release?
+- What evidence must exist before a release starts?
 -->
 
 ---
 
-## Deployment Checklist
+## Environments and Verification
 
-Keep only the small set of release decisions and checks that are specific to this project. Do not turn this into a repeated list of every test, deployment, or release ever performed.
+State each environment's purpose and the evidence required to promote from one to the next. Each environment either verifies something the previous did not, or it should not exist.
 
-Explain configuration ownership, secret handling, safe defaults, and the reason for separating deploy-time configuration from source code. Never record secret values.
-- Environment variables are injected at deployment time from [source]
-- Configuration file: `.env.production` (not checked in), managed by [process]
-- Database connection string: Retrieved from [secrets manager] at startup
-Explain how operators know a release is healthy, which signals matter, and what action an alert should trigger. Record thresholds only when they are real, justified, and maintained.
-- Error rates are monitored in Datadog; alert if error rate > 1% for 5 min
-- Latency p99 is tracked; alert if > [threshold]
-- Database connection pool is monitored; alert if exhausted
-- Disk space is monitored; alert if < 10% free
-- Deployment notifications sent to [Slack channel]
+<!--
+Answer before completing this section:
+- Which environments exist between development and production?
+- What does each environment verify that the previous did not?
+- What evidence is required for promotion between environments?
+- Who decides that evidence is sufficient?
 -->
 
-Document constraints that materially affect release safety and the mitigation or follow-up needed. Do not preserve obsolete procedures as historical reference.
-- Deployment is not atomic: old and new code may run simultaneously for [duration]
-- Secrets rotation requires [manual step]
-- Large deployments > 100MB take [N] minutes; monitor for timeout
+---
+
+## Configuration and Secret Handling
+
+State where configuration lives, where secrets come from, and how safe defaults are guaranteed. Configuration is external to source; secrets are never committed.
+
+<!--
+Answer before completing this section:
+- Where does deploy-time configuration come from? (injected, baked in, hybrid)
+- Where do secrets come from? (managed store, operator-injected, retrieved at startup)
+- What are the safe defaults when configuration is missing or invalid?
+- Who is authorized to change deployed configuration?
+-->
+
+---
+
+## Rollback, Roll-Forward, and Recovery
+
+State how a release is reversed or fixed forward. Every release states its recovery approach before it lands.
+
+<!--
+Answer before completing this section:
+- Is rollback to a previous release supported, or is the strategy forward-fix only?
+- Who decides to roll back or roll forward?
+- What data implications does each approach have? (schema changes, migrations, external state)
+- What is the maximum time from problem detection to mitigation?
+-->
+
+---
+
+## Deployment Safety Constraints
+
+State the release properties that must hold. These are the risks a release is not allowed to take.
+
+<!--
+Answer before completing this section:
+- Is deployment atomic, rolling, or blue-green?
+- Can old and new code run concurrently? For how long?
+- Which operations during release are irreversible? (data migrations, external calls, credential rotations)
+- Which release-time actions require an approval gate?
+-->
+
+---
+
+## Health, Signals, and Operator Action
+
+State how release health is observed and what action each signal triggers. Every alert has an owner and an expected response.
+
+<!--
+Answer before completing this section:
+- Which signals confirm a release is healthy? (defined in docs/observability.md)
+- How long is a release watched before it is considered stable?
+- What operator action does each alert trigger?
+- What automated action, if any, happens on signal breach?
+-->
+
+---
+
+## Update Policy
+
+State when this document changes. This document adapts to evidence from real deployments, not once and never again.
+
+<!--
+Answer before completing this section:
+- What triggers an update to this document? (release model change, material incident, operator model change)
+- Who is responsible for keeping this document current?
+- What is removed when it becomes obsolete? (do not preserve stale procedures as historical reference)
 -->
 ```
 
