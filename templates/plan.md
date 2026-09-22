@@ -55,7 +55,8 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
   - Tests: for `[behavior]` subtasks, a cohesive list of test cases; each case has an id, test file, and test name (Red handles one active case at a time)
   - Verification step (how to confirm it's done)
   - Dependencies on prior subtasks
-  - Acceptance criteria covered
+  - For `[behavior]` subtasks: `acceptance criteria:` covered — one or more criterion ids from increment.md
+  - For `[tidy]` subtasks: `supports:` reference — either a `[behavior]` subtask in this plan, or a specific rule in a durable source (see Tidy Rules)
 - **Acceptance Tests**: executable or manually reproducible feature-level checks that realize the Increment's Acceptance-Test Intent. Content depends on the Increment's Mode:
   - `Behavior`: one or more new acceptance tests covering every criterion. Each has an id, preconditions, action, expected observable outcome, evidence location or procedure, criteria covered, and gate status.
   - `Refactor`: no new acceptance test. Names the existing acceptance tests from the Increment that anchor the regression proof, with their location and how they will be run.
@@ -81,6 +82,42 @@ Required `.agent/plan.md` headings:
 
 Research is not an implementation subtask type. Resolve plan-blocking unknowns before approval, using `prototype` when a disposable experiment is required. Local implementation uncertainty is investigated while preparing the affected subtask's mini-plan and recorded there.
 
+### Tidy Rules
+
+A `[tidy]` subtask is a small, single-purpose structural change with immediate payoff in this cycle. Timing options (Beck, *Tidy First?*):
+- **Tidy first**: a `[tidy]` subtask placed before the behavior it enables.
+- **Tidy after**: not a subtask — handled by the Refactor skill after Green, proportional to the behavior just added.
+- **Tidy later**: not part of this plan — deferred to `docs/roadmap.md` as a candidate Refactor or Chore increment.
+
+Every `[tidy]` subtask has a `supports:` reference. Two allowed forms:
+
+1. A `[behavior]` subtask in this plan: `supports: subtask 3 (Refresh token before expiry)`
+2. A specific rule in a durable source that the code currently violates. Durable sources:
+   - `CONSTITUTION.md` — engineering guardrails and boundaries
+   - `docs/testing.md` — testing rules
+   - `docs/architecture.md` — dependency direction, container boundaries, communication rules
+   - `docs/domain.md` — domain vocabulary
+   - `docs/deployment.md` — deploy-time constraints reflected in code
+   - `docs/observability.md` — signal shape, naming, level, privacy
+   - `docs/ui.md` — shared UI, interaction, accessibility, content
+   - `docs/adr/ADR-*.md` — recorded architectural decisions
+   - any other `docs/*.md` that carries a durable rule
+
+A `supports:` reference to a durable source must cite the section anchor, not the whole file. Examples:
+- `supports: CONSTITUTION.md#Architecture-Boundaries`
+- `supports: docs/architecture.md#Auth-Container`
+- `supports: docs/domain.md#Session`
+- `supports: docs/adr/ADR-20260105-idp-choice.md`
+
+Invalid `supports:` targets:
+- Bare filenames without a section anchor (e.g. `supports: CONSTITUTION.md`).
+- Any `.agent/` path (those are transient, not durable).
+- Vague reasoning without a cited rule (e.g. "improves readability").
+
+Proportionality rule: a `[tidy]` subtask supporting a `[behavior]` subtask must be strictly smaller than that behavior. If the reshaping would be disproportionate, it is not a tidy — it belongs in its own **Refactor Increment**.
+
+Cross-file reshaping, dependency inversion, and boundary changes are not `[tidy]` subtasks. They belong in a Refactor Increment.
+
 ### Why file-level detail belongs in the plan
 
 The plan is the one phase that reads the whole codebase to find the approach. The implement skills (tdd-red, tdd-green, tidy, refactor) should load only the files named in their subtask — not re-scan the tree. This keeps implement context narrow and fast, and makes the plan's intent verifiable: if a subtask lists no files, it is not actionable.
@@ -94,7 +131,12 @@ Do NOT start implementation during this phase — no code, no file edits.
 Do NOT write `plan.md` until the user explicitly approves the proposed plan.
 Do NOT list subtasks without verification steps.
 Do NOT list subtasks without a Files field — every subtask must name the files it touches.
-Every subtask must map to at least one acceptance criterion from increment.md.
+Every `[behavior]` subtask maps to at least one acceptance criterion from increment.md.
+Every `[tidy]` subtask names a `supports:` reference. It must be one of:
+  - a `[behavior]` subtask in this plan that the tidy enables, or
+  - a specific rule in a durable source (CONSTITUTION.md, a docs/*.md file, or an ADR under docs/adr/), cited with a section anchor.
+Bare filenames, `.agent/` paths, and vague reasoning without a cited rule are not valid `supports:` targets.
+A `[tidy]` subtask supporting a `[behavior]` subtask must be strictly smaller than that behavior. Cross-file reshaping, dependency inversion, or boundary changes belong in a Refactor Increment, not in a `[tidy]` subtask.
 Every `[behavior]` subtask must name its test file and test name.
 Every `[behavior]` subtask may contain multiple test cases, but they must describe one cohesive behavior. Track each case separately with `id`, `name`, `file`, and `state`; set exactly one `active_test` at a time.
 Acceptance tests are separate from focused unit or integration test cases. Their shape depends on the Increment's Mode:
@@ -232,7 +274,7 @@ references:
   - `docs/architecture.md#containers` — auth container boundary
 verification: `npm test` — all existing tests pass (behavior preserved)
 depends on: —
-acceptance criteria: — (structural prep)
+supports: subtask 2 (Refresh token before expiry) — extraction makes the refresh path testable in isolation
 
 ### 2. Refresh token before expiry
 type: [behavior]
@@ -321,6 +363,10 @@ These feature-level tests prove the approved increment. They block promotion unl
 - [ ] Every subtask has a References field with specific symbols, line ranges, or doc sections
 - [ ] Every `[behavior]` subtask has a cohesive `tests` list with `id`, `file`, `name`, and `state` for each case
 - [ ] Every `[behavior]` subtask has exactly one `active_test`
+- [ ] Every `[behavior]` subtask lists at least one covered acceptance criterion
+- [ ] Every `[tidy]` subtask has a `supports:` reference: either a `[behavior]` subtask in this plan or a durable rule (CONSTITUTION.md, docs/*.md, or docs/adr/) cited with a section anchor
+- [ ] No `[tidy]` subtask uses a bare filename, `.agent/` path, or vague reasoning as its `supports:` value
+- [ ] Every `[tidy]` supporting a `[behavior]` subtask is strictly smaller than that behavior; larger reshaping is deferred to a Refactor Increment
 - [ ] Related test cases are grouped together; unrelated behavior is split into another subtask
 - [ ] Every subtask has a verification step
 - [ ] Every acceptance criterion has a covering subtask

@@ -138,6 +138,13 @@ Expected evidence:
   - `Refactor`: names existing acceptance tests as the regression anchor; no new AT written.
   - `Chore`: acceptance tests at the actor's boundary; each is a promotion gate.
 - Plan subtasks are only `[tidy]` or `[behavior]`. Plan-blocking research is resolved before approval, while local implementation uncertainty is handled during subtask mini-planning.
+- Every `[behavior]` subtask lists at least one covered acceptance criterion.
+- Every `[tidy]` subtask has a `supports:` reference. Allowed forms:
+  - a `[behavior]` subtask in the same plan, or
+  - a durable rule cited with a section anchor: `CONSTITUTION.md#Section`, `docs/*.md#Section`, or `docs/adr/ADR-<slug>.md`.
+- Bare filenames, `.agent/` paths, and vague reasoning are not valid `supports:` targets.
+- Cross-file reshaping and boundary changes are handled as Refactor Increments, not `[tidy]` subtasks.
+- The Refactor skill keeps refactoring proportional to the just-Green change; larger reshaping is deferred to a candidate Refactor increment.
 
 ### Implementation Conversation
 

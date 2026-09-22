@@ -64,6 +64,7 @@ Do NOT add new tests or new production features. This is the refactor hat, not t
 Do NOT skip the question "can the design be improved?" — even if the answer is no, the question must be asked and recorded.
 Do NOT set the active test case to `state: complete` before either the refactor commit hash or an explicit "no refactor needed" note is recorded in `implementation.md`.
 Do NOT mark the subtask complete until every planned test case has completed Red → Green → Refactor and all tests are green.
+Keep the refactor strictly proportional to the Green change just made. Cross-file reshaping, dependency inversion, or boundary changes belong in a Refactor Increment, not here. When such reshaping is warranted, record it in `learnings.md` as a candidate Refactor increment instead of doing it now.
 Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactoring was needed, skip the commit and record `refactor: none — <reason>` instead.
 </HARD-GATE>
 
