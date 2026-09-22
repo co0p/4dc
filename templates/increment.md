@@ -46,7 +46,7 @@ Define one small, outcome-focused increment with measurable acceptance criteria 
 - **Out of scope**: explicit exclusions that prevent scope creep
 - **Smallest-slice rationale**: why removing any remaining criterion would make the outcome unusable, unverifiable, or not independently releasable
 - **Constitution constraints**: which guardrails apply to this increment
-- **Roadmap entry**: the feature name and job story to add to `docs/roadmap.md` Partial section
+- **Roadmap entry**: the feature name and job story to add to `docs/roadmap.md` In Progress section
 
 Required `.agent/increment.md` headings:
 - `## Use Case`
@@ -103,7 +103,7 @@ Acceptance-Test Intent is required for every mode:
    - `Refactor`: which existing acceptance tests must keep passing to prove behavior is preserved
    - `Chore`: which actor observes what outcome at which boundary
 6. **Conversation: Propose the increment** — present the job story, mode, binary criteria, acceptance-test intent, out-of-scope list, and smallest-slice rationale. Iterate until the user explicitly confirms it.
-7. **On approval** — write `.agent/increment.md`, move the feature to Partial in `docs/roadmap.md`, and create the branch: `git checkout -b increment/<slug>`.
+7. **On approval** — write `.agent/increment.md`, move the feature to In Progress in `docs/roadmap.md`, and create the branch: `git checkout -b increment/<slug>`.
 
 ---
 
@@ -126,7 +126,7 @@ Acceptance-Test Intent is required for every mode:
 - [ ] Roadmap entry (feature name + job story) identified
 - [ ] User approval received
 - [ ] `.agent/increment.md` written
-- [ ] `docs/roadmap.md` updated: feature moved to Partial
+- [ ] `docs/roadmap.md` updated: feature moved to In Progress
 - [ ] Branch created: `git checkout -b increment/<slug>`
 
 ---

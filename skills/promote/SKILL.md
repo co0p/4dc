@@ -41,7 +41,7 @@ One or more of the following, per approval:
 - Updated `docs/domain.md` (if domain language changed or new concepts appeared)
 - Updated `docs/ui.md` (if shared UI, interaction, visual, accessibility, or content decisions changed)
 - Updated `README.md` or other docs (for changed behavior or usage)
-- Updated `docs/roadmap.md` — feature moved from Partial to Done, acceptance test link added
+- Updated `docs/roadmap.md` — feature moved from In Progress to Done, acceptance test link added
 - Acceptance-test evidence — linked for every acceptance criterion; exceptions require explicit prior approval and rationale
 - Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
 
