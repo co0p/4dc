@@ -1,6 +1,6 @@
 ---
 name: 4dc-tdd-green
-description: "Make the current failing test pass with minimal code. No refactoring. Sets state: green and continues autonomously to refactor."
+description: "Make the current failing test pass with minimal code. No refactoring. Sets active test state: green and continues to refactor."
 ---
 
 # TDD Green Skill
@@ -9,7 +9,7 @@ description: "Make the current failing test pass with minimal code. No refactori
 
 Write the minimal production code that makes the current failing `active_test` pass. Nothing more. A behavior subtask may contain several cohesive test cases; complete one case, then hand off to `4dc-refactor` before activating the next case.
 
-- For a `[behavior]` subtask with an active test in `state: red`: write minimal code to pass that test, set the test to `state: green`, and hand off to `4dc-refactor`.
+- For a `[behavior]` subtask in `state: in-progress` with an active test in `state: red`: write minimal code to pass that test, set the active test to `state: green`, and hand off to `4dc-refactor`.
 
 ---
 
@@ -24,7 +24,7 @@ Write the minimal production code that makes the current failing `active_test` p
 ## Expected Input
 
 - `.agent/plan.md` (approved)
-- `.agent/implementation.md` with one behavior subtask in `state: red` and an approved `mini_plan`
+- `.agent/implementation.md` with the current `[behavior]` subtask in `state: in-progress` and its `active_test` in `state: red`, backed by an approved `mini_plan`
 - `CONSTITUTION.md` testing strategy
 
 **Narrow context:** load only the files named in the current subtask's `files:` and `references:` fields in `plan.md`. Do not re-scan the codebase — the plan already did that work.
@@ -92,16 +92,16 @@ Behavior work inherits the mini-plan approved before Red. Continue without routi
 
 ## Process
 
-### For a `[behavior]` subtask in `state: red`
+### For a `[behavior]` subtask in `state: in-progress` with active test in `state: red`
 
 1. **Read the failing `active_test`** from the test file recorded in `implementation.md`.
 2. **Write minimal production code** to make the test pass. Add only what the test requires — no extra methods, no speculative abstraction, no "I'll need this later."
 3. **Run the test.** Confirm it passes.
 4. **Run the narrowest relevant tests**, then the broader suite required by the constitution.
-5. **Record evidence** in `implementation.md`: set the active test to `state: green`, with test output showing pass. Leave the other test cases unchanged.
+5. **Record evidence** in `implementation.md`: set the active test to `state: green`, with test output showing pass. Leave the other test cases and the subtask `state: in-progress` unchanged.
 6. **Commit** as `feat: <what changed>` or `fix: <what changed>`.
 7. **Append learnings** — decisions, deviations, surprises, promote candidates.
-8. **Continue autonomously.** Load `4dc-refactor` to complete this active test case. Do not request user confirmation at this transition.
+8. **Continue.** Load `4dc-refactor` to complete this active test case. Do not request user confirmation at this transition.
 
 ---
 
@@ -201,5 +201,5 @@ active_test: <case-id>
 
 ## Handoff
 
-Updated artifacts: `.agent/implementation.md` (current `[behavior]` subtask `state: green`) + `.agent/learnings.md`
+Updated artifacts: `.agent/implementation.md` (current `[behavior]` subtask `state: in-progress`, active test `state: green`) + `.agent/learnings.md`
 Next skill (after `[behavior]` green): `4dc-refactor` — load `skills/refactor/SKILL.md`

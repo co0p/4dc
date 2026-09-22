@@ -32,10 +32,11 @@ Write one failing test for the current `active_test` in the `[behavior]` subtask
 ## Concrete Output
 
 Updates `.agent/implementation.md` for the current subtask:
+- The subtask: `state: in-progress` (transitions from `approved`)
 - The active test case: `state: red`
 - `test:` the failing test name and location
 - `evidence:` the test runner output showing the failure and the assertion reason
-- The subtask remains in progress until every planned test case is complete
+- The subtask remains `in-progress` until every planned test case is complete
 
 Appends to `.agent/learnings.md` only if a decision or surprise emerged while writing the test (e.g. the subtask needs splitting, or the interface is unclear).
 
@@ -69,16 +70,18 @@ Do NOT start without an approved mini-plan recorded for this subtask.
 
 1. **Read the current subtask and mini-plan** from `.agent/implementation.md` — the approved `[behavior]` subtask with an unfinished `tests` list. Select its `active_test`, or the first test case with `state: pending`.
 2. **Confirm the todo item is `in_progress`** from subtask planning.
-3. **Read the testing strategy** in `CONSTITUTION.md` and `docs/testing.md` — choose the cheapest test depth that gives sufficient confidence at this boundary.
-3. **Write one test case** for `active_test` that specifies one example of the behavior. Name it in domain language so the test reads as a specification. Do not implement or activate the other cases yet.
-4. **Run the test.** Confirm it fails. Read the failure message — it must fail because the behavior does not exist, not because of a setup or import error.
-5. **Record evidence** in `.agent/implementation.md`:
-   - Set the active test case `state: red` (the subtask itself remains in progress)
+3. **Transition the subtask** to `state: in-progress` if it is still `state: approved` from mini-planning.
+4. **Read the testing strategy** in `CONSTITUTION.md` and `docs/testing.md` — choose the cheapest test depth that gives sufficient confidence at this boundary.
+5. **Write one test case** for `active_test` that specifies one example of the behavior. Name it in domain language so the test reads as a specification. Do not implement or activate the other cases yet.
+6. **Run the test.** Confirm it fails. Read the failure message — it must fail because the behavior does not exist, not because of a setup or import error.
+7. **Record evidence** in `.agent/implementation.md`:
+   - Confirm subtask is `state: in-progress`
+   - Set the active test case `state: red`
    - Record `test:` the test name and file
    - Record `evidence:` the failure output (test name + assertion reason)
-6. **Continue autonomously.** Load `4dc-tdd-green` for this active test case. Do not request user confirmation at this transition.
+8. **Continue.** Load `4dc-tdd-green` for this active test case. Do not request user confirmation at this transition.
 
-If the test reveals a local implementation surprise that stays within the approved mini-plan's scope, record it in `implementation.md` and `learnings.md`, adapt the remaining steps, and continue autonomously. Stop only if it changes acceptance criteria or scope, requires an unapproved structural decision, or makes the approved approach unsafe.
+If the test reveals a local implementation surprise that stays within the approved mini-plan's scope, record it in `implementation.md` and `learnings.md`, adapt the remaining steps, and continue. Stop only if it changes acceptance criteria or scope, requires an unapproved structural decision, or makes the approved approach unsafe.
 
 ---
 
@@ -98,5 +101,5 @@ If the test reveals a local implementation surprise that stays within the approv
 
 ## Handoff
 
-Updated artifact: `.agent/implementation.md` (current subtask `state: red`)
+Updated artifact: `.agent/implementation.md` (current subtask `state: in-progress`, active test `state: red`)
 Next skill: `4dc-tdd-green` — load `skills/tdd-green/SKILL.md`

@@ -23,7 +23,7 @@ Take the code that just made the current test case green and improve its design 
 ## Expected Input
 
 - `.agent/plan.md` (approved)
-- `.agent/implementation.md` with the current `[behavior]` subtask marked `state: green` (test passes, minimal code written, not yet refactored)
+- `.agent/implementation.md` with the current `[behavior]` subtask in `state: in-progress` and its `active_test` in `state: green` (test passes, minimal code written, not yet refactored)
 - `CONSTITUTION.md` testing strategy
 
 **Narrow context:** load only the files named in the current subtask's `files:` and `references:` fields in `plan.md`. Do not re-scan the codebase — the plan already did that work.
@@ -95,7 +95,7 @@ Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactor
 
 ## Process
 
-1. **Read the current subtask** from `.agent/implementation.md` — the `[behavior]` subtask with an active test case in `state: green`.
+1. **Read the current subtask** from `.agent/implementation.md` — the `[behavior]` subtask in `state: in-progress` with an active test case in `state: green`.
 2. **Run the tests.** Confirm they are green before you start.
 3. **Ask the refactor question:** can the design be improved without changing behavior? Look for: duplication, unclear naming, long methods, deep nesting, missing abstraction, poor separation of concerns.
 4. **If no improvement is needed:** record `evidence: no refactoring needed — design is sufficient` for the active test case and continue.
