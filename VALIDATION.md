@@ -125,10 +125,18 @@ Expected evidence:
 - The increment describes WHAT and WHY without implementation detail.
 - Increment discovery explicitly establishes the user, trigger, outcome, failure boundary, and exclusions.
 - The subtraction test removes independently releasable outcomes until the smallest useful, testable increment remains.
+- Every increment declares exactly one Mode: `Behavior`, `Refactor`, or `Chore`. Exploratory work belongs in `prototype`.
 - Acceptance criteria are binary, observable, and mapped to the job story.
+- Acceptance-Test Intent is required and matches the declared Mode:
+  - `Behavior`: describes the new user-observable outcome in non-technical language.
+  - `Refactor`: names existing acceptance tests that anchor the regression proof.
+  - `Chore`: names the actor and observable outcome at their boundary.
 - The technical plan reads the relevant code and names exact files, symbols, boundaries, risks, and verification steps.
 - The plan covers data shape, call flow, errors and edge cases, observability intent, and architecture delta when applicable.
-- Every acceptance criterion has a required feature-level acceptance test with preconditions, action, exact observable outcome, and evidence; exceptions require explicit approval.
+- The plan realizes the Increment's Acceptance-Test Intent, matched to Mode:
+  - `Behavior`: new executable acceptance tests covering every criterion; each is a promotion gate unless an exception is explicitly approved.
+  - `Refactor`: names existing acceptance tests as the regression anchor; no new AT written.
+  - `Chore`: acceptance tests at the actor's boundary; each is a promotion gate.
 - Plan subtasks are only `[tidy]` or `[behavior]`. Plan-blocking research is resolved before approval, while local implementation uncertainty is handled during subtask mini-planning.
 
 ### Implementation Conversation

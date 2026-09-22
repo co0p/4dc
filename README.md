@@ -150,11 +150,16 @@ Use when `CONSTITUTION.md` is missing or needs revision.
 
 Use after the constitution exists.
 
-**Does:** Turns a request into one small user outcome with a job story, binary acceptance criteria, and explicit out-of-scope items.
+**Does:** Turns a request into one small outcome with a job story, one declared Mode (`Behavior`, `Refactor`, or `Chore`), binary acceptance criteria, non-technical Acceptance-Test Intent, and explicit out-of-scope items.
 
 **Does not:** Name files, classes, libraries, or implementation approaches.
 
-Every increment defines feature-level acceptance tests with exact observable outcomes. A test may be automated or manually reproducible, but it is a promotion gate unless the user explicitly approves and records an exception.
+Acceptance-Test Intent is required for every increment. Its shape depends on the Mode:
+- `Behavior`: describes the new user-observable outcome.
+- `Refactor`: names existing acceptance tests that must remain green as the regression anchor.
+- `Chore`: names the actor (developer, operator, CI) and observable outcome at their boundary.
+
+Plan turns intent into executable acceptance tests. Every criterion has a promotion gate unless the user explicitly approves and records an exception. Exploratory work with no observable outcome belongs in the `prototype` phase, not an increment.
 
 **Handoff:** `.agent/increment.md`.
 

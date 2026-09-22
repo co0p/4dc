@@ -56,7 +56,10 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
   - Verification step (how to confirm it's done)
   - Dependencies on prior subtasks
   - Acceptance criteria covered
-- **Acceptance Tests**: executable or manually reproducible feature-level checks proving every acceptance criterion through an observable entry point. Each has an id, preconditions, action, expected observable outcome, evidence location or procedure, criteria covered, and gate status.
+- **Acceptance Tests**: executable or manually reproducible feature-level checks that realize the Increment's Acceptance-Test Intent. Content depends on the Increment's Mode:
+  - `Behavior`: one or more new acceptance tests covering every criterion. Each has an id, preconditions, action, expected observable outcome, evidence location or procedure, criteria covered, and gate status.
+  - `Refactor`: no new acceptance test. Names the existing acceptance tests from the Increment that anchor the regression proof, with their location and how they will be run.
+  - `Chore`: one or more acceptance tests at the actor's boundary declared in the Increment (script exit code, generated artifact hash, log line, config check).
 - **Context Map**: pointers to the governing docs for this increment — constitution sections, ADRs, architecture sections, domain entries that the implement skills must respect
 - **Risks**: known unknowns that could block execution
 - **Planning Decisions**: choices made during planning that a future reader would not infer from the plan alone. For each: the option chosen, the alternatives that were live, and the reason. Captures the "why this approach and not another" before it is lost.
@@ -119,7 +122,10 @@ Do NOT list subtasks without a Files field — every subtask must name the files
 Every subtask must map to at least one acceptance criterion from increment.md.
 Every `[behavior]` subtask must name its test file and test name.
 Every `[behavior]` subtask may contain multiple test cases, but they must describe one cohesive behavior. Track each case separately with `id`, `name`, `file`, and `state`; set exactly one `active_test` at a time.
-Acceptance tests are separate from focused unit or integration test cases and are required for every increment. Each acceptance criterion must be covered by at least one acceptance test. A test may be automated or manually reproducible, but it is a promotion gate unless the user explicitly approves a documented exception.
+Acceptance tests are separate from focused unit or integration test cases. Their shape depends on the Increment's Mode:
+- `Behavior`: every acceptance criterion must be covered by at least one new acceptance test. Each is a promotion gate unless the user explicitly approves a documented exception.
+- `Refactor`: no new acceptance test. The existing acceptance tests named in the Increment are the promotion anchor and must remain green.
+- `Chore`: every acceptance criterion is covered by an acceptance test at the actor's boundary declared in the Increment. Each is a promotion gate.
 Do NOT place a `[behavior]` subtask before the `[tidy]` subtasks it depends on.
 File paths must be specific (`src/auth/login.ts`), not globs or directory names alone.
 References must point to specific symbols, line ranges, or doc sections — not "see the auth module."
@@ -143,7 +149,11 @@ Do NOT create `[research]` subtasks. Resolve blocking uncertainty before plan ap
 5. **Draft the Files section** — list every file the increment will create, modify, touch for reference, or delete. Label each by role. Include `docs/ui.md` when shared UI decisions change.
 6. **Draft the Context Map** — link the constitution sections, ADRs, architecture sections, and domain entries that govern this change. The implement skills load these by reference, not by re-reading the whole doc.
 7. **Draft ordered subtasks** — each with type, description, files, references, test (for behavior), verification, dependencies, and acceptance criteria coverage.
-8. **Define acceptance tests** — create the smallest set of feature-level checks covering every acceptance criterion. Specify setup, action, exact observable result, evidence location or manual procedure, and gate status. Walk each criterion to ensure it has proof rather than only lower-level test coverage.
+8. **Realize the Increment's Acceptance-Test Intent** — turn the approved intent into concrete acceptance tests, matched to the Increment's Mode:
+   - `Behavior`: create new acceptance tests covering every criterion. Specify setup, action, exact observable result, evidence location or manual procedure, and gate status.
+   - `Refactor`: name the existing acceptance tests declared in the Increment as the regression anchor. Record their location and how they will be run. Do not add new acceptance tests.
+   - `Chore`: create acceptance tests at the actor's boundary named in the Increment (script exit code, generated artifact, log line, config check).
+   Walk each criterion to ensure it has proof rather than only lower-level test coverage.
 9. **Record `## Planning Decisions`** — before proposing the plan, capture every non-obvious choice made during planning: approach selection, subtask sequencing decisions, trade-offs accepted. If the approach was unambiguous with no real alternatives, state that.
 10. **Conversation: Propose the plan** — present the plan and iterate until the user confirms it covers the increment and the file scope is correct.
 11. **On approval** — write `.agent/plan.md`. Then load `skills/implement/SKILL.md` to scaffold `.agent/implementation.md` and populate the todo list.
