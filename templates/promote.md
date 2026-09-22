@@ -57,7 +57,7 @@ Every promotion must verify that the project's permanent documentation baseline 
 - `docs/testing.md`
 - `docs/deployment.md`
 - `docs/observability.md` containing current operational signals, ownership, response guidance, and known blind spots
-- `docs/architecture.md` containing a current C4 Level 2 container view (or an explicitly labeled equivalent)
+- `docs/architecture.md` containing a current C4 Level 1 System Context view and a C4 Level 2 Container view; a Container Internals (C4 Level 3) section is present, empty or populated
 - `docs/domain.md` containing the current domain glossary
 - `docs/ui.md` containing current UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
@@ -87,7 +87,7 @@ Do NOT land the increment before proving it integrates cleanly with the current 
 ## Process
 
 1. **Read all `.agent/` artifacts** — full review of increment, plan, implementation, and learnings.
-2. **Audit the permanent documentation baseline** — inspect each required path and verify the architecture document contains a C4 Level 2 container view and the domain document contains the glossary. Add missing or inadequate documents to the candidate list.
+2. **Audit the permanent documentation baseline** — inspect each required path and verify the architecture document contains both a C4 Level 1 System Context view and a C4 Level 2 Container view, has a Container Internals (Level 3) section slot present, and the domain document contains the glossary. Add missing or inadequate documents to the candidate list.
 3. **Conversation: Propose promotions** — identify candidates and state what each is, its destination, and why it is durable. Iterate until the user says to proceed.
 4. **On approval** — write each approved permanent artifact.
 5. **Re-audit the baseline** — confirm every required document exists and satisfies its content requirement before cleanup.
@@ -155,6 +155,7 @@ Do NOT land the increment before proving it integrates cleanly with the current 
 | New domain concept | A concept, event, or rule used in code/tests that has no shared definition | `docs/domain.md` (create using the template in the Appendix if absent) |
 | UI decision | Shared UI, interaction, visual, accessibility, or content decision | `docs/ui.md` |
 | Structural change | A container added, removed, or re-wired | `docs/architecture.md` (create using the template in the Appendix if absent) |
+| Component restructuring | A Refactor increment reshaped components inside a container in a way worth preserving durably | `docs/architecture.md` — Container Internals (C4 Level 3) section |
 
 ---
 

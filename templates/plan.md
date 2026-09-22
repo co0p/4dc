@@ -39,9 +39,10 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
 - **Design** (required when data shapes, call flow, or architecture change; omit only for purely structural tidying):
   - **Data Models**: new or modified types, structs, schemas, or domain objects — named fields with types and invariants. Include before/after when modifying existing shapes.
   - **Call / Data Flow**: the sequence of calls or data transformations this increment introduces, from entry point to persistence or output. Prose or a numbered sequence. Names must match actual symbols in the codebase.
+  - **Component View (C4 Level 3)**: required when the increment adds, changes, or removes components inside a container. Names the affected container (from `docs/architecture.md`), lists the components involved with one-line responsibilities, and states the interactions between them. New, modified, or removed components must be flagged. Symbol names must match actual codebase symbols. Skip only when no internal structure changes; state the omission explicitly.
   - **Error / Edge-case Inventory**: every error condition and boundary case the increment must handle, derived by walking the call flow and asking "what can fail here?" For each: the condition, the expected response or recovery, and which behavior subtask covers it. Cases not covered by any subtask are gaps — resolve them before approving the plan.
   - **Observability Intent**: the events, metrics, or log lines this increment should emit, stated as a short list. For each: event name, severity/level, and the data it carries. Omit only when the project's constitution explicitly exempts observability for this type of change.
-  - **Architecture Delta**: how the container view in `docs/architecture.md` changes — new containers, removed containers, new communication paths, changed dependency direction, or "no change" if none.
+  - **Architecture Delta**: how the container view in `docs/architecture.md` changes — new containers, removed containers, new communication paths, changed dependency direction, or "no change" if none. When the Component View shows restructuring worth preserving durably, flag it as a promotion candidate for `docs/architecture.md`'s Container Internals section.
 - **Files**: the complete set of files this increment touches, each labeled by role:
   - `new` — will be created
   - `modify` — existing file that will change
@@ -147,6 +148,7 @@ Do NOT place a `[behavior]` subtask before the `[tidy]` subtasks it depends on.
 File paths must be specific (`src/auth/login.ts`), not globs or directory names alone.
 References must point to specific symbols, line ranges, or doc sections — not "see the auth module."
 Do NOT omit `## Design` when the increment adds or changes data shapes, call flow, or architecture boundaries. Symbol names in the call flow must match actual codebase symbols, not invented names.
+Do NOT omit the Component View (C4 Level 3) when the increment adds, changes, or removes components inside a container. Skip only when no internal structure changes and state the omission explicitly.
 Do NOT write "no change" in Architecture Delta without checking `docs/architecture.md` first.
 Do NOT leave error conditions undiscovered — walk every step in the Call/Data Flow and ask "what can fail here?" before the plan is approved. Any uncovered case is a gap and must appear in Risks or be added to a subtask.
 Do NOT omit Observability Intent unless the constitution explicitly exempts this type of change.
@@ -355,9 +357,10 @@ These feature-level tests prove the approved increment. They block promotion unl
 - [ ] `## Design` written when data shapes, call flow, or architecture boundaries change:
   - [ ] Data Models: new/modified types named with fields and invariants; before/after shown for modifications
   - [ ] Call / Data Flow: numbered sequence from entry point to output; symbol names match codebase
+  - [ ] Component View (C4 Level 3): container named, components and their responsibilities listed, interactions stated; new/modified/removed components flagged. Omission explicitly justified when no internal structure changes.
   - [ ] Error / Edge-case Inventory: every failure condition walked from the call flow; each entry names the covering subtask or is flagged as a gap in Risks
   - [ ] Observability Intent: events, levels, and data listed; omitted only with constitutional justification
-  - [ ] Architecture Delta: container-level changes stated, or "no change" confirmed against `docs/architecture.md`
+  - [ ] Architecture Delta: container-level changes stated, or "no change" confirmed against `docs/architecture.md`; component restructuring worth preserving flagged as a promotion candidate
 - [ ] Files section lists every file the increment touches, labeled by role
 - [ ] Every subtask has a Files field naming the files it touches
 - [ ] Every subtask has a References field with specific symbols, line ranges, or doc sections

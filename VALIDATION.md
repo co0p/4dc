@@ -117,6 +117,8 @@ Expected evidence:
 - `CONSTITUTION.md` contains only durable engineering guardrails, never project-specific tools, topology, domain examples, commands, concrete thresholds, or procedures.
 - Constitution guardrails cover architecture, testing and quality, observability, security and privacy, reliability, performance and efficiency, documentation and ADR governance, and release and deployment.
 - Project-specific testing, deployment, observability, architecture, domain, UI, and operational knowledge is routed to `docs/` or ADRs.
+- `docs/architecture.md` contains a C4 Level 1 System Context view and a C4 Level 2 Container view; a Container Internals (C4 Level 3) section slot is present, populated on demand by Refactor increments.
+- `docs/domain.md`, `docs/ui.md` (when applicable), `docs/deployment.md`, and `docs/observability.md` satisfy their content requirements semantically, not merely by file existence.
 - Constitution creation asks one focused question at a time until every guardrail category is explicitly decided or deferred.
 - Permanent documentation is treated as part of the product and is checked semantically, not merely for file existence.
 

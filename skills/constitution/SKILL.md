@@ -110,8 +110,9 @@ Required `CONSTITUTION.md` headings:
 
 **`docs/architecture.md`** — C4 architecture view:
 - Required for every project, even when the system is small
-- Must contain a current C4 Level 2 container view (or an equivalent explicitly labeled diagram)
-- Describes runtime containers, responsibilities, communication paths, and data stores
+- Must contain a **C4 Level 1 System Context** section (system purpose, users/actors, external systems)
+- Must contain a **C4 Level 2 Container** view (runtime containers, responsibilities, communication paths, data stores)
+- Includes a **Container Internals (C4 Level 3)** section, present as an on-demand slot even when empty; populated when a Refactor increment promotes internal structure
 
 **`docs/domain.md`** — Domain glossary:
 - Required for every project, even when the vocabulary is initially small
@@ -135,7 +136,7 @@ Before creating or updating the constitution, audit the repository for the compl
 - `docs/testing.md`
 - `docs/deployment.md`
 - `docs/observability.md`
-- `docs/architecture.md` with a C4 Level 2 container view
+- `docs/architecture.md` with a C4 Level 1 System Context view and a C4 Level 2 Container view
 - `docs/domain.md` with the project's glossary
 - `docs/ui.md` with the project's UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
@@ -193,7 +194,7 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures, section by section, using the answers from the Concept Menu
    - Create `docs/observability.md` with project-specific operational signals and response guidance
-    - Create or update `docs/architecture.md` with the current C4 Level 2 container view
+    - Create or update `docs/architecture.md` with a current C4 Level 1 System Context view and a C4 Level 2 Container view; add the Container Internals (Level 3) section slot for on-demand use
     - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
     - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
    - Create initial `docs/adr/` structure if foundational decisions exist
@@ -230,8 +231,15 @@ Each axis maps to one section of `docs/deployment.md`. The scaffold at `template
 - [ ] `docs/testing.md` created with project-specific practices
 - [ ] `docs/deployment.md` created with project-specific procedures; every deployment axis (release cadence, release trigger, environment progression, verification depth, failure response, deployment safety model, configuration boundary, secret handling, observability trigger, update policy trigger) has an answer recorded as a guardrail sentence
 - [ ] `docs/observability.md` created with project-specific signals and operating guidance
+- [ ] `docs/architecture.md` created with both required diagrams populated:
+  - [ ] C4 Level 1 System Context — system purpose, users/actors, external systems
+  - [ ] C4 Level 2 Container view — containers, communication paths, data stores
+  - [ ] Container Internals (C4 Level 3) section present but may be empty (populated on demand by Refactor increments)
+- [ ] `docs/domain.md` created with the project's initial glossary (concepts, events, rules in domain language) — not just an empty file
+- [ ] `docs/ui.md` created with the project's initial UI decisions **if the system has a UI**; explicitly recorded as "not applicable — headless system" otherwise
 - [ ] `docs/adr/` directory created with index link from `CONSTITUTION.md` (populate with foundational decisions if identified)
 - [ ] `docs/roadmap.md` created if not present
+- [ ] Each baseline doc satisfies its content requirement, not merely file existence
 
 ---
 
