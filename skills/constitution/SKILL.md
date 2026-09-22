@@ -19,19 +19,20 @@ Before writing it, check that it contains no internal workflow names, skill name
 
 ## Foundations
 
-These three traditions are the source for guardrails. Borrow from them by name — attribute the rule to its author so the team knows why it exists, not just what it says.
+- **Kent Beck: team agreements before code.** Establish explicit rules before implementation so disagreements are resolved by shared constraints rather than assumptions.
+- **Martin Fowler: evolutionary architecture.** Define durable boundaries and fitness constraints while allowing implementation details to evolve.
+- **W. Edwards Deming: systems thinking.** Optimize and verify the whole delivery system rather than treating local activity as proof of value.
+- **Jez Humble: continuous delivery.** Treat releasability, deployment safety, and production verification as properties of every change.
 
-- **Beck — team agreements before code.** The constitution is the set of rules the team agrees to operate under. It is written before implementation, not retrofitted after. Rules must be specific enough to resolve disputes; vague principles are not guardrails.
-- **Poppendieck — eliminate ambiguity upstream.** Decide the guardrails early so later phases do not rediscover the same constraints. For reversible choices, leave the decision late; for structural rules, fix them now. Pull rules from value; do not mandate process that does not serve delivery.
-- **Fowler — evolutionary architecture.** Guardrails, not blueprints. The constitution sets the fitness functions and boundaries that let the design evolve safely. It does not fix the implementation — it defines what must remain true as the implementation changes.
-
-**What belongs in CONSTITUTION.md (principles and boundaries):**
-- Engineering principles attributed to their source (Beck, Poppendieck, Fowler, or a project-specific decision)
-- Architectural boundaries: which direction dependencies flow, which containers must stay decoupled, what crosses the system boundary
-- Testing strategy: what must have tests, what constitutes a green gate before promote, and what kinds of tests are in or out of scope — as rules, not commands
-- Performance envelope: latency, throughput, cost, or scale expectations as stated constraints
-- Documentation policy: what is permanent, what is transient, where each category lives
-- ADR policy: what kinds of decisions require an ADR
+**What belongs in CONSTITUTION.md (guardrail categories only):**
+- Architecture: general dependency, coupling, and system-boundary rules
+- Testing: required confidence levels by risk and the minimum release gate
+- Observability: which behavior changes require operational signals and the qualities those signals must have
+- Security and privacy: general handling, least-privilege, and review boundaries
+- Reliability and resilience: failure, recovery, compatibility, and data-integrity expectations
+- Performance and efficiency: when budgets are required and how regressions are treated
+- Delivery and deployment: releasability, rollback or recovery, migration safety, and production verification rules
+- Documentation and ADR governance: where concrete knowledge lives and which decisions require records
 
 **What does NOT belong in CONSTITUTION.md (belongs in `docs/` or ADRs):**
 - Test commands, CI scripts, tooling configuration
@@ -39,6 +40,8 @@ These three traditions are the source for guardrails. Borrow from them by name �
 - Framework choices, library names, file naming conventions
 - Coverage numbers, specific thresholds, or tool-specific configuration
 - Architecture diagrams or container inventories
+- Domain rules, user journeys, endpoint names, event names, concrete performance budgets, environment names, or product examples
+- Project rationale, current topology, current risks, or any fact likely to change as the product evolves
 
 ---
 
@@ -56,18 +59,22 @@ These three traditions are the source for guardrails. Borrow from them by name �
 
 `CONSTITUTION.md` containing only principles and boundaries — no commands, tooling, or concrete procedures:
 
-1. **Engineering principles** — stated as rules, attributed to Beck, Poppendieck, Fowler, or a project decision. Each rule must be justified by this project's context, not copied from generic advice.
-2. **Architectural boundaries** — dependency direction, which containers must remain decoupled, performance-critical paths stated as constraints. No container inventory (that lives in `docs/architecture.md`).
-3. **Testing strategy** — what must have tests, what constitutes a green gate before promote, and what kinds of tests are in or out of scope — as rules. Points to `docs/testing.md` for procedures and commands.
-4. **Performance envelope** — latency, throughput, cost, or scale expectations as stated constraints, or an explicit `N/A` with rationale. No monitoring configuration.
-5. **Documentation and ADR policy** — what is permanent, where each category lives, and what decisions trigger an ADR.
-6. **Release and deployment** — the release model as a rule (e.g. "every merge to main is releasable"). Points to `docs/deployment.md` for procedures.
+1. **Engineering principles** — durable decision rules, not project history or methodology exposition.
+2. **Architecture boundaries** — generic dependency and coupling rules. Current containers and communication paths live in `docs/architecture.md`.
+3. **Testing and quality** — required test depth by risk and the release gate. Commands, tools, suites, and concrete thresholds live in `docs/testing.md`.
+4. **Observability** — when operational signals are required and what qualities they must preserve. Concrete signals and alerting live in `docs/observability.md`.
+5. **Security and privacy** — review and handling guardrails. Threat models, classifications, controls, and procedures live in project docs or ADRs.
+6. **Reliability, performance, and efficiency** — general expectations for failure handling, data integrity, measurable budgets, and regression evidence. Concrete budgets and topology live in docs.
+7. **Documentation and ADR policy** — what is permanent, where concrete project knowledge lives, and what decisions trigger an ADR.
+8. **Release and deployment** — general releasability, migration, recovery, and production-verification rules. Procedures live in `docs/deployment.md`.
 
 Required `CONSTITUTION.md` headings:
 - `## Engineering Principles`
 - `## Architecture Boundaries`
-- `## Testing Strategy`
-- `## Performance Envelope`
+- `## Testing And Quality`
+- `## Observability`
+- `## Security And Privacy`
+- `## Reliability, Performance, And Efficiency`
 - `## Documentation And ADR Policy`
 - `## Release And Deployment`
 
@@ -88,6 +95,11 @@ Required `CONSTITUTION.md` headings:
 - Configuration and secret-handling principles without secret values
 - Health signals, alert actions, and meaningful operational risks
 - No historical release log or generic checklist detached from this project's procedure
+
+**`docs/observability.md`** — operational visibility for this project:
+- Concrete logs, metrics, traces, audit events, health signals, dashboards, and alert ownership
+- Signal names and fields, including privacy and cardinality constraints
+- Expected operator response and known blind spots
 
 **`docs/adr/`** — Architecture Decision Records:
 - Decisions with rationale and consequences
@@ -122,6 +134,7 @@ Before creating or updating the constitution, audit the repository for the compl
 - `CONSTITUTION.md`
 - `docs/testing.md`
 - `docs/deployment.md`
+- `docs/observability.md`
 - `docs/architecture.md` with a C4 Level 2 container view
 - `docs/domain.md` with the project's glossary
 - `docs/ui.md` with the project's UI decisions (if the system has a UI; omit for headless systems)
@@ -130,18 +143,23 @@ Before creating or updating the constitution, audit the repository for the compl
 
 Missing baseline documents are constitution outputs; they are not optional follow-up work. Existing documents must be checked for the required content rather than accepted solely because the path exists.
 
-## Execution Contract
+## Language and Interaction Rules
 
 - Use plain, direct language. Keep output scannable.
 - Prefer short sentences and bullets.
-- State only decisions, actions, blockers, and evidence relevant to this task.
-- Do not repeat inputs, instructions, or handover contents.
-- Do not add motivational language, generic advice, or decorative explanation.
-- Explain choices only when they affect the task, risk, or handoff.
+- State decisions, actions, blockers, and evidence. Omit motivational, decorative, and generic advice.
+- Do not repeat the user's request, loaded instructions, or handoff contents.
+- Explain a choice only when it affects scope, risk, verification, or the next handoff.
+- Ask one focused question at a time. Do not use broad questionnaires.
+- State assumptions explicitly. If required evidence is missing or contradictory, ask rather than inventing an answer.
+- Use the project's domain language in product artifacts. Keep internal workflow and agent terminology out of permanent product documentation.
+- Refer to files, symbols, commands, states, and evidence precisely. Avoid vague terms such as "works", "correct", or "should be fine".
+- End a phase response with the decision needed, the blocker, or the next handoff. During approved autonomous implementation, continue without routine confirmation.
+
+## Execution Contract
+
 - Never copy internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths into permanent product artifacts.
 - Before writing a permanent artifact, scan it for internal workflow references and remove them.
-- Ask one focused question when blocked.
-- End with the next action or handoff.
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
 - Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
 - Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.
@@ -156,9 +174,9 @@ Missing baseline documents are constitution outputs; they are not optional follo
 
 <HARD-GATE>
 Do NOT write `CONSTITUTION.md` until the user explicitly approves the proposed guardrails.
-Do NOT ask more than 5 questions per round.
-Do NOT include implementation details — CONSTITUTION.md contains guardrails, not recipes. If a sentence contains a tool name, a command, a file path, a framework, a library, or a configuration value, it belongs in docs/ or an ADR, not in CONSTITUTION.md.
-Do NOT copy generic principles from the internet. Every rule must be justified by this project's specific context.
+Do NOT ask more than one focused question at a time. Continue until every required guardrail category has an explicit decision or explicit deferral.
+Do NOT include project specifics — CONSTITUTION.md contains guardrails, not product facts or recipes. Except for pointers to governed documents, if a sentence contains a tool name, command, file path, framework, library, configuration value, domain term, component name, environment, concrete threshold, or example, it belongs in `docs/` or an ADR.
+Do NOT justify rules with project-specific examples in `CONSTITUTION.md`; preserve that rationale in the supporting document or ADR.
 Do NOT add a `## Delivery and Documentation` section — documentation policy belongs under `## Documentation And ADR Policy`.
 </HARD-GATE>
 
@@ -166,12 +184,14 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 
 ## Process
 
-1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, any ADRs or docs, and existing deployment or testing practices
-2. **Conversation: Propose the guardrails** — summarize the proposed testing and deployment strategies, identify foundational ADR candidates, and ask whether the direction feels right. Iterate until the user says “looks good” or “proceed.”
-3. **On approval:**
+1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, ADRs, and current SDLC documentation. Use specifics to identify decisions, but route those specifics to `docs/`.
+2. **Conversation: Decide guardrails one category at a time** — architecture; testing and quality; observability; security and privacy; reliability; performance and efficiency; documentation and ADRs; release and deployment. Ask one focused question, summarize the decision, then continue. Do not silently choose defaults when evidence is missing.
+3. **Boundary review** — present the proposed constitution rules separately from the project-specific documentation updates. Flag every concrete fact and its `docs/` destination. Wait for explicit approval of both lists.
+4. **On approval:**
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures
+   - Create `docs/observability.md` with project-specific operational signals and response guidance
     - Create or update `docs/architecture.md` with the current C4 Level 2 container view
     - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
     - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
@@ -184,11 +204,14 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 
 - [ ] Existing docs read (including any deployment or testing practices)
 - [ ] Foundational ADRs identified (if any exist)
-- [ ] Proposed testing strategy, deployment strategy, and ADR candidates discussed
+- [ ] Every required guardrail category explicitly decided or deferred through focused questions
+- [ ] Proposed constitution contains no project-specific facts or examples
+- [ ] Project-specific decisions have a named `docs/` or ADR destination
 - [ ] User approval received
-- [ ] `CONSTITUTION.md` written with Testing, Performance, and Release sections populated (with references to supporting docs)
+- [ ] `CONSTITUTION.md` written with all required guardrail headings populated
 - [ ] `docs/testing.md` created with project-specific practices
 - [ ] `docs/deployment.md` created with project-specific procedures
+- [ ] `docs/observability.md` created with project-specific signals and operating guidance
 - [ ] `docs/adr/` directory created with index link from `CONSTITUTION.md` (populate with foundational decisions if identified)
 - [ ] `docs/roadmap.md` created if not present
 
@@ -200,6 +223,7 @@ Terminal artifacts:
 - `CONSTITUTION.md` — guardrails and governance
 - `docs/testing.md` — testing procedures and practices
 - `docs/deployment.md` — deployment and release procedures
+- `docs/observability.md` — signals, alerts, health checks, and operating guidance
 - `docs/adr/` structure — architectural decisions
 - `docs/roadmap.md` — product roadmap
 
@@ -346,122 +370,36 @@ Document constraints that materially affect release safety and the mitigation or
 -->
 ```
 
-### Template: docs/adr.md
-
-When creating a new Architecture Decision Record, use this template:
+### Template: docs/observability.md
 
 ```markdown
----
-name: 4dc-adr
-description: "On-demand. Write one Architecture Decision Record when a structural, hard-to-reverse, or non-obvious choice emerges. Single decision, single file, with rationale and consequences."
----
+# Observability
 
-# ADR Skill
+Guide to understanding the system in operation. Keep concrete signals, ownership, interpretation, and response guidance here rather than in the constitution.
 
-## One Responsibility
+## Operational Outcomes
 
-Capture one architectural decision in a single ADR file with context, alternatives, rationale, and consequences. Nothing else.
+Describe the user-visible and operator-visible outcomes that must be distinguishable in production, including success, expected rejection, degradation, and failure.
 
----
+## Signals
 
-## Foundations
+Document the logs, metrics, traces, audit records, and health checks used by this project. For each signal, state its purpose, important fields or dimensions, privacy and cardinality constraints, and how to interpret it.
 
-- **Fowler — evolutionary architecture.** The system evolves; irreversible decisions need a decision log so future change is informed, not blind.
-- **Poppendieck — decide as late as possible, but decide.** Record the decision at the moment commitment becomes necessary, with the options that were live at that moment.
-- **Beck — make irreversible decisions visible.** A decision worth recording is one a newcomer would not infer from the code.
+## Alerts And Response
 
----
+Document actionable alert conditions, ownership, first response, verification, and escalation or recovery guidance. Avoid alerts without an expected operator action.
 
-## Expected Input
+## Release Verification
 
-- `CONSTITUTION.md` (architectural boundaries the decision must respect)
-- The decision itself — what was chosen, what was rejected, why now
-- `docs/adr/` (existing ADRs, to link related or superseded decisions)
+Describe the signals used to confirm a release is healthy and the conditions that trigger rollback, roll-forward, or further investigation.
 
----
+## Known Blind Spots
 
-## Concrete Output
+Record material observability gaps, their risk, and the evidence that would justify improving them.
 
-`docs/adr/ADR-YYYYMMDD-<slug>.md` containing:
-- **Decision**: one sentence stating what was decided
-- **Status**: Accepted | Superseded | Deferred
-- **Context**: why this decision matters now; what constraint or problem forces it
-- **Alternatives**: the options that were live, each with its trade-off
-- **Rationale**: why the chosen option wins over the others, grounded in this project's context
-- **Consequences**: what gets better and what gets harder (both sides)
-- **Related**: links to related or superseded ADRs
+## Maintenance
 
-Required headings (see the ADR template in `templates/adr.md` for the full structure):
-- `# ADR-YYYYMMDD — [Decision Title]`
-- `**Decision:**`
-- `**Status:**`
-- `**Context**`
-- `**Alternatives**`
-- `**Rationale**`
-- `**Consequences**`
-- `**Related**`
-
-{{SHARED:execution-contract}}
-
----
-
-<HARD-GATE>
-Do NOT write an ADR for implementation details (variable names, argument ordering, small refactors).
-Do NOT write an ADR for a decision already captured in `CONSTITUTION.md` or an existing ADR.
-Do NOT write the ADR until the user confirms the decision and its rationale.
-One ADR per decision — if two decisions are entangled, write two ADRs and cross-link them.
-</HARD-GATE>
-
----
-
-## When to Write an ADR
-
-Write one when the choice is:
-- **Structural** — affects multiple parts of the system (new layer, new service, new dependency direction)
-- **Hard to reverse** — schema design, language choice, external dependency, data migration
-- **Non-obvious** — a newcomer would not infer it from reading the code
-- **Trade-off-laden** — performance vs. simplicity, flexibility vs. cost
-
-Do **not** write one for:
-- Bug fixes or maintenance patches
-- Implementation details that live in code
-- Decisions fully captured by `CONSTITUTION.md` guardrails
-
----
-
-## Process
-
-1. **Name the decision** — one sentence: what was decided. If you cannot state it in one sentence, the decision is not yet crisp.
-2. **State the context** — what problem forces this decision now? What constraint from `CONSTITUTION.md` or the codebase applies?
-3. **List alternatives** — the options that were genuinely live. Each needs a one-line trade-off, not a strawman.
-4. **Record the rationale** — why the chosen option wins, grounded in this project's context (not generic best-practice claims).
-5. **State consequences** — what gets better and what gets harder. Both sides.
-6. **Check related ADRs** — link any related or superseded decisions in `docs/adr/`. If this supersedes an existing ADR, update the old one's status to `Superseded`.
-7. **STOP** — present the ADR. Wait for the user to confirm the decision and rationale.
-8. **On approval** — write `docs/adr/ADR-YYYYMMDD-<slug>.md` and link it from `CONSTITUTION.md` or `docs/architecture.md` if appropriate.
-
----
-
-## Checklist
-
-- [ ] Decision stated in one sentence
-- [ ] Context explains why now
-- [ ] Alternatives are genuine, not strawmen
-- [ ] Rationale grounded in project context
-- [ ] Consequences cover both positive and negative
-- [ ] Related ADRs cross-linked (superseded ones updated)
-- [ ] User confirmed the decision and rationale
-- [ ] ADR file written to `docs/adr/ADR-YYYYMMDD-<slug>.md`
-- [ ] ADR linked from `CONSTITUTION.md` or `docs/architecture.md` if architectural
-
----
-
-## Handoff
-
-Terminal artifact: `docs/adr/ADR-YYYYMMDD-<slug>.md` (permanent)
-Return to the skill that invoked this one — typically `4dc-plan` or `4dc-tdd-green`.
-
-This skill is a utility, not a sequential phase. It is invoked on demand when a decision worth recording emerges during any phase.
+Update this guide when behavior, architecture, data sensitivity, operational ownership, or failure modes change. Remove stale signals rather than preserving an inventory of obsolete telemetry.
 ```
 
 ### Template: docs/roadmap.md

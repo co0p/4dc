@@ -13,10 +13,10 @@ Take the code that just made the current test case green and improve its design 
 
 ## Foundations
 
-- **Fowler — refactoring.** A behavior-preserving transformation that improves the internal structure of the code. The tests define behavior; if they stay green, behavior is preserved. This is not "cleaning up while adding the feature" — it is a separate discipline, done with a separate hat.
-- **Fowler — two hats.** You are either adding behavior (Green) or refactoring. Never both at once. When you refactor, you do not write new tests or change what the code does — you change how it is organized.
-- **Beck — the refactor pass.** Once green, ask: can the design be improved? If yes, improve it. If no, skip the commit and advance. The pass is mandatory even when the answer is "nothing to change" — the question must be asked.
-- **Poppendieck — eliminate waste.** Refactoring is not gold-plating. It removes duplication, clarifies intent, and keeps the next change cheap. If the change does not serve a future behavior or readability, it is waste.
+{{FOUNDATION:fowler-behavior-preserving-refactoring}}
+{{FOUNDATION:fowler-two-hats}}
+{{FOUNDATION:beck-refactor-pass}}
+{{FOUNDATION:poppendieck-eliminate-waste}}
 
 ---
 
@@ -50,7 +50,7 @@ This skill does **one thing**: improve the design of code that already passes it
 - It does NOT add new behavior.
 - It does NOT write new tests.
 - It does NOT change what the code does — only how it is organized.
-- It does NOT handle `[tidy]` or `[research]` subtasks.
+- It does NOT handle `[tidy]` subtasks.
 
 The distinction: `tidy` prepares structure before behavior; `refactor` improves design after behavior. Both are behavior-preserving, but they serve different moments in the cycle.
 
@@ -79,12 +79,12 @@ Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactor
 7. **Record evidence** in `implementation.md`: set the active test case `state: complete`, with test output confirming green and what was refactored.
 8. **Commit** as `refactor: <what changed>`.
 9. **Append learnings** if design decisions or promote candidates emerged.
-10. **Advance within the subtask:** if a pending test case remains, set it as `active_test` with `state: pending`; `tdd-red` starts its cycle. If all cases are complete, set the behavior subtask `state: complete`, **mark the todo item `completed`**, and advance to the next subtask.
+10. **Advance within the subtask:** if a pending test case remains, set it as `active_test` with `state: pending`; the approved subtask mini-plan remains valid and `tdd-red` starts its cycle automatically without another user gate. If all cases are complete, set the behavior subtask `state: complete`, **mark the todo item `completed`**, and route the next pending subtask through `subtask-plan`.
 
 ### When all subtasks are complete
 
 - Run **final verification** — the full test suite or constitution-defined release gate. Confirm all acceptance criteria from `increment.md` are met.
-- If `.agent/plan.md` defines acceptance scenarios, run any available scenarios as supplementary evidence. Record each result as `passed`, `failed`, `skipped`, or `not-applicable`; advisory scenarios do not block completion unless an approved project rule makes them required.
+- Run every required acceptance test from `.agent/plan.md`. Record each result as `passed`, `failed`, `skipped`, or `not-applicable`; anything other than `passed` blocks completion unless the user explicitly approves and records an exception.
 - Present the final evidence and remaining risks. Wait for explicit approval.
 - On approval, set `implementation.md` top-level `status: complete`. The next skill is `4dc-promote`.
 
@@ -105,7 +105,7 @@ Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactor
 ### When all subtasks complete
 - [ ] Final verification run (full suite or release gate)
 - [ ] All acceptance criteria from `increment.md` met
-- [ ] Optional acceptance scenarios recorded as supplementary evidence, without treating advisory scenarios as blockers
+- [ ] Required acceptance tests recorded and passing, or an explicit user-approved exception recorded
 - [ ] User approval received
 - [ ] `implementation.md` top-level `status` set to `complete`
 - [ ] `learnings.md` has promote candidates listed

@@ -1,0 +1,1 @@
+- **Michael Nygard: architecture decisions.** Record consequential choices with context, alternatives, and consequences so future change remains informed.

@@ -1,0 +1,1 @@
+- **Kent Beck: Tidy First.** When a small structural change makes behavior work safer, perform it separately before changing behavior.

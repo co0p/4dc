@@ -1,0 +1,1 @@
+- **Alistair Cockburn: communication as coordination.** Use focused conversation to expose assumptions and reach shared understanding before commitment.

@@ -25,6 +25,7 @@ SKILL_NAMES=(
   "prototype"
   "plan"
   "implement"
+  "subtask-plan"
   "adr"
   "tidy"
   "tdd-red"

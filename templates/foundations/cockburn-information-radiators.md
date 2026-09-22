@@ -1,0 +1,1 @@
+- **Alistair Cockburn: information radiators.** Keep work state and evidence visible so coordination does not depend on private context.

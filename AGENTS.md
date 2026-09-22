@@ -3,8 +3,8 @@
 You operate under the **4dc methodology** — a four-discipline cycle:
 
 ```
-constitution → increment → [prototype?] → plan → implement → [tidy] → tdd-red → tdd-green → refactor → promote
-                   |                                              ↑___________________________________|
+constitution → increment → [prototype?] → plan → implement → subtask-plan → [tidy] → tdd-red → tdd-green → refactor → promote
+                   |                                                             ↑___________________________________|
                    |                                              [adr?]              [research → tdd-green]
                    ↓
             branch: increment/<slug>
@@ -19,6 +19,7 @@ constitution → increment → [prototype?] → plan → implement → [tidy] �
 - `prototype` is optional — load it only when a blocking unknown needs a throwaway spike before planning.
 - `adr` is on-demand — load it whenever a structural, hard-to-reverse decision emerges during any phase.
 - `implement` runs exactly once per cycle — it scaffolds `.agent/implementation.md` and populates the todo list.
+- `subtask-plan` runs before every implementation subtask — it proposes the immediate execution slice and waits for explicit user approval.
 - `tidy`, `tdd-red`, `tdd-green`, and `refactor` loop per subtask until all are `state: complete`.
 
 Read this file completely before doing any work, then load the skill for the current phase.
@@ -78,21 +79,24 @@ Inspect the workspace and determine the current phase:
 | `.agent/increment.md` exists, no `.agent/plan.md` | **plan** | `skills/plan/SKILL.md` |
 | User names a structural decision to capture | **adr** *(on-demand)* | `skills/adr/SKILL.md` |
 | `.agent/plan.md` exists, no `.agent/implementation.md` | **implement** | `skills/implement/SKILL.md` |
-| `.agent/plan.md` exists, current `[tidy]` subtask `state: pending` | **tidy** | `skills/tidy/SKILL.md` |
-| `.agent/plan.md` exists, current `[behavior]` subtask `state: pending` | **tdd-red** | `skills/tdd-red/SKILL.md` |
-| `.agent/plan.md` exists, current `active_test` `state: red` or `[research]` `state: pending` | **tdd-green** | `skills/tdd-green/SKILL.md` |
+| `.agent/implementation.md` exists, current subtask `state: pending` | **subtask-plan** | `skills/subtask-plan/SKILL.md` |
+| Current `[tidy]` subtask `state: approved` | **tidy** | `skills/tidy/SKILL.md` |
+| Current `[behavior]` subtask `state: approved` | **tdd-red** | `skills/tdd-red/SKILL.md` |
+| Current `active_test` `state: red` | **tdd-green** | `skills/tdd-green/SKILL.md` |
 | `.agent/plan.md` exists, current `active_test` `state: green` | **refactor** | `skills/refactor/SKILL.md` |
 | `.agent/implementation.md` marked `status: complete` | **promote** | `skills/promote/SKILL.md` |
 
 **If the user explicitly names a phase, load that skill directly without checking conditions.**
 
 **Implementation loop:** during the implementation phase, read `.agent/implementation.md` to find the current subtask by type and state:
-- `[tidy]` + `state: pending` → load `tidy`
-- `[behavior]` with `active_test: pending` → load `tdd-red`
+- Any current subtask with `state: pending` → load `subtask-plan`; implementation may not start before its mini-plan is explicitly approved
+- `[tidy]` + `state: approved` → load `tidy`
+- `[behavior]` with `state: approved` and `active_test: pending` → load `tdd-red`
 - `[behavior]` with `active_test: red` → load `tdd-green` (writes minimal code to pass, sets active test `state: green`)
 - `[behavior]` with `active_test: green` → load `refactor` (improves design, sets active test `state: complete`, activates the next test or completes the subtask)
-- `[research]` + `state: pending` → load `tdd-green` (investigates, sets `state: complete`)
 - All subtasks `state: complete` → `refactor` runs final verification and sets `status: complete`
+
+The approved mini-plan is the only routine user-interaction gate within a subtask. After approval, continue autonomously through its complete Tidy or Red → Green → Refactor sequence, updating `implementation.md` and the todo list at every transition. Do not ask for confirmation between implementation skills. Stop only when new information changes acceptance criteria or scope, requires an unapproved structural decision, makes the approved mini-plan unsafe, or creates an external/destructive action requiring approval.
 
 At every subtask transition: mark the current todo item `in_progress` before starting, `completed` only after `implementation.md` records `state: complete` with a commit hash.
 
@@ -118,7 +122,7 @@ Files used as handoff contracts between phases:
 | `.agent/increment.md` | transient, per cycle | `increment` skill writes it |
 | `.agent/prototype.md` | transient, per cycle (optional) | `prototype` skill writes it |
 | `.agent/plan.md` | transient, per cycle | `plan` skill writes it |
-| `.agent/implementation.md` | transient, per cycle | `implement` skill creates it; `tidy`, `tdd-red`, `tdd-green`, and `refactor` update it |
+| `.agent/implementation.md` | transient, per cycle | `implement` skill creates it; `subtask-plan`, `tidy`, `tdd-red`, `tdd-green`, and `refactor` update it |
 | `.agent/learnings.md` | transient, per cycle | `tidy`, `tdd-red`, `tdd-green`, `refactor`, and `adr` skills append to it |
 | `docs/adr/ADR-*.md` | permanent | `adr` skill writes it |
 

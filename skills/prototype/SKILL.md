@@ -13,9 +13,9 @@ Build a throwaway spike that resolves one named unknown, then record what was le
 
 ## Foundations
 
-- **Poppendieck — decide as late as possible.** Reversible decisions wait; irreversible ones get unblocked with the cheapest possible experiment.
-- **Beck — spike.** A time-boxed exploration with no production output. Build to answer a question, not to deliver a feature.
-- **Fowler — throwaway code is a learning tool.** Prototype code is not a deliverable; do not refactor it into the system.
+- **Mary and Tom Poppendieck: cheapest useful experiment.** Resolve uncertainty with the smallest experiment that can produce credible evidence.
+- **Mary and Tom Poppendieck: decide at the last responsible moment.** Delay reversible commitments until evidence is available, while making blocking decisions explicit when they become necessary.
+- **Kent Beck: spike.** Use a time-boxed, throwaway experiment to answer one question rather than deliver production behavior.
 
 ---
 
@@ -43,18 +43,23 @@ Required `.agent/prototype.md` headings:
 - `## Recommendation`
 - `## Disposal`
 
-## Execution Contract
+## Language and Interaction Rules
 
 - Use plain, direct language. Keep output scannable.
 - Prefer short sentences and bullets.
-- State only decisions, actions, blockers, and evidence relevant to this task.
-- Do not repeat inputs, instructions, or handover contents.
-- Do not add motivational language, generic advice, or decorative explanation.
-- Explain choices only when they affect the task, risk, or handoff.
+- State decisions, actions, blockers, and evidence. Omit motivational, decorative, and generic advice.
+- Do not repeat the user's request, loaded instructions, or handoff contents.
+- Explain a choice only when it affects scope, risk, verification, or the next handoff.
+- Ask one focused question at a time. Do not use broad questionnaires.
+- State assumptions explicitly. If required evidence is missing or contradictory, ask rather than inventing an answer.
+- Use the project's domain language in product artifacts. Keep internal workflow and agent terminology out of permanent product documentation.
+- Refer to files, symbols, commands, states, and evidence precisely. Avoid vague terms such as "works", "correct", or "should be fine".
+- End a phase response with the decision needed, the blocker, or the next handoff. During approved autonomous implementation, continue without routine confirmation.
+
+## Execution Contract
+
 - Never copy internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths into permanent product artifacts.
 - Before writing a permanent artifact, scan it for internal workflow references and remove them.
-- Ask one focused question when blocked.
-- End with the next action or handoff.
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
 - Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
 - Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.

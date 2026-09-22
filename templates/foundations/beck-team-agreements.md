@@ -1,0 +1,1 @@
+- **Kent Beck: team agreements before code.** Establish explicit rules before implementation so disagreements are resolved by shared constraints rather than assumptions.

@@ -1,0 +1,1 @@
+- **Martin Fowler: behavior-preserving refactoring.** Improve internal structure under a green test suite without changing observable behavior.

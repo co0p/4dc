@@ -13,11 +13,11 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
 
 ## Foundations
 
-- **Beck — the planning game.** Tasks are sized for one focused session. The plan is a conversation, not a contract; it is allowed to change when reality arrives, as long as the change is recorded.
-- **Poppendieck — pull, don't push.** Subtasks are pulled from acceptance criteria, not pushed from ideas. Small batches flow faster and fail cheaper.
-- **Poppendieck — decide as late as possible, but decide.** The plan commits to enough structure that execution is unambiguous, but leaves reversible choices open for the implement skills.
-- **Fowler — design for testability.** Every `[behavior]` subtask names its failing test first. The plan surfaces the architectural boundary and any performance-sensitive path so the design can evolve safely.
-- **Beck — Tidy First.** When structural preparation makes a behavior change easier, put it in a `[tidy]` subtask that comes first and preserves behavior. The tidy step is not a separate feature; it serves the behavior that follows.
+- **Kent Beck: the planning game.** Treat the plan as a conversation that creates small, testable commitments and can be revised when evidence changes.
+- **Mary and Tom Poppendieck: pull small batches from value.** Work on one small, valuable unit at a time so feedback is fast and correction is cheap.
+- **Mary and Tom Poppendieck: decide at the last responsible moment.** Delay reversible commitments until evidence is available, while making blocking decisions explicit when they become necessary.
+- **Steve Freeman and Nat Pryce: tests guide design.** Use test difficulty and feedback to discover clearer interfaces and looser coupling.
+- **Kent Beck: Tidy First.** When a small structural change makes behavior work safer, perform it separately before changing behavior.
 
 ---
 
@@ -48,7 +48,7 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
   - `touch` — read for context, unlikely to change (reference only)
   - `delete` — will be removed
 - **Subtasks**: ordered list, each with:
-  - Type: `[research]`, `[tidy]`, or `[behavior]`
+  - Type: `[tidy]` or `[behavior]`
   - Description (what, not how)
   - Files: which files this subtask touches (subset of the Files section)
   - References: specific symbols, line ranges, or sections to look at — `path/to/file.ts:42` or `docs/architecture.md#containers`
@@ -56,7 +56,7 @@ Define HOW to deliver `.agent/increment.md` — an ordered sequence of actionabl
   - Verification step (how to confirm it's done)
   - Dependencies on prior subtasks
   - Acceptance criteria covered
-- **Acceptance Scenarios** (optional): user-journey examples that provide feature-level evidence. These are advisory unless the constitution or user explicitly makes them a release gate.
+- **Acceptance Tests**: executable or manually reproducible feature-level checks proving every acceptance criterion through an observable entry point. Each has an id, preconditions, action, expected observable outcome, evidence location or procedure, criteria covered, and gate status.
 - **Context Map**: pointers to the governing docs for this increment — constitution sections, ADRs, architecture sections, domain entries that the implement skills must respect
 - **Risks**: known unknowns that could block execution
 - **Planning Decisions**: choices made during planning that a future reader would not infer from the plan alone. For each: the option chosen, the alternatives that were live, and the reason. Captures the "why this approach and not another" before it is lost.
@@ -69,30 +69,36 @@ Required `.agent/plan.md` headings:
 - `## Files`
 - `## Subtasks`
 - `## Context Map`
-- `## Acceptance Scenarios` (optional)
+- `## Acceptance Tests`
 - `## Risks`
 - `## Planning Decisions`
 
-`[research]` is only for blocking unknowns.
 `[tidy]` is structural only and must preserve observable behavior.
 `[behavior]` changes observable behavior and must be verified by a failing test or failing executable check first.
+
+Research is not an implementation subtask type. Resolve plan-blocking unknowns before approval, using `prototype` when a disposable experiment is required. Local implementation uncertainty is investigated while preparing the affected subtask's mini-plan and recorded there.
 
 ### Why file-level detail belongs in the plan
 
 The plan is the one phase that reads the whole codebase to find the approach. The implement skills (tdd-red, tdd-green, tidy, refactor) should load only the files named in their subtask — not re-scan the tree. This keeps implement context narrow and fast, and makes the plan's intent verifiable: if a subtask lists no files, it is not actionable.
 
-## Execution Contract
+## Language and Interaction Rules
 
 - Use plain, direct language. Keep output scannable.
 - Prefer short sentences and bullets.
-- State only decisions, actions, blockers, and evidence relevant to this task.
-- Do not repeat inputs, instructions, or handover contents.
-- Do not add motivational language, generic advice, or decorative explanation.
-- Explain choices only when they affect the task, risk, or handoff.
+- State decisions, actions, blockers, and evidence. Omit motivational, decorative, and generic advice.
+- Do not repeat the user's request, loaded instructions, or handoff contents.
+- Explain a choice only when it affects scope, risk, verification, or the next handoff.
+- Ask one focused question at a time. Do not use broad questionnaires.
+- State assumptions explicitly. If required evidence is missing or contradictory, ask rather than inventing an answer.
+- Use the project's domain language in product artifacts. Keep internal workflow and agent terminology out of permanent product documentation.
+- Refer to files, symbols, commands, states, and evidence precisely. Avoid vague terms such as "works", "correct", or "should be fine".
+- End a phase response with the decision needed, the blocker, or the next handoff. During approved autonomous implementation, continue without routine confirmation.
+
+## Execution Contract
+
 - Never copy internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths into permanent product artifacts.
 - Before writing a permanent artifact, scan it for internal workflow references and remove them.
-- Ask one focused question when blocked.
-- End with the next action or handoff.
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
 - Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
 - Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.
@@ -113,7 +119,7 @@ Do NOT list subtasks without a Files field — every subtask must name the files
 Every subtask must map to at least one acceptance criterion from increment.md.
 Every `[behavior]` subtask must name its test file and test name.
 Every `[behavior]` subtask may contain multiple test cases, but they must describe one cohesive behavior. Track each case separately with `id`, `name`, `file`, and `state`; set exactly one `active_test` at a time.
-Acceptance scenarios are separate from focused test cases. Use them for larger or cross-boundary increments, but do not make them blocking by default. A scenario may be `planned`, `available`, `passed`, `skipped`, or `not-applicable`.
+Acceptance tests are separate from focused unit or integration test cases and are required for every increment. Each acceptance criterion must be covered by at least one acceptance test. A test may be automated or manually reproducible, but it is a promotion gate unless the user explicitly approves a documented exception.
 Do NOT place a `[behavior]` subtask before the `[tidy]` subtasks it depends on.
 File paths must be specific (`src/auth/login.ts`), not globs or directory names alone.
 References must point to specific symbols, line ranges, or doc sections — not "see the auth module."
@@ -122,6 +128,8 @@ Do NOT write "no change" in Architecture Delta without checking `docs/architectu
 Do NOT leave error conditions undiscovered — walk every step in the Call/Data Flow and ask "what can fail here?" before the plan is approved. Any uncovered case is a gap and must appear in Risks or be added to a subtask.
 Do NOT omit Observability Intent unless the constitution explicitly exempts this type of change.
 Do NOT leave `## Planning Decisions` empty — if the approach was obvious with no alternatives considered, state that explicitly rather than omitting the section.
+Do NOT use vague acceptance-test outcomes such as "works", "succeeds", or "is correct". Name the externally visible output, state transition, response, or side effect and the evidence that proves it.
+Do NOT create `[research]` subtasks. Resolve blocking uncertainty before plan approval or identify it as investigation inside the affected tidy or behavior subtask's future mini-plan.
 </HARD-GATE>
 
 ---
@@ -135,7 +143,7 @@ Do NOT leave `## Planning Decisions` empty — if the approach was obvious with 
 5. **Draft the Files section** — list every file the increment will create, modify, touch for reference, or delete. Label each by role. Include `docs/ui.md` when shared UI decisions change.
 6. **Draft the Context Map** — link the constitution sections, ADRs, architecture sections, and domain entries that govern this change. The implement skills load these by reference, not by re-reading the whole doc.
 7. **Draft ordered subtasks** — each with type, description, files, references, test (for behavior), verification, dependencies, and acceptance criteria coverage.
-8. **Optionally define acceptance scenarios** — for a larger feature, describe the user action, precondition, expected outcome, criterion covered, likely test location, and whether the scenario is advisory or a required release gate. Default to advisory.
+8. **Define acceptance tests** — create the smallest set of feature-level checks covering every acceptance criterion. Specify setup, action, exact observable result, evidence location or manual procedure, and gate status. Walk each criterion to ensure it has proof rather than only lower-level test coverage.
 9. **Record `## Planning Decisions`** — before proposing the plan, capture every non-obvious choice made during planning: approach selection, subtask sequencing decisions, trade-offs accepted. If the approach was unambiguous with no real alternatives, state that.
 10. **Conversation: Propose the plan** — present the plan and iterate until the user confirms it covers the increment and the file scope is correct.
 11. **On approval** — write `.agent/plan.md`. Then load `skills/implement/SKILL.md` to scaffold `.agent/implementation.md` and populate the todo list.
@@ -195,8 +203,8 @@ After:  Session { id, userId, createdAt, claims: TokenClaims }
 | Condition | Expected response | Covered by |
 |-----------|-------------------|------------|
 | Token signature invalid | Reject with 401, do not create session | Subtask 2 |
-| Token expired and IdP refresh fails | Reject with 401, log warning with `subject` | Subtask 3 |
-| Token near-expiry but IdP is unreachable | Allow request with current session; schedule background retry | Subtask 3 — **gap: retry not yet planned; add to Risks** |
+| Token expired and IdP refresh fails | Reject with 401, log warning with `subject` | Subtask 2 |
+| Token near-expiry but IdP is unreachable | Allow request with current session; schedule background retry | Subtask 2 — **gap: retry not yet planned; add to Risks** |
 | `expiresAt` before `issuedAt` in claims | Reject with 401; `TokenClaims` invariant violation | Subtask 2 |
 | `SessionStore.load` returns null (new user) | Create new session; continue | Subtask 2 |
 
@@ -263,17 +271,6 @@ verification: `npm test -- token` — fails first, then passes after implementat
 depends on: 1
 acceptance criteria: AC-2 (token refreshes before expiry)
 
-### 3. Investigate: does the IdP support silent refresh?
-type: [research]
-files:
-  - `src/auth/idp-client.ts` (read only)
-references:
-  - `src/auth/idp-client.ts:30` — `refreshToken` method
-  - `docs/adr/ADR-20260105-idp-choice.md` — IdP selection rationale
-verification: finding recorded in implementation.md; no code change
-depends on: —
-acceptance criteria: informs AC-2
-
 ## Context Map
 
 - `CONSTITUTION.md#testing-strategy` — test depth and naming conventions for auth
@@ -282,9 +279,9 @@ acceptance criteria: informs AC-2
 - `docs/domain.md#session` — domain definition of a session
 - `docs/adr/ADR-20260105-idp-choice.md` — why this IdP was chosen
 
-## Acceptance Scenarios
+## Acceptance Tests
 
-These scenarios are optional feature-level evidence. They do not block implementation or promotion unless the `gate` field explicitly says `required` under an approved project rule.
+These feature-level tests prove the approved increment. They block promotion unless an explicit approved exception is recorded.
 
 ### AT-1: Successful account lookup
 
@@ -292,8 +289,8 @@ These scenarios are optional feature-level evidence. They do not block implement
 - user action: request account information
 - precondition: provider returns a valid account
 - expected outcome: account information is shown
-- evidence: `tests/acceptance/account-lookup.test.ts`
-- gate: advisory
+- evidence: `tests/acceptance/account-lookup.test.ts` — assertion on rendered account identifier and balance
+- gate: required
 - state: planned
 
 ### AT-2: Provider unavailable
@@ -302,13 +299,13 @@ These scenarios are optional feature-level evidence. They do not block implement
 - user action: request account information
 - precondition: provider times out
 - expected outcome: a temporary service error is shown
-- evidence: `tests/acceptance/account-lookup.test.ts`
-- gate: advisory
+- evidence: `tests/acceptance/account-lookup.test.ts` — assertion on the temporary-error response and absence of account data
+- gate: required
 - state: planned
 
 ## Risks
 - Token refresh may race with in-flight requests (concurrency)
-- IdP rate limit on refresh calls (unknown — see subtask 3)
+- IdP rate limit on refresh calls (investigate while mini-planning subtask 2; return to plan if it changes scope)
 - Near-expiry background retry not yet planned (flagged in Error Inventory)
 
 ## Planning Decisions
@@ -342,8 +339,9 @@ These scenarios are optional feature-level evidence. They do not block implement
 - [ ] Related test cases are grouped together; unrelated behavior is split into another subtask
 - [ ] Every subtask has a verification step
 - [ ] Every acceptance criterion has a covering subtask
-- [ ] Optional acceptance scenarios identify user action, expected outcome, criterion, and evidence location
-- [ ] Acceptance scenarios are explicitly marked advisory unless made blocking by an approved constitution or explicit user request
+- [ ] Acceptance tests cover every acceptance criterion through an observable entry point
+- [ ] Every acceptance test states preconditions, action, exact observable outcome, evidence, and gate status
+- [ ] Any non-blocking acceptance test has an explicit user-approved exception and rationale
 - [ ] Context Map links the governing constitution sections, ADRs, architecture, and domain docs
 - [ ] Any architectural or performance-sensitive change is reflected in the approach or risks
 - [ ] Risks documented

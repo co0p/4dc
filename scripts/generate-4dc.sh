@@ -11,6 +11,8 @@ set -euo pipefail
 #   - skills/increment/SKILL.md
 #   - skills/prototype/SKILL.md
 #   - skills/plan/SKILL.md
+#   - skills/implement/SKILL.md
+#   - skills/subtask-plan/SKILL.md
 #   - skills/adr/SKILL.md
 #   - skills/tidy/SKILL.md
 #   - skills/tdd-red/SKILL.md
@@ -35,6 +37,7 @@ set -euo pipefail
 #   templates/constitution.md       → skills/constitution/SKILL.md
 #   templates/increment.md          → skills/increment/SKILL.md
 #   templates/implement.md          → skills/implement/SKILL.md
+#   templates/subtask-plan.md       → skills/subtask-plan/SKILL.md
 #   templates/prototype.md          → skills/prototype/SKILL.md
 #   templates/plan.md               → skills/plan/SKILL.md
 #   templates/adr.md                → skills/adr/SKILL.md
@@ -44,6 +47,8 @@ set -euo pipefail
 #   templates/refactor.md           → skills/refactor/SKILL.md
 #   templates/promote.md            → skills/promote/SKILL.md
 #   templates/shared/execution-contract.md  → spliced into every skill via {{SHARED:execution-contract}}
+#   templates/language.md           → spliced through {{TEMPLATE:language}} for consistent language rules
+#   templates/foundations/<id>.md    → spliced through {{FOUNDATION:<id>}} into selected skills
 # ─────────────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -95,6 +100,26 @@ splice_templates() {
   printf '%s' "$content"
 }
 
+# Splice foundation fragments: replace {{FOUNDATION:id}} with templates/foundations/id.md
+splice_foundations() {
+  local content
+  content="$(cat)"
+  local marker foundation path replacement
+  while IFS= read -r marker; do
+    [ -n "$marker" ] || continue
+    foundation="${marker#\{\{FOUNDATION:}"
+    foundation="${foundation%\}\}}"
+    path="${TEMPLATE_DIR}/foundations/${foundation}.md"
+    if [ ! -f "$path" ]; then
+      echo "Error: foundation fragment not found: $path" >&2
+      return 1
+    fi
+    replacement="$(cat "$path")"
+    content="${content//${marker}/${replacement}}"
+  done < <(printf '%s' "$content" | grep -o '{{FOUNDATION:[^}]*}}' | sort -u || true)
+  printf '%s' "$content"
+}
+
 # Replace template variables
 render() {
   sed -e "s/{{VERSION}}/${COMMIT_HASH}/g" \
@@ -112,7 +137,20 @@ generate_skill() {
   if [ -f "$template" ]; then
     echo "Generating skills/${name}/SKILL.md..."
     mkdir -p "$skill_dir"
-    splice_shared < "$template" | splice_templates | render > "$output"
+    duplicate_foundation="$(grep -o '{{FOUNDATION:[^}]*}}' "$template" | sort | uniq -d || true)"
+    if [ -n "$duplicate_foundation" ]; then
+      echo "Error: duplicate foundation marker in $template: $duplicate_foundation" >&2
+      exit 1
+    fi
+    splice_shared < "$template" | splice_templates | splice_shared | splice_templates | splice_foundations | render > "$output"
+    if grep -Eq '\{\{(SHARED|TEMPLATE|FOUNDATION):[^}]+\}\}' "$output"; then
+      echo "Error: unresolved template marker in $output" >&2
+      exit 1
+    fi
+    if [ "$(grep -c '^## Language and Interaction Rules$' "$output")" -ne 1 ]; then
+      echo "Error: expected exactly one language rules section in $output" >&2
+      exit 1
+    fi
     echo "  Wrote: $output"
   else
     echo "!!! Skipping $name: $template not found" >&2
@@ -125,6 +163,7 @@ generate_skill "increment"
 generate_skill "prototype"
 generate_skill "plan"
 generate_skill "implement"
+generate_skill "subtask-plan"
 generate_skill "adr"
 generate_skill "tidy"
 generate_skill "tdd-red"

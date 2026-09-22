@@ -13,9 +13,9 @@ Capture one architectural decision in a single ADR file with context, alternativ
 
 ## Foundations
 
-- **Fowler — evolutionary architecture.** The system evolves; irreversible decisions need a decision log so future change is informed, not blind.
-- **Poppendieck — decide as late as possible, but decide.** Record the decision at the moment commitment becomes necessary, with the options that were live at that moment.
-- **Beck — make irreversible decisions visible.** A decision worth recording is one a newcomer would not infer from the code.
+- **Michael Nygard: architecture decisions.** Record consequential choices with context, alternatives, and consequences so future change remains informed.
+- **Martin Fowler: evolutionary architecture.** Define durable boundaries and fitness constraints while allowing implementation details to evolve.
+- **Mary and Tom Poppendieck: decide at the last responsible moment.** Delay reversible commitments until evidence is available, while making blocking decisions explicit when they become necessary.
 
 ---
 
@@ -48,18 +48,23 @@ Required headings (see the ADR template in `templates/adr.md` for the full struc
 - `**Consequences**`
 - `**Related**`
 
-## Execution Contract
+## Language and Interaction Rules
 
 - Use plain, direct language. Keep output scannable.
 - Prefer short sentences and bullets.
-- State only decisions, actions, blockers, and evidence relevant to this task.
-- Do not repeat inputs, instructions, or handover contents.
-- Do not add motivational language, generic advice, or decorative explanation.
-- Explain choices only when they affect the task, risk, or handoff.
+- State decisions, actions, blockers, and evidence. Omit motivational, decorative, and generic advice.
+- Do not repeat the user's request, loaded instructions, or handoff contents.
+- Explain a choice only when it affects scope, risk, verification, or the next handoff.
+- Ask one focused question at a time. Do not use broad questionnaires.
+- State assumptions explicitly. If required evidence is missing or contradictory, ask rather than inventing an answer.
+- Use the project's domain language in product artifacts. Keep internal workflow and agent terminology out of permanent product documentation.
+- Refer to files, symbols, commands, states, and evidence precisely. Avoid vague terms such as "works", "correct", or "should be fine".
+- End a phase response with the decision needed, the blocker, or the next handoff. During approved autonomous implementation, continue without routine confirmation.
+
+## Execution Contract
+
 - Never copy internal workflow names, skill names, phase names, orchestrator terms, `.agent/` paths, or `.agents/` paths into permanent product artifacts.
 - Before writing a permanent artifact, scan it for internal workflow references and remove them.
-- Ask one focused question when blocked.
-- End with the next action or handoff.
 - Produce only the artifact for this phase. Do not leak work from a later phase into this one.
 - Treat tests, architecture notes, ADRs, and user-facing docs as first-class communication artifacts.
 - Gather only enough context to identify the governing constraints, the target artifact, and the cheapest validation step. Then act.

@@ -1,21 +1,21 @@
 ---
 name: 4dc-implement
-description: "Run once after plan.md is approved. Scaffolds implementation.md from the plan, populates the internal todo list with every subtask, and hands off to the first implement skill (tidy, tdd-red, or tdd-green)."
+description: "Run once after plan.md is approved. Scaffolds implementation.md, populates the todo list, and hands off to subtask-plan for the first developer conversation."
 ---
 
 # Implement Skill
 
 ## One Responsibility
 
-Bootstrap the implementation loop: read the approved plan, create `.agent/implementation.md` with every subtask in its initial state, populate the **internal todo list** so progress is visible throughout the loop, then hand off to the correct first skill. This skill runs exactly once per cycle — it does not loop.
+Bootstrap the implementation loop: read the approved plan, create `.agent/implementation.md` with every subtask in its initial state, populate the **internal todo list**, then hand off to `subtask-plan`. This skill runs exactly once per cycle; each subtask is mini-planned and approved later, immediately before implementation.
 
 ---
 
 ## Foundations
 
-- **Beck — make the plan visible.** The implementation loop works from a single tracking artifact. Creating it explicitly, from the approved plan, prevents drift between what was planned and what is being tracked.
-- **Poppendieck — small batches, pull.** Each subtask becomes one todo item. Work is pulled one item at a time; nothing is started until the previous item is complete.
-- **Fowler — observable progress.** The todo list is the live view of the implementation loop for the user. Update it at every transition — not in batches at the end.
+{{FOUNDATION:cockburn-information-radiators}}
+{{FOUNDATION:poppendieck-pull-small-batches}}
+{{FOUNDATION:beck-small-steps}}
 
 ---
 
@@ -65,6 +65,7 @@ Rules:
 - All subtasks start `state: pending`.
 - For `[behavior]` subtasks, copy the full `tests` list and set `active_test` to the first test id.
 - Do not add fields not present in the template above — the implement skills own those fields.
+- `subtask-plan` adds `mini_plan`, `approved`, and changes `state` to `approved` after the user confirms the immediate approach.
 
 ### Internal todo list
 
@@ -74,7 +75,6 @@ Populate the todo list immediately after writing `implementation.md`. One item p
 [tidy]     1. <subtask name>          pending
 [behavior] 2. <subtask name>          pending
 [behavior] 3. <subtask name>          pending
-[research] 4. <subtask name>          pending
 ```
 
 **Todo list discipline — applies for the entire implementation loop, not just this skill:**
@@ -107,6 +107,7 @@ Do NOT create implementation.md until plan.md is confirmed approved.
 Do NOT paraphrase subtask names or test ids — copy them verbatim from plan.md.
 Do NOT mark any todo in_progress until the corresponding skill has actually started work.
 Do NOT skip populating the todo list — it is a required output of this skill, not optional.
+Do NOT hand a pending subtask directly to tidy, tdd-red, or tdd-green. It must pass through subtask-plan.
 </HARD-GATE>
 
 ---
@@ -116,10 +117,7 @@ Do NOT skip populating the todo list — it is a required output of this skill, 
 1. **Read `.agent/plan.md`** — extract goal, branch, and the full ordered subtask list including test case ids for behavior subtasks.
 2. **Scaffold `.agent/implementation.md`** — create the file using the template above. Subtask names and test lists copied verbatim.
 3. **Populate the todo list** — one item per subtask, all `pending`, in plan order, labeled with type and name.
-4. **Hand off** — the orchestrator detects the first subtask's type and state and loads the correct skill:
-   - First subtask `[tidy]` → load `skills/tidy/SKILL.md`
-   - First subtask `[behavior]` → load `skills/tdd-red/SKILL.md`
-   - First subtask `[research]` → load `skills/tdd-green/SKILL.md`
+4. **Hand off** — load `skills/subtask-plan/SKILL.md` for the first pending subtask. Its approved mini-plan determines the later Tidy, Red, Green, and Refactor work.
 
 ---
 
@@ -138,4 +136,4 @@ Do NOT skip populating the todo list — it is a required output of this skill, 
 
 Terminal artifact: `.agent/implementation.md` (scaffolded, all subtasks `state: pending`)
 Todo list: populated, all items `pending`
-Next skill: detected by the orchestrator from the first subtask's type and state.
+Next skill: `4dc-subtask-plan` for the first pending subtask.

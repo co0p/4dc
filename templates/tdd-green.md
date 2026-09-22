@@ -1,6 +1,6 @@
 ---
 name: 4dc-tdd-green
-description: "Make the current failing test pass with minimal code. No refactoring. Handles [research] subtasks too (which skip Red and Refactor). Sets state: green and hands off to refactor."
+description: "Make the current failing test pass with minimal code. No refactoring. Sets state: green and continues autonomously to refactor."
 ---
 
 # TDD Green Skill
@@ -10,23 +10,21 @@ description: "Make the current failing test pass with minimal code. No refactori
 Write the minimal production code that makes the current failing `active_test` pass. Nothing more. A behavior subtask may contain several cohesive test cases; complete one case, then hand off to `4dc-refactor` before activating the next case.
 
 - For a `[behavior]` subtask with an active test in `state: red`: write minimal code to pass that test, set the test to `state: green`, and hand off to `4dc-refactor`.
-- For a `[research]` subtask in `state: pending`: resolve the blocking unknown, set `state: complete`, advance.
 
 ---
 
 ## Foundations
 
-- **Beck — Green.** Write the minimal code that makes the test pass. Not the code you would eventually want — the code that passes the test right now. YAGNI.
-- **Beck — two hats.** Adding behavior and refactoring are separate disciplines. This skill wears the behavior hat only. The refactor hat is `4dc-refactor`.
-- **Poppendieck — eliminate waste.** No speculative generality, no "while I'm here" features, no extra methods. The test defines the spec; write only what satisfies it.
-- **Fowler — make it work, then make it right.** First green (make it work), then refactor (make it right). This skill is the "make it work" step.
+{{FOUNDATION:beck-green}}
+{{FOUNDATION:fowler-two-hats}}
+{{FOUNDATION:poppendieck-eliminate-waste}}
 
 ---
 
 ## Expected Input
 
 - `.agent/plan.md` (approved)
-- `.agent/implementation.md` with one subtask in `state: red` (behavior) or `state: pending` (research)
+- `.agent/implementation.md` with one behavior subtask in `state: red` and an approved `mini_plan`
 - `CONSTITUTION.md` testing strategy
 
 **Narrow context:** load only the files named in the current subtask's `files:` and `references:` fields in `plan.md`. Do not re-scan the codebase — the plan already did that work.
@@ -37,7 +35,6 @@ Write the minimal production code that makes the current failing `active_test` p
 
 Updates `.agent/implementation.md` for the current subtask:
 - For `[behavior]`: active test `state: green`, `evidence:` test output showing pass, `commit:` hash with `feat:` or `fix:` prefix
-- For `[research]`: `state: complete`, `evidence:` finding, `commit:` hash with `research:` prefix (or skipped)
 
 Appends to `.agent/learnings.md` if decisions, deviations, or surprises emerged.
 
@@ -63,6 +60,7 @@ Do NOT refactor in this skill. Improving the design is a separate hat — load `
 Do NOT mark a `[behavior]` subtask `state: complete` — set the active test to `state: green` and hand off to refactor. The subtask becomes complete only after every planned test case has completed its own Red → Green → Refactor loop.
 Do NOT mix behavior change and refactoring in the same commit.
 Commit behavior work as `feat: <what changed>` or `fix: <what changed>`. Never `refactor:` or `tidy:`.
+Behavior work inherits the mini-plan approved before Red. Continue without routine user confirmation.
 </HARD-GATE>
 
 ---
@@ -78,17 +76,7 @@ Commit behavior work as `feat: <what changed>` or `fix: <what changed>`. Never `
 5. **Record evidence** in `implementation.md`: set the active test to `state: green`, with test output showing pass. Leave the other test cases unchanged.
 6. **Commit** as `feat: <what changed>` or `fix: <what changed>`.
 7. **Append learnings** — decisions, deviations, surprises, promote candidates.
-8. **STOP.** The next skill is `4dc-refactor`, which completes this active test case before another case is activated.
-
-### For a `[research]` subtask in `state: pending`
-
-1. **Mark the todo item `in_progress`** for this subtask.
-2. **Resolve only the blocking unknown.** Do not build production features.
-3. **Record the finding** in `implementation.md`: `state: complete`, evidence of what was learned.
-4. **Commit** investigation notes or scratch code as `research: <what was investigated>` (or skip commit if no code changed).
-5. **Append learnings** with the finding and its impact on the plan.
-6. **Mark the todo item `completed`.**
-7. **Advance** to the next subtask — the orchestrator detects the type and state and loads the right skill.
+8. **Continue autonomously.** Load `4dc-refactor` to complete this active test case. Do not request user confirmation at this transition.
 
 ---
 
@@ -184,17 +172,9 @@ active_test: <case-id>
 - [ ] Learnings appended (decisions, deviations, surprises, promote candidates)
 - [ ] After refactor, activate the next pending test case or mark the behavior subtask complete when all cases are complete
 
-### Per `[research]` subtask
-- [ ] Blocking unknown resolved
-- [ ] Finding recorded with evidence
-- [ ] Subtask marked `state: complete`
-- [ ] Committed as `research:` (or commit skipped)
-- [ ] Learnings appended
-
 ---
 
 ## Handoff
 
-Updated artifacts: `.agent/implementation.md` (current `[behavior]` subtask `state: green`, or `[research]` subtask `state: complete`) + `.agent/learnings.md`
+Updated artifacts: `.agent/implementation.md` (current `[behavior]` subtask `state: green`) + `.agent/learnings.md`
 Next skill (after `[behavior]` green): `4dc-refactor` — load `skills/refactor/SKILL.md`
-Next skill (after `[research]` complete): detected by the orchestrator from the next subtask's type and state

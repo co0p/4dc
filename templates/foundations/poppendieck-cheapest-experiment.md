@@ -1,0 +1,1 @@
+- **Mary and Tom Poppendieck: cheapest useful experiment.** Resolve uncertainty with the smallest experiment that can produce credible evidence.

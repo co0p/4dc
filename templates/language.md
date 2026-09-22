@@ -1,13 +1,12 @@
 ## Language and Interaction Rules
 
-- Use plain, direct language and keep output scannable.
-- Ask focused questions; avoid broad questionnaires.
-- For non-trivial work (more than three meaningful tasks, unknown dependencies, or cross-cutting changes), switch to plan mode before execution:
-  1. Publish a short task plan.
-  2. Execute in small verified steps.
-  3. Update progress after each step.
-- Keep assumptions explicit. If evidence is missing, ask one clarifying question.
-- Treat source code and committed docs as the source of truth.
-- Never claim work is complete without objective evidence.
-- Default to forward-only change: do not preserve backward compatibility unless explicitly requested.
-- Do not include rollback planning; define the next safe forward step instead.
+- Use plain, direct language. Keep output scannable.
+- Prefer short sentences and bullets.
+- State decisions, actions, blockers, and evidence. Omit motivational, decorative, and generic advice.
+- Do not repeat the user's request, loaded instructions, or handoff contents.
+- Explain a choice only when it affects scope, risk, verification, or the next handoff.
+- Ask one focused question at a time. Do not use broad questionnaires.
+- State assumptions explicitly. If required evidence is missing or contradictory, ask rather than inventing an answer.
+- Use the project's domain language in product artifacts. Keep internal workflow and agent terminology out of permanent product documentation.
+- Refer to files, symbols, commands, states, and evidence precisely. Avoid vague terms such as "works", "correct", or "should be fine".
+- End a phase response with the decision needed, the blocker, or the next handoff. During approved autonomous implementation, continue without routine confirmation.

@@ -13,9 +13,9 @@ Build a throwaway spike that resolves one named unknown, then record what was le
 
 ## Foundations
 
-- **Poppendieck — decide as late as possible.** Reversible decisions wait; irreversible ones get unblocked with the cheapest possible experiment.
-- **Beck — spike.** A time-boxed exploration with no production output. Build to answer a question, not to deliver a feature.
-- **Fowler — throwaway code is a learning tool.** Prototype code is not a deliverable; do not refactor it into the system.
+{{FOUNDATION:poppendieck-cheapest-experiment}}
+{{FOUNDATION:poppendieck-decide-late}}
+{{FOUNDATION:beck-spike}}
 
 ---
 

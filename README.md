@@ -63,6 +63,7 @@ It installs:
     prototype/SKILL.md
     plan/SKILL.md
     implement/SKILL.md
+    subtask-plan/SKILL.md
     adr/SKILL.md
     tidy/SKILL.md
     tdd-red/SKILL.md
@@ -91,6 +92,7 @@ The files are the memory between skills. Read the current handover before acting
 | `CONSTITUTION.md` | Project rules: architecture, testing, performance, documentation, release. |
 | `docs/testing.md` | Test strategy, commands, evidence, risks, and confidence gaps. |
 | `docs/deployment.md` | Release, deployment, rollback, configuration, and health checks. |
+| `docs/observability.md` | Operational signals, alert response, release health, and known blind spots. |
 | `docs/architecture.md` | Current system boundaries, containers, communication, and data stores. |
 | `docs/domain.md` | Shared business terms, events, and rules. |
 | `docs/ui.md` | Permanent UI, interaction, visual, accessibility, and content decisions. Required for projects with a UI. |
@@ -104,7 +106,7 @@ The files are the memory between skills. Read the current handover before acting
 | `.agent/increment.md` | `increment` | The user outcome, acceptance criteria, and scope boundary. |
 | `.agent/prototype.md` | `prototype` | Finding from an optional throwaway experiment. |
 | `.agent/plan.md` | `plan` | Detailed file-level implementation map. |
-| `.agent/implementation.md` | `implement` (creates); implementation skills (update) | Current subtask, active test, state, and evidence. |
+| `.agent/implementation.md` | `implement` (creates); `subtask-plan` and implementation skills (update) | Current subtask, approved mini-plan, active test, state, and evidence. |
 | `.agent/learnings.md` | implementation skills | Decisions, deviations, surprises, and promotion candidates. |
 
 The temporary files are cleared or archived after `promote` completes. The plan is deliberately detailed so implementation skills can load only the files and references needed for the current subtask.
@@ -112,9 +114,9 @@ The temporary files are cleared or archived after `promote` completes. The plan 
 ## The Cycle
 
 ```text
-constitution -> increment -> [prototype?] -> plan -> implement -> [tidy?]
-                    |                                    -> tdd-red -> tdd-green -> refactor
-                    |                                    ↑__________________________________|
+constitution -> increment -> [prototype?] -> plan -> implement -> subtask-plan -> [tidy?]
+                    |                                                    -> tdd-red -> tdd-green -> refactor
+                    |                                                    ↑__________________________________|
                     ↓
              branch: increment/<slug>  (all subtask commits land here)
                     ↓
@@ -136,7 +138,7 @@ The orchestrator reads the workspace and loads the next skill. If automatic disc
 
 Use when `CONSTITUTION.md` is missing or needs revision.
 
-**Does:** Establishes project-specific engineering guardrails. It also creates the permanent documentation baseline when bootstrapping a project.
+**Does:** Establishes durable engineering guardrails across architecture, testing, observability, security, reliability, performance, documentation, and release. Project-specific facts and procedures go into `docs/` or ADRs.
 
 **Does not:** Choose the implementation for a feature.
 
@@ -152,7 +154,7 @@ Use after the constitution exists.
 
 **Does not:** Name files, classes, libraries, or implementation approaches.
 
-Acceptance-test scenarios are optional. For a large feature, describe useful user journeys, but treat them as advisory unless the constitution or an explicit decision makes them required.
+Every increment defines feature-level acceptance tests with exact observable outcomes. A test may be automated or manually reproducible, but it is a promotion gate unless the user explicitly approves and records an exception.
 
 **Handoff:** `.agent/increment.md`.
 
@@ -180,13 +182,13 @@ Use after the increment, and after the prototype if one was needed.
 - Approach and architecture boundary
 - Design: data models, call/data flow, error/edge-case inventory, observability intent, architecture delta
 - Complete file list: new, modify, touch, delete
-- Ordered `[research]`, `[tidy]`, and `[behavior]` subtasks
+- Ordered `[tidy]` and `[behavior]` subtasks; local research is performed while mini-planning the subtask that needs it
 - Symbols, line ranges, and document references
 - Test file and test cases for behavior work
 - One `active_test` at a time for multi-case behavior subtasks
 - Dependencies, risks, and acceptance-criteria coverage
 - Planning decisions: options chosen, alternatives rejected, reasons
-- Optional, non-blocking acceptance scenarios for larger features
+- Required feature-level acceptance tests with exact observable outcomes and evidence
 
 **Does not:** Edit production code.
 
@@ -210,15 +212,21 @@ Use when a decision changes a lasting boundary, dependency direction, technology
 
 Use once after the plan is approved, before any code is written.
 
-**Does:** Scaffolds `.agent/implementation.md` from the approved plan — every subtask in its initial state, test lists copied verbatim. Populates the internal todo list with one item per subtask so progress is visible throughout the loop. Hands off to the first implementation skill.
+**Does:** Scaffolds `.agent/implementation.md` from the approved plan — every subtask in its initial state, test lists copied verbatim. Populates the internal todo list and hands off to `subtask-plan`.
 
 **Does not:** Write code, write tests, or make any structural change to the codebase.
 
 **Handoff:** `.agent/implementation.md` (all subtasks `state: pending`).
 
-### 7. Implementation Loop
+### 7. Subtask Plan
 
-The implementation skills work one subtask at a time. They read only the files named by the plan. The todo list is updated at every subtask transition.
+**Skill:** `subtask-plan`
+
+Runs before every implementation subtask. It investigates local unknowns, checks the immediate code context, proposes the exact files, steps, evidence, observability impact, risks, and non-goals, then waits for explicit user approval. After approval, the agent writes the mini-plan into `.agent/implementation.md` and executes the complete Tidy or Red-Green-Refactor sequence autonomously, tracking every transition without routine user interaction.
+
+### 8. Implementation Loop
+
+The implementation skills work one subtask at a time. They read only the files named by the plan. After mini-plan approval they continue autonomously until that subtask is complete, updating `.agent/implementation.md` and the todo list at every transition. The next user interaction is the mini-plan for the next subtask, unless scope, acceptance criteria, architecture, safety, or external side effects require an earlier stop.
 
 #### Tidy
 
@@ -253,15 +261,15 @@ green -> refactor -> complete
 repeat for the next test case
 ```
 
-### 8. Promote
+### 9. Promote
 
 **Skill:** `promote`
 
 Use after all implementation subtasks pass final verification and `.agent/implementation.md` is approved as complete.
 
-**Does:** Promotes durable outcomes to permanent documentation, updates the roadmap, records ADRs or architecture changes. Runs a final behavior-preserving tidy pass on the branch. Then asks the user to choose how to land the increment: squash-merge to `main` as a single summary commit, or push the branch for a pull request on the project's hosting platform.
+**Does:** Promotes durable outcomes to permanent documentation, updates the roadmap, and records ADRs or architecture changes. It runs a final tidy pass, integrates the latest `main` into the increment branch, reviews the complete branch diff, reruns release and acceptance gates, and asks for explicit main-fit approval before offering squash-merge or PR options.
 
-**Does not:** Promote guesses or unverified plans. Optional acceptance scenarios provide supplementary evidence and do not block by default.
+**Does not:** Promote guesses, unverified plans, or increments without feature-level evidence for every acceptance criterion unless an exception was explicitly approved and recorded.
 
 ## Direct Use
 
@@ -271,6 +279,7 @@ The orchestrator is recommended. You can also load a skill directly:
 Read `.agents/skills/increment/SKILL.md` and define the next increment.
 Read `.agents/skills/plan/SKILL.md` and create the approved implementation plan.
 Read `.agents/skills/implement/SKILL.md` and scaffold the implementation tracker.
+Read `.agents/skills/subtask-plan/SKILL.md` and agree the current subtask mini-plan.
 Read `.agents/skills/tdd-red/SKILL.md` and handle the current active test.
 ```
 
@@ -278,7 +287,7 @@ Keep responses and artifacts direct: state the action, evidence, blocker, or han
 
 ## Maintainer Notes
 
-This repository contains `templates/`, generated `skills/`, installer scripts, and `VALIDATION.md`. To regenerate skills after changing templates:
+This repository contains `templates/`, generated `skills/`, installer scripts, and `VALIDATION.md`. Shared influence statements live as one-idea fragments in `templates/foundations/`; skill templates select them with `{{FOUNDATION:<id>}}`. To regenerate skills after changing templates:
 
 ```bash
 ./scripts/generate-4dc.sh

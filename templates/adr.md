@@ -13,9 +13,9 @@ Capture one architectural decision in a single ADR file with context, alternativ
 
 ## Foundations
 
-- **Fowler — evolutionary architecture.** The system evolves; irreversible decisions need a decision log so future change is informed, not blind.
-- **Poppendieck — decide as late as possible, but decide.** Record the decision at the moment commitment becomes necessary, with the options that were live at that moment.
-- **Beck — make irreversible decisions visible.** A decision worth recording is one a newcomer would not infer from the code.
+{{FOUNDATION:nygard-architecture-decisions}}
+{{FOUNDATION:fowler-evolutionary-architecture}}
+{{FOUNDATION:poppendieck-decide-late}}
 
 ---
 

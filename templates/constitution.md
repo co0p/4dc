@@ -19,19 +19,20 @@ Before writing it, check that it contains no internal workflow names, skill name
 
 ## Foundations
 
-These three traditions are the source for guardrails. Borrow from them by name — attribute the rule to its author so the team knows why it exists, not just what it says.
+{{FOUNDATION:beck-team-agreements}}
+{{FOUNDATION:fowler-evolutionary-architecture}}
+{{FOUNDATION:deming-systems-thinking}}
+{{FOUNDATION:humble-continuous-delivery}}
 
-- **Beck — team agreements before code.** The constitution is the set of rules the team agrees to operate under. It is written before implementation, not retrofitted after. Rules must be specific enough to resolve disputes; vague principles are not guardrails.
-- **Poppendieck — eliminate ambiguity upstream.** Decide the guardrails early so later phases do not rediscover the same constraints. For reversible choices, leave the decision late; for structural rules, fix them now. Pull rules from value; do not mandate process that does not serve delivery.
-- **Fowler — evolutionary architecture.** Guardrails, not blueprints. The constitution sets the fitness functions and boundaries that let the design evolve safely. It does not fix the implementation — it defines what must remain true as the implementation changes.
-
-**What belongs in CONSTITUTION.md (principles and boundaries):**
-- Engineering principles attributed to their source (Beck, Poppendieck, Fowler, or a project-specific decision)
-- Architectural boundaries: which direction dependencies flow, which containers must stay decoupled, what crosses the system boundary
-- Testing strategy: what must have tests, what constitutes a green gate before promote, and what kinds of tests are in or out of scope — as rules, not commands
-- Performance envelope: latency, throughput, cost, or scale expectations as stated constraints
-- Documentation policy: what is permanent, what is transient, where each category lives
-- ADR policy: what kinds of decisions require an ADR
+**What belongs in CONSTITUTION.md (guardrail categories only):**
+- Architecture: general dependency, coupling, and system-boundary rules
+- Testing: required confidence levels by risk and the minimum release gate
+- Observability: which behavior changes require operational signals and the qualities those signals must have
+- Security and privacy: general handling, least-privilege, and review boundaries
+- Reliability and resilience: failure, recovery, compatibility, and data-integrity expectations
+- Performance and efficiency: when budgets are required and how regressions are treated
+- Delivery and deployment: releasability, rollback or recovery, migration safety, and production verification rules
+- Documentation and ADR governance: where concrete knowledge lives and which decisions require records
 
 **What does NOT belong in CONSTITUTION.md (belongs in `docs/` or ADRs):**
 - Test commands, CI scripts, tooling configuration
@@ -39,6 +40,8 @@ These three traditions are the source for guardrails. Borrow from them by name �
 - Framework choices, library names, file naming conventions
 - Coverage numbers, specific thresholds, or tool-specific configuration
 - Architecture diagrams or container inventories
+- Domain rules, user journeys, endpoint names, event names, concrete performance budgets, environment names, or product examples
+- Project rationale, current topology, current risks, or any fact likely to change as the product evolves
 
 ---
 
@@ -56,18 +59,22 @@ These three traditions are the source for guardrails. Borrow from them by name �
 
 `CONSTITUTION.md` containing only principles and boundaries — no commands, tooling, or concrete procedures:
 
-1. **Engineering principles** — stated as rules, attributed to Beck, Poppendieck, Fowler, or a project decision. Each rule must be justified by this project's context, not copied from generic advice.
-2. **Architectural boundaries** — dependency direction, which containers must remain decoupled, performance-critical paths stated as constraints. No container inventory (that lives in `docs/architecture.md`).
-3. **Testing strategy** — what must have tests, what constitutes a green gate before promote, and what kinds of tests are in or out of scope — as rules. Points to `docs/testing.md` for procedures and commands.
-4. **Performance envelope** — latency, throughput, cost, or scale expectations as stated constraints, or an explicit `N/A` with rationale. No monitoring configuration.
-5. **Documentation and ADR policy** — what is permanent, where each category lives, and what decisions trigger an ADR.
-6. **Release and deployment** — the release model as a rule (e.g. "every merge to main is releasable"). Points to `docs/deployment.md` for procedures.
+1. **Engineering principles** — durable decision rules, not project history or methodology exposition.
+2. **Architecture boundaries** — generic dependency and coupling rules. Current containers and communication paths live in `docs/architecture.md`.
+3. **Testing and quality** — required test depth by risk and the release gate. Commands, tools, suites, and concrete thresholds live in `docs/testing.md`.
+4. **Observability** — when operational signals are required and what qualities they must preserve. Concrete signals and alerting live in `docs/observability.md`.
+5. **Security and privacy** — review and handling guardrails. Threat models, classifications, controls, and procedures live in project docs or ADRs.
+6. **Reliability, performance, and efficiency** — general expectations for failure handling, data integrity, measurable budgets, and regression evidence. Concrete budgets and topology live in docs.
+7. **Documentation and ADR policy** — what is permanent, where concrete project knowledge lives, and what decisions trigger an ADR.
+8. **Release and deployment** — general releasability, migration, recovery, and production-verification rules. Procedures live in `docs/deployment.md`.
 
 Required `CONSTITUTION.md` headings:
 - `## Engineering Principles`
 - `## Architecture Boundaries`
-- `## Testing Strategy`
-- `## Performance Envelope`
+- `## Testing And Quality`
+- `## Observability`
+- `## Security And Privacy`
+- `## Reliability, Performance, And Efficiency`
 - `## Documentation And ADR Policy`
 - `## Release And Deployment`
 
@@ -88,6 +95,11 @@ Required `CONSTITUTION.md` headings:
 - Configuration and secret-handling principles without secret values
 - Health signals, alert actions, and meaningful operational risks
 - No historical release log or generic checklist detached from this project's procedure
+
+**`docs/observability.md`** — operational visibility for this project:
+- Concrete logs, metrics, traces, audit events, health signals, dashboards, and alert ownership
+- Signal names and fields, including privacy and cardinality constraints
+- Expected operator response and known blind spots
 
 **`docs/adr/`** — Architecture Decision Records:
 - Decisions with rationale and consequences
@@ -122,6 +134,7 @@ Before creating or updating the constitution, audit the repository for the compl
 - `CONSTITUTION.md`
 - `docs/testing.md`
 - `docs/deployment.md`
+- `docs/observability.md`
 - `docs/architecture.md` with a C4 Level 2 container view
 - `docs/domain.md` with the project's glossary
 - `docs/ui.md` with the project's UI decisions (if the system has a UI; omit for headless systems)
@@ -136,9 +149,9 @@ Missing baseline documents are constitution outputs; they are not optional follo
 
 <HARD-GATE>
 Do NOT write `CONSTITUTION.md` until the user explicitly approves the proposed guardrails.
-Do NOT ask more than 5 questions per round.
-Do NOT include implementation details — CONSTITUTION.md contains guardrails, not recipes. If a sentence contains a tool name, a command, a file path, a framework, a library, or a configuration value, it belongs in docs/ or an ADR, not in CONSTITUTION.md.
-Do NOT copy generic principles from the internet. Every rule must be justified by this project's specific context.
+Do NOT ask more than one focused question at a time. Continue until every required guardrail category has an explicit decision or explicit deferral.
+Do NOT include project specifics — CONSTITUTION.md contains guardrails, not product facts or recipes. Except for pointers to governed documents, if a sentence contains a tool name, command, file path, framework, library, configuration value, domain term, component name, environment, concrete threshold, or example, it belongs in `docs/` or an ADR.
+Do NOT justify rules with project-specific examples in `CONSTITUTION.md`; preserve that rationale in the supporting document or ADR.
 Do NOT add a `## Delivery and Documentation` section — documentation policy belongs under `## Documentation And ADR Policy`.
 </HARD-GATE>
 
@@ -146,12 +159,14 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 
 ## Process
 
-1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, any ADRs or docs, and existing deployment or testing practices
-2. **Conversation: Propose the guardrails** — summarize the proposed testing and deployment strategies, identify foundational ADR candidates, and ask whether the direction feels right. Iterate until the user says “looks good” or “proceed.”
-3. **On approval:**
+1. **Read project context** — scan `README.md`, existing `CONSTITUTION.md`, directory structure, ADRs, and current SDLC documentation. Use specifics to identify decisions, but route those specifics to `docs/`.
+2. **Conversation: Decide guardrails one category at a time** — architecture; testing and quality; observability; security and privacy; reliability; performance and efficiency; documentation and ADRs; release and deployment. Ask one focused question, summarize the decision, then continue. Do not silently choose defaults when evidence is missing.
+3. **Boundary review** — present the proposed constitution rules separately from the project-specific documentation updates. Flag every concrete fact and its `docs/` destination. Wait for explicit approval of both lists.
+4. **On approval:**
    - Write `CONSTITUTION.md` with references to supporting documents
    - Create `docs/testing.md` with project-specific testing practices
    - Create `docs/deployment.md` with project-specific deployment procedures
+   - Create `docs/observability.md` with project-specific operational signals and response guidance
     - Create or update `docs/architecture.md` with the current C4 Level 2 container view
     - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
     - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
@@ -164,11 +179,14 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
 
 - [ ] Existing docs read (including any deployment or testing practices)
 - [ ] Foundational ADRs identified (if any exist)
-- [ ] Proposed testing strategy, deployment strategy, and ADR candidates discussed
+- [ ] Every required guardrail category explicitly decided or deferred through focused questions
+- [ ] Proposed constitution contains no project-specific facts or examples
+- [ ] Project-specific decisions have a named `docs/` or ADR destination
 - [ ] User approval received
-- [ ] `CONSTITUTION.md` written with Testing, Performance, and Release sections populated (with references to supporting docs)
+- [ ] `CONSTITUTION.md` written with all required guardrail headings populated
 - [ ] `docs/testing.md` created with project-specific practices
 - [ ] `docs/deployment.md` created with project-specific procedures
+- [ ] `docs/observability.md` created with project-specific signals and operating guidance
 - [ ] `docs/adr/` directory created with index link from `CONSTITUTION.md` (populate with foundational decisions if identified)
 - [ ] `docs/roadmap.md` created if not present
 
@@ -180,6 +198,7 @@ Terminal artifacts:
 - `CONSTITUTION.md` — guardrails and governance
 - `docs/testing.md` — testing procedures and practices
 - `docs/deployment.md` — deployment and release procedures
+- `docs/observability.md` — signals, alerts, health checks, and operating guidance
 - `docs/adr/` structure — architectural decisions
 - `docs/roadmap.md` — product roadmap
 
@@ -205,12 +224,10 @@ Use these verbatim as the starting content when creating a new document for the 
 {{TEMPLATE:deployment}}
 ```
 
-### Template: docs/adr.md
-
-When creating a new Architecture Decision Record, use this template:
+### Template: docs/observability.md
 
 ```markdown
-{{TEMPLATE:adr}}
+{{TEMPLATE:observability}}
 ```
 
 ### Template: docs/roadmap.md

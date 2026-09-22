@@ -1,258 +1,158 @@
-# 4dc Validation Prompt
+# 4dc Validation Contract
 
-Use this file in two ways:
+Use this document to review `AGENTS.md`, `templates/`, generated `skills/`, and installer or generation scripts. Ignore `examples/` unless explicitly included in the review.
 
-1. As a human checklist for manual review.
-2. As an attached instruction file for an LLM: attach this file and ask the model to validate your changes.
+For every rule, report `Pass`, `Fail`, or `Not proven` with file and line evidence. Run applicable repository checks rather than validating wording alone. Finish with one overall verdict: `Validates` only when no required rule fails; otherwise `Does not validate`.
 
-If you are the LLM reading this file, treat it as your validation contract.
+## Anthropic
 
-## LLM Validation Contract
+Reference guidance:
+- [Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
+- [Claude Code subagents](https://code.claude.com/docs/en/sub-agents)
 
-When a user attaches this file and asks whether their changes validate, do this:
+Validate these generic rules for reliable skills and agents:
 
-1. Validate the current repository state against the rules in this file.
-2. Default to review-only mode. Do not edit files unless the user explicitly asks for fixes.
-3. Ignore the `examples/` directory unless the user explicitly asks you to include it.
-4. Prefer running the documented checks directly from this file:
+- Success criteria are explicit, observable, and testable rather than implied by prose.
+- Instructions are direct, unambiguous, and ordered in the sequence they must be executed.
+- Each skill has one focused responsibility and a description that clearly states when it should be selected.
+- Inputs, outputs, constraints, stop conditions, and handoff expectations are explicit.
+- Structured headings, lists, tables, and examples clarify complex instructions without duplicating or contradicting the normative rules.
+- Examples demonstrate the required shape but cannot be mistaken for project facts or mandatory implementation choices.
+- Long-lived context is separated from task-local context; agents load only the context needed for their current responsibility.
+- Delegated agents or skills receive enough context to work independently because they cannot be assumed to share the parent agent's complete context.
+- Tool access follows least privilege. Read-only investigation does not receive unnecessary write capabilities, and high-impact operations retain explicit permission boundaries.
+- Agent and skill metadata is valid, concise, unique, and useful for discovery. Names and descriptions identify both capability and trigger conditions.
+- Durable state and progress are written to artifacts rather than relying on chat memory.
+- The workflow defines what to do when evidence contradicts the plan, context is missing, or a decision exceeds the current responsibility.
+- Prompt changes are evaluated against defined success criteria; stylistic preference alone is not accepted as proof of improvement.
 
-```bash
-./scripts/generate-4dc.sh
-find skills -name SKILL.md | sort
-rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md scripts templates skills
-```
+## OpenAI
 
-5. If a documented check fails, inspect the referenced files and explain which rules failed and why.
-6. If a documented check cannot run because of missing tools or environment limits, perform a manual validation using the rules below and say that the result is manual.
-7. Treat literal search patterns in this validation document as documentation, not stale active-contract references.
-8. Report findings in this order:
-	- Overall verdict: `Validates` or `Does not validate`
-	- Check summary: documented commands run, passed checks, failed checks
-	- Findings: each failed rule with file evidence
-	- Gaps: checks this file cannot prove
-9. If there are no findings, say that explicitly.
-10. Do not claim alignment with vendor guidance unless the rules below pass.
+Reference guidance:
+- [Agents guide](https://developers.openai.com/api/docs/guides/agents)
+- [Skills guide](https://developers.openai.com/api/docs/guides/tools-skills)
 
-## Scope
+Validate these generic rules for reliable skills and agents:
 
-Validate these active instruction surfaces, including:
-- `AGENTS.md`
-- `templates/`
-- `skills/`
-- `scripts/`
+- Every skill is a self-contained directory with one discoverable `SKILL.md` manifest.
+- Skill frontmatter contains a valid name and a description explaining both what the skill does and when to use it.
+- Reusable instructions stay in `SKILL.md`; supporting references, scripts, and assets are separated when they would otherwise overload the primary prompt.
+- The orchestrator makes skill selection deterministic where required instead of relying entirely on model inference.
+- Agent state, phase state, and handoffs are explicit and persisted across steps.
+- The workflow distinguishes planning, tool execution, verification, and completion rather than treating a generated answer as completed work.
+- Tools have clear purposes, bounded inputs, and predictable outputs. Instructions say which evidence must be read after execution.
+- Write, destructive, network, deployment, merge, and other high-impact actions have appropriate approval and policy gates.
+- Skills and external instructions are treated as privileged input. Untrusted content cannot silently override governing instructions or trigger sensitive actions.
+- Instruction precedence is defined so conflicts between the user, orchestrator, project rules, and skills resolve consistently.
+- Long-running work records progress and can resume from artifacts without reconstructing state from conversation history.
+- Completion requires objective evidence, including command results or reproducible checks, rather than the model's assertion.
+- Generated skills contain no unresolved template markers, stale paths, or source/generated drift.
 
-`VALIDATION.md` is a repository-maintainer document. It is not installed into consuming projects and is included here only as the validation contract for changes to 4dc itself.
+## Google AI
 
-Permanent documentation validation also checks `docs/ui.md` when the target project has a user interface. It must contain recurring UI, interaction, visual, accessibility, and content decisions rather than a component or CSS inventory.
+Reference guidance:
+- [Gemini API prompting strategies](https://ai.google.dev/gemini-api/docs/prompting-strategies)
+- [Gemini CLI context files](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md)
 
-Do not treat generated drift inside `examples/` as a failure for this validation prompt.
+Validate these generic rules for reliable skills and agents:
 
-## Quick Start
+- Instructions state the task, relevant context, constraints, and expected output explicitly.
+- Complex work is decomposed into small ordered steps with clear intermediate outcomes.
+- Prompt structure is consistent enough for the model to identify requirements, context, examples, and output format reliably.
+- Context is scoped hierarchically: global rules remain general, project rules apply to the repository, and component-specific details load only where relevant.
+- Large instruction sets are modularized instead of duplicated across context files and skills.
+- Shared language rules originate in `templates/language.md` and are rendered consistently into every generated skill through the shared execution contract.
+- Foundation statements originate as one-idea fragments under `templates/foundations/` and skills select them with `{{FOUNDATION:<id>}}` markers.
+- More specific instructions do not accidentally contradict higher-level safety, quality, or project constraints.
+- Examples are representative, concise, and aligned with the requested output format.
+- Tool calls are grounded in available tool definitions; required arguments, side effects, and expected results are clear.
+- Multi-step tool use verifies each meaningful result before depending on it in a later step.
+- The agent distinguishes missing information from implementation freedom and asks only when the missing answer materially affects the result.
+- The workflow limits context growth by reading targeted files and preserving durable findings in artifacts.
+- Output requirements are machine-checkable where practical, with explicit headings, states, or schemas.
+- Validation includes both static consistency checks and behavioral evidence from realistic execution paths.
 
-Recommended user prompt:
+## 4dc Consistency
 
-```text
-Use VALIDATION.md as the validation contract. Review my current changes, do not modify files, ignore examples/, run the documented checks if possible, and tell me whether the repo validates.
-```
+Validate that the complete prompt suite preserves these core 4dc ideas across `AGENTS.md`, templates, generated skills, scripts, and README documentation.
 
-## Direct Check Procedure
+### Repository Checks
 
-Use these commands when shell access is available:
-
-```bash
-./scripts/generate-4dc.sh
-find skills -name SKILL.md | sort
-rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md scripts templates skills
-```
-
-Interpretation:
-- `generate-4dc.sh` must complete without error.
-- `find skills -name SKILL.md | sort` must list the five phase skill files.
-- The consistency sweep must return no matches.
-- Then inspect the files manually against the phase and vendor rules below.
-
-## Validation Checklist
-
-Use this checklist to validate the fresh 4dc prompt suite.
-
-## Prompt Set
-
-Expected generated files:
-- `skills/constitution/SKILL.md`
-- `skills/increment/SKILL.md`
-- `skills/prototype/SKILL.md`
-- `skills/plan/SKILL.md`
-- `skills/implement/SKILL.md`
-- `skills/adr/SKILL.md`
-- `skills/tidy/SKILL.md`
-- `skills/tdd-red/SKILL.md`
-- `skills/tdd-green/SKILL.md`
-- `skills/refactor/SKILL.md`
-- `skills/promote/SKILL.md`
-
-Check command:
+Run:
 
 ```bash
 ./scripts/generate-4dc.sh
+git diff --check
+bash -n scripts/generate-4dc.sh
+bash -n scripts/install-4dc.sh
 find skills -name SKILL.md | sort
+rg -n '\{\{(SHARED|TEMPLATE|FOUNDATION):' skills
+rg -n '\.4dc|promotion-report|<p>Phase: Implement \| Generated:' AGENTS.md README.md scripts templates skills
 ```
 
-## Phase Requirements
+Expected evidence:
+- Generation completes successfully.
+- Generated skills match their source templates.
+- Every generated skill contains the shared language rules from `templates/language.md` exactly once.
+- Every foundation marker resolves to an existing cataloged fragment, and no skill selects the same foundation twice.
+- Shell scripts parse successfully.
+- Every installed skill is generated and every generated skill is installed.
+- No unresolved template marker remains in generated skills.
+- No stale `.4dc`, `promotion-report`, or rendered placeholder reference remains in active instructions.
 
-### constitution
-- Writes `CONSTITUTION.md` only after the user explicitly approves the proposed guardrails
-- Defines engineering guardrails, performance expectations, and SDLC artifact policy
+### Flow And State
 
-### increment
-- Writes `.agent/increment.md` only after the user explicitly approves the proposed increment
-- Stays at WHAT/WHY and avoids technical design detail
+- Phase detection is complete and unambiguous from constitution through promote.
+- The defined flow is `constitution → increment → optional prototype → plan → implement → subtask-plan → tidy or Red-Green-Refactor → promote`.
+- ADR remains an on-demand decision mechanism rather than a mandatory sequential phase.
+- Every phase has one owner, one primary responsibility, explicit expected inputs, a concrete output, hard gates, a process, a checklist, and a handoff.
+- Phase artifacts are not written before their required conversational approval.
+- Silence is never treated as approval.
+- `.agent/` artifacts are transient handoff state; product knowledge is promoted to permanent project documentation.
+- The todo list and `.agent/implementation.md` agree on current subtask order and state, with exactly one item in progress.
+- A subtask is complete only after evidence and its commit hash are recorded.
 
-### plan
-- Writes `.agent/plan.md` only after the user explicitly approves the proposed plan
-- Converts requirements to ordered, verifiable technical subtasks with `[research]`, `[tidy]`, and `[behavior]` separation when needed
-- Includes `## Design` section (data models, call/data flow, error/edge-case inventory, observability intent, architecture delta) when the increment changes behavior or data shapes
-- Records `## Planning Decisions` capturing non-obvious choices made during planning
-- May define optional acceptance scenarios for larger increments; scenarios are advisory by default and must not become implicit blockers
+### Constitution And Documentation
 
-### implement
-- Runs exactly once per cycle, after `plan.md` is approved and before any code is written
-- Scaffolds `.agent/implementation.md` from the approved plan with all subtasks `state: pending`; copies subtask names and test lists verbatim
-- Populates the internal todo list with one item per subtask, all `pending`
-- Does not write production code, tests, or make structural changes
-- Hands off to the first implementation skill detected by the orchestrator
+- `CONSTITUTION.md` contains only durable engineering guardrails, never project-specific tools, topology, domain examples, commands, concrete thresholds, or procedures.
+- Constitution guardrails cover architecture, testing and quality, observability, security and privacy, reliability, performance and efficiency, documentation and ADR governance, and release and deployment.
+- Project-specific testing, deployment, observability, architecture, domain, UI, and operational knowledge is routed to `docs/` or ADRs.
+- Constitution creation asks one focused question at a time until every guardrail category is explicitly decided or deferred.
+- Permanent documentation is treated as part of the product and is checked semantically, not merely for file existence.
 
-### tdd-red
-- Writes exactly one failing test for the current `[behavior]` subtask
-- Confirms the test fails for the right reason before handing off
-- Does not write production code
+### Increment And Plan
 
-### tdd-green
-- Makes the failing test pass with minimal code (no refactoring)
-- Sets `state: green` and hands off to `refactor`
-- Handles `[research]` subtasks (which skip Red and Refactor, set `state: complete` directly)
-- Commits behavior work as `feat:` or `fix:`, research as `research:`
+- The increment describes WHAT and WHY without implementation detail.
+- Increment discovery explicitly establishes the user, trigger, outcome, failure boundary, and exclusions.
+- The subtraction test removes independently releasable outcomes until the smallest useful, testable increment remains.
+- Acceptance criteria are binary, observable, and mapped to the job story.
+- The technical plan reads the relevant code and names exact files, symbols, boundaries, risks, and verification steps.
+- The plan covers data shape, call flow, errors and edge cases, observability intent, and architecture delta when applicable.
+- Every acceptance criterion has a required feature-level acceptance test with preconditions, action, exact observable outcome, and evidence; exceptions require explicit approval.
+- Plan subtasks are only `[tidy]` or `[behavior]`. Plan-blocking research is resolved before approval, while local implementation uncertainty is handled during subtask mini-planning.
 
-### tidy
-- Executes one `[tidy]` subtask: behavior-preserving structural change
-- Tests must stay green before and after
-- Commits as `tidy: <what changed>`
+### Implementation Conversation
 
-### refactor
-- Improves design without changing behavior (Fowler two-hats)
-- Tests must stay green throughout
-- Commits as `refactor: <what changed>` (or skips commit if no refactoring needed)
-- Sets `implementation.md` status to `complete` only after final verification and user approval
+- `implement` runs once, scaffolds `.agent/implementation.md`, and populates the todo list without changing production code or tests.
+- Every pending subtask passes through `subtask-plan` before implementation.
+- Subtask planning investigates local unknowns and records findings, exact files and symbols, ordered steps, verification, observability, risks, and non-goals.
+- The user explicitly approves one mini-plan for the current subtask.
+- After mini-plan approval, the agent executes the complete subtask autonomously and records every transition in `.agent/implementation.md` and the todo list.
+- Routine Tidy, Red, Green, Refactor, verification, and commit transitions do not introduce additional user gates.
+- Autonomous execution stops only when findings change scope or acceptance criteria, require an unapproved structural decision, invalidate safety, or require destructive or external approval.
+- A tidy subtask preserves observable behavior and keeps tests green.
+- A behavior subtask executes one active test at a time through confirmed Red, minimal Green, and behavior-preserving Refactor.
+- Behavior and structural changes use separate commits and the documented commit prefixes.
+- Refactor activates the next test automatically or completes the subtask before returning to mini-planning for the next subtask.
 
-### prototype
-- Builds a throwaway spike to resolve one named unknown
-- No production code merged; finding recorded in `.agent/prototype.md`
-- Time-boxed; disposed after the finding is captured
+### Promotion And Main Fit
 
-### adr
-- Writes one ADR per decision with context, alternatives, rationale, and consequences
-- Does not write ADRs for implementation details or decisions already in `CONSTITUTION.md`
-- User confirms the decision before the ADR is written
-
-### promote
-- Writes permanent artifacts only after each candidate is individually approved
-- Applies only approved updates to permanent artifacts
-- Runs a final behavior-preserving tidy pass on the branch before landing
-- Asks the user to choose between squash-merge to `main` or push branch for a PR; does not hardcode either strategy
-- Squash commit message or PR body is derived from `implementation.md` (goal, branch, criteria, subtasks, evidence)
-- Suggests emptying `.agent/` after each promote
-- Confirms `.agent` cleanup decision and documentation sync
-- Records optional acceptance-scenario evidence without treating advisory scenarios as default promotion gates
-
-## Artifact Policy
-
-Permanent artifacts to evaluate every cycle:
-- ADRs
-- Architecture docs
-- Domain model docs
-- Deployment strategy
-- Testing decisions
-- Observability docs
-- C4 diagrams or equivalent architecture views
-- Roadmap (`docs/roadmap.md`)
-
-Transient artifacts:
-- `.agent/increment.md`
-- `.agent/prototype.md`
-- `.agent/plan.md`
-- `.agent/implementation.md`
-- `.agent/learnings.md`
-
-## Consistency Sweep
-
-Run a targeted text check after generation:
-
-```bash
-rg -n "\\.4dc|promotion-report|<p>Phase: Implement \\| Generated:" AGENTS.md README.md scripts templates skills
-```
-
-Expected result:
-- No `.4dc` references in active repo instructions
-- No `promotion-report` references in active repo instructions
-- No rendered `Phase: Implement` placeholder lines left in generated skill contracts
-
-## Vendor Alignment Rules
-
-Use these rules after manual prompt changes to estimate whether the repo still aligns with current guidance from OpenAI, Anthropic, and Google.
-
-Interpretation:
-- `Pass` means the expected rule is present in the active orchestration or generated skills.
-- `Fail` means the rule is missing or contradicted and should be reviewed.
-- This is a heuristic alignment check, not a guarantee of runtime quality.
-
-Suggested manual scoring:
-- Count each alignment bullet below as one check.
-- Mark it `Pass`, `Fail`, or `Not proven`.
-- Use the count of `Pass` over total applicable checks as the alignment score.
-
-### OpenAI Alignment
-
-These rules reflect current OpenAI guidance for AGENTS.md, skills, and agentic coding prompts.
-
-- The orchestrator defines instruction precedence so the model does not waste effort reconciling contradictions.
-- The orchestrator defines safe versus high-risk actions and requires approval for destructive or externally visible operations.
-- Each skill has a clear output contract and stop condition before the next phase.
-- Each skill includes a concise execution contract so the model can act without reopening the whole repo.
-- Generated skills contain no unrendered template markers.
-- Generated skills avoid stale contract paths such as `.4dc/`.
-
-### Anthropic Alignment
-
-These rules reflect current Anthropic guidance for clear instructions, structured prompts, examples, and agentic state.
-
-- Each skill stays focused on one job and names that responsibility explicitly.
-- Each skill uses a stable section schema: responsibility, inputs, outputs, hard gate, process, checklist, handoff.
-- Each skill contains explicit hard gates instead of relying on implied behavior.
-- Each skill pauses for explicit conversational approval before writing its final artifact, rather than generating an intermediate review file.
-- The `implement` skill scaffolds `implementation.md` and the todo list; the loop skills (tidy, tdd-red, tdd-green, refactor) explicitly encode Red→Green→Refactor and Tidy First behavior.
-- Promote explicitly requires durable documentation sync, not just code completion.
-
-### Google Alignment
-
-These rules reflect current Gemini guidance for direct instructions, consistent prompt structure, decomposition, and constraints.
-
-- The prompts keep a consistent structure across phases.
-- Constraints and required output headings are stated explicitly rather than inferred.
-- Complex work is decomposed into explicit subtask types where relevant.
-- Architectural and performance-sensitive concerns are surfaced before implementation.
-- Validation is runnable from documented commands and supports specific failure reporting.
-
-## Scoring Guide
-
-Use the validation result as a fast alignment signal:
-- 100% pass rate: strong textual alignment with the current 4dc contracts and the targeted vendor guidance.
-- 85% to 99%: acceptable, but inspect the failed checks before merging.
-- Below 85%: the prompt set is drifting and should be corrected before relying on it.
-
-## What The Validator Does Not Check
-
-- Whether the prompts are actually optimal for a specific model snapshot.
-- Whether the wording is too verbose or too terse in practice.
-- Whether agents will always obey the rules under long-context pressure.
-- Whether a changed prompt produces better outcomes without evals.
-
-Use this validator as a guard rail. Use real prompt evals and manual review for final judgment.
+- Final verification proves every acceptance criterion and required acceptance test before implementation is marked complete.
+- Promote considers only implemented and verified outcomes, not plans or guesses.
+- Each permanent-document promotion candidate is presented separately and approved before writing.
+- The final tidy pass is behavior-preserving and keeps the release gate green.
+- The latest target branch is integrated into the increment branch using an explicitly approved strategy before landing.
+- The complete branch diff is reviewed for conflicts, duplicated work, stale assumptions, accidental scope, migration ordering, public-contract drift, and documentation consistency.
+- Release and acceptance gates run again after integration with the latest target branch.
+- The user explicitly approves the main-fit evidence before choosing squash-merge or pull request delivery.
+- Cleanup happens only after documentation promotion and successful landing or PR creation.

@@ -1,0 +1,1 @@
+- **Kent Beck: small steps.** Make each change small, independently verifiable, and cheap to reverse.

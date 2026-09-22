@@ -13,9 +13,11 @@ Promote durable outcomes to permanent project artifacts, run a final tidy pass o
 
 ## Foundations
 
-- **Poppendieck — eliminate waste.** Promote only what was verified, not what was planned. Unverified work is waste; it does not earn a place in permanent docs.
-- **Beck — retrospective embedded in delivery.** The cycle's learnings are not an afterthought; they are part of the deliverable. Decisions, deviations, and surprises feed forward into the project's durable knowledge.
-- **Fowler — documentation as architecture.** Durable docs are part of the system, not a record about it. When the architecture, domain language, or performance envelope changes, the docs change in the same cycle — otherwise they rot.
+{{FOUNDATION:poppendieck-eliminate-waste}}
+{{FOUNDATION:cockburn-reflective-improvement}}
+{{FOUNDATION:deming-systems-thinking}}
+{{FOUNDATION:humble-continuous-delivery}}
+{{FOUNDATION:farley-continuous-delivery}}
 
 ---
 
@@ -40,7 +42,7 @@ One or more of the following, per approval:
 - Updated `docs/ui.md` (if shared UI, interaction, visual, accessibility, or content decisions changed)
 - Updated `README.md` or other docs (for changed behavior or usage)
 - Updated `docs/roadmap.md` — feature moved from Partial to Done, acceptance test link added
-- Acceptance-scenario evidence — linked when available; advisory scenarios inform confidence but do not block promotion by default
+- Acceptance-test evidence — linked for every acceptance criterion; exceptions require explicit prior approval and rationale
 - Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
 
 Required outputs:
@@ -54,13 +56,14 @@ Every promotion must verify that the project's permanent documentation baseline 
 - `CONSTITUTION.md`
 - `docs/testing.md`
 - `docs/deployment.md`
+- `docs/observability.md` containing current operational signals, ownership, response guidance, and known blind spots
 - `docs/architecture.md` containing a current C4 Level 2 container view (or an explicitly labeled equivalent)
 - `docs/domain.md` containing the current domain glossary
 - `docs/ui.md` containing current UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
 - `docs/roadmap.md`
 
-The check is semantic, not just a file-existence check. A generic architecture narrative does not satisfy the C4 requirement, and a glossary hidden in an ADR or README does not satisfy the domain-document requirement. Missing or inadequate documents become promotion candidates and must be created or corrected before the cycle can close.
+The check is semantic, not just a file-existence check. A generic architecture narrative does not satisfy the C4 requirement, a glossary hidden in an ADR or README does not satisfy the domain-document requirement, and a deployment health checklist does not replace maintained observability guidance. Missing or inadequate documents become promotion candidates and must be created or corrected before the cycle can close.
 
 {{SHARED:execution-contract}}
 
@@ -76,6 +79,7 @@ Do NOT close promotion while any required permanent documentation baseline item 
 Do NOT squash-merge until the final tidy pass is complete and all tests are green.
 Do NOT write the squash commit message without reading implementation.md to list actual delivered subtasks.
 Do NOT ask the user to choose a merge strategy before the final tidy pass and doc promotions are complete.
+Do NOT land the increment before proving it integrates cleanly with the current `main` tip.
 </HARD-GATE>
 
 ---
@@ -88,13 +92,14 @@ Do NOT ask the user to choose a merge strategy before the final tidy pass and do
 4. **On approval** — write each approved permanent artifact.
 5. **Re-audit the baseline** — confirm every required document exists and satisfies its content requirement before cleanup.
 6. **Final tidy pass** — on the increment branch, run the full test suite, then ask: is there any structural cleanup (rename, extract, inline) that would make the branch cleaner before it lands? Apply only behavior-preserving changes. Commit each as `tidy: <what>`. Tests must stay green throughout.
-7. **Ask the user how to land the increment** — present the two options and wait for an explicit choice:
+7. **Main-fit review** — present the intended fetch and integration strategy and wait for explicit approval. Then fetch the latest target branch without changing it, inspect the complete diff from its merge base, and check for conflicts, duplicated work, stale assumptions, accidental files, migration ordering, public-contract drift, and documentation inconsistency. Integrate the latest `main` into the increment branch using the approved strategy, resolve conflicts on the increment branch, then rerun the full release gate and every required acceptance test. Present the diff summary and evidence; wait for explicit approval that the increment fits `main`.
+8. **Ask the user how to land the increment** — present the two options and wait for an explicit choice:
 
    > The branch is clean and all docs are promoted. How would you like to land this increment?
    > - **A) Squash-merge to main** — collapses all branch commits into one summary commit on `main`. Keeps `main` history linear and scannable.
    > - **B) Push branch and open a PR** — pushes the branch as-is so a pull request can be reviewed and merged on GitHub / GitLab / Bitbucket or equivalent. Use this when the project requires peer review, CI gates on the hosting platform, or a merge strategy other than squash.
 
-8. **Execute the chosen strategy:**
+9. **Execute the chosen strategy:**
 
    **Option A — Squash-merge to main:**
    Draft the commit message from `implementation.md`, then run:
@@ -129,7 +134,7 @@ Do NOT ask the user to choose a merge strategy before the final tidy pass and do
    - **Body:** acceptance criteria, subtasks delivered (from `implementation.md`), and evidence — same content as the squash commit message body above.
    The PR description is the durable record; do not summarise it shorter than the squash message would have been.
 
-9. **Clean up** — archive or delete `.agent/` files for this cycle. For Option A, optionally delete the increment branch after confirming the squash commit landed. For Option B, leave the branch until the PR is merged.
+10. **Clean up** — archive or delete `.agent/` files for this cycle. For Option A, optionally delete the increment branch after confirming the squash commit landed. For Option B, leave the branch until the PR is merged.
 
 ---
 
@@ -138,13 +143,14 @@ Do NOT ask the user to choose a merge strategy before the final tidy pass and do
 | Type | Trigger | Destination |
 |------|---------|-------------|
 | Architecture decision | Non-obvious choice with lasting impact | `docs/adr/ADR-<date>-<slug>.md` |
-| Guardrail update | Constitution rule violated, needs clarification | `CONSTITUTION.md` |
+| Guardrail update | A durable, cross-project engineering boundary needs revision | `CONSTITUTION.md` |
 | Architecture sync | Runtime containers, dependency direction, or performance-critical paths changed | `docs/architecture.md` |
 | Behavior change | Public API, CLI, or user-facing behavior changed | `README.md` |
 | Feature shipped | Acceptance tests pass; feature complete | `docs/roadmap.md` — move to Done, add acceptance test link |
-| Acceptance evidence | Optional user-journey scenario was run | `docs/roadmap.md` or implementation evidence, linked when useful; not a default gate |
-| Test pattern | New testing approach worth standardizing | `CONSTITUTION.md` testing section |
-| Performance contract | A latency, throughput, cost, or scaling expectation changed | `CONSTITUTION.md` or `docs/architecture.md` |
+| Acceptance evidence | Required feature-level test was run | `docs/roadmap.md` or implementation evidence, linked to every covered criterion |
+| Test pattern | New project-specific testing approach worth standardizing | `docs/testing.md` |
+| Observability change | Signals, health criteria, alert response, or blind spots changed | `docs/observability.md` |
+| Performance contract | A concrete latency, throughput, cost, or scaling expectation changed | `docs/architecture.md` or another project-specific performance document |
 | Known issue | Found but not fixed this cycle | `docs/known-issues.md` |
 | New domain concept | A concept, event, or rule used in code/tests that has no shared definition | `docs/domain.md` (create using the template in the Appendix if absent) |
 | UI decision | Shared UI, interaction, visual, accessibility, or content decision | `docs/ui.md` |
@@ -161,8 +167,12 @@ Do NOT ask the user to choose a merge strategy before the final tidy pass and do
 - [ ] Each approved artifact written to permanent location
 - [ ] Final baseline audit passes: glossary, C4 architecture view, and UI decisions (when applicable) are present and current
 - [ ] Architecture, domain language, testing guidance, and performance documentation either updated or explicitly marked unchanged
-- [ ] Acceptance scenarios, if present, have results recorded; advisory failures or unavailable scenarios are documented without blocking by default
+- [ ] Required acceptance tests have results recorded for every criterion; approved exceptions include rationale
 - [ ] Final tidy pass run on the increment branch: behavior-preserving cleanup committed as `tidy: <what>`, tests green
+- [ ] Latest `main` fetched and integrated into the increment branch using the approved repository strategy
+- [ ] Full branch diff reviewed against the current merge base for conflicts, stale assumptions, accidental scope, migrations, public contracts, and docs
+- [ ] Release gate and required acceptance tests pass after integration
+- [ ] User explicitly approved the main-fit review and evidence
 - [ ] User asked to choose landing strategy (squash-merge to main or push branch for PR)
 - [ ] **Option A:** squash commit message drafted from `implementation.md`; `git merge --squash <branch>` run and commit pushed to `main`
 - [ ] **Option B:** branch pushed; PR opened with title and body matching squash commit message structure

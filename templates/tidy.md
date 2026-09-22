@@ -13,17 +13,17 @@ Make one structural change — rename, extract, reorganise, inline — that prep
 
 ## Foundations
 
-- **Beck — Tidy First.** Make the code easier to change, then change it. Tidying is structural preparation that serves the behavior change that follows. It is not a separate feature; it is the setup.
-- **Beck — small steps.** Each tidy subtask is one structural move, separately committed, separately revertible. If a tidy step is too large to describe in one sentence, it should have been split at the plan.
-- **Fowler — behavior-preserving.** A tidy commit must leave every test green. If any test changes behavior, the subtask was mislabeled — it belongs in `[behavior]`, not `[tidy]`.
-- **Poppendieck — small batches.** One tidy step, one commit. The batch is small so reversion is cheap and review is fast.
+{{FOUNDATION:beck-tidy-first}}
+{{FOUNDATION:beck-small-steps}}
+{{FOUNDATION:fowler-behavior-preserving-refactoring}}
+{{FOUNDATION:poppendieck-pull-small-batches}}
 
 ---
 
 ## Expected Input
 
 - `.agent/plan.md` (approved)
-- `.agent/implementation.md` with the current subtask marked `type: tidy` and `state: pending`
+- `.agent/implementation.md` with the current subtask marked `type: tidy`, `state: approved`, and an approved `mini_plan`
 - `CONSTITUTION.md` testing strategy
 
 **Narrow context:** load only the files named in the current subtask's `files:` and `references:` fields in `plan.md`. Do not re-scan the codebase — the plan already did that work.
@@ -48,7 +48,7 @@ This skill does **one thing**: one structural, behavior-preserving change.
 - It does NOT add new behavior.
 - It does NOT write failing tests.
 - It does NOT refactor for design quality (that is `4dc-refactor`).
-- It does NOT touch `[behavior]` or `[research]` subtasks.
+- It does NOT touch `[behavior]` subtasks.
 
 The distinction: `tidy` makes the change easier; `refactor` makes the result cleaner. Tidy comes before behavior; refactor comes after.
 
@@ -62,28 +62,29 @@ Do NOT mix tidy work with behavior change in the same commit.
 Do NOT skip the test run. Tests must be green before and after.
 Do NOT mark the subtask complete without objective evidence (test output showing green).
 Commit as `tidy: <what changed>` — never `feat:` or `fix:`.
+Do NOT start without an approved mini-plan recorded for this subtask.
 </HARD-GATE>
 
 ---
 
 ## Process
 
-1. **Read the current subtask** from `.agent/implementation.md` — the first subtask with `type: tidy` and `state: pending`.
-2. **Mark the todo item `in_progress`** for this subtask.
+1. **Read the current subtask and mini-plan** from `.agent/implementation.md` — the first subtask with `type: tidy` and `state: approved`.
+2. **Confirm the todo item is `in_progress`** from subtask planning.
 3. **Run the tests.** Confirm they are green before you start. If they are not green, stop — fix the baseline first.
-3. **Make the structural change** — rename, extract, reorganise, inline. One move, one purpose: prepare for the behavior change that follows.
-4. **Run the tests again.** Confirm they stay green. If any test changed behavior, the change is not tidy — revert and record the mislabel in `learnings.md`.
-5. **Record evidence** in `implementation.md`: `state: complete`, test output confirming green.
-6. **Commit** as `tidy: <what changed>`.
-7. **Mark the todo item `completed`.**
-8. **Append learnings** if design or architecture implications emerged.
-9. **Advance** to the next subtask — the orchestrator detects the type and state and loads the right skill.
+4. **Make the structural change** — rename, extract, reorganise, inline. One move, one purpose: prepare for the behavior change that follows.
+5. **Run the tests again.** Confirm they stay green. If any test changed behavior, the change is not tidy — revert and record the mislabel in `learnings.md`.
+6. **Record evidence** in `implementation.md`: `state: complete`, test output confirming green.
+7. **Commit** as `tidy: <what changed>`.
+8. **Mark the todo item `completed`.**
+9. **Append learnings** if design or architecture implications emerged.
+10. **Advance** to the next subtask — if it is pending, load `subtask-plan` before any implementation skill.
 
 ---
 
 ## Checklist
 
-- [ ] Current subtask read (`type: tidy`, `state: pending`)
+- [ ] Current subtask and approved mini-plan read (`type: tidy`, `state: approved`)
 - [ ] Todo item for this subtask marked `in_progress`
 - [ ] Tests green before starting
 - [ ] One structural change made (rename, extract, reorganise, inline)

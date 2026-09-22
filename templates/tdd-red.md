@@ -13,16 +13,16 @@ Write one failing test for the current `active_test` in the `[behavior]` subtask
 
 ## Foundations
 
-- **Beck — Red.** The test is a specification written as code. It must fail, and it must fail for the right reason — not a syntax error, not a missing import, but the absence of the behavior.
-- **Poppendieck — eliminate waste.** The test is the spec. There is no separate spec document to maintain.
-- **Fowler — test-first makes design testable.** Writing the test first forces the public interface to exist before the implementation, which keeps the design loosely coupled.
+{{FOUNDATION:beck-red}}
+{{FOUNDATION:jeffries-card-conversation-confirmation}}
+{{FOUNDATION:freeman-pryce-tests-guide-design}}
 
 ---
 
 ## Expected Input
 
 - `.agent/plan.md` (approved)
-- `.agent/implementation.md` with the current subtask marked `state: pending` and `type: behavior`
+- `.agent/implementation.md` with the current subtask marked `state: approved`, `type: behavior`, and an approved `mini_plan`
 - `CONSTITUTION.md` testing strategy (test depth, naming, isolation conventions)
 
 **Narrow context:** load only the files named in the current subtask's `files:` and `references:` fields in `plan.md`. Do not re-scan the codebase — the plan already did that work.
@@ -49,7 +49,7 @@ This skill does **one thing**: write the failing test.
 - It does NOT refactor.
 - It does NOT make the test pass.
 - It does NOT touch other subtasks.
-- It does NOT handle `[tidy]` or `[research]` subtasks — those skip Red and go straight to `4dc-tdd-green`.
+- It does NOT handle `[tidy]` subtasks.
 
 {{SHARED:execution-contract}}
 
@@ -60,14 +60,15 @@ Do NOT write production code in this skill — not even a stub that makes the te
 Do NOT skip the failure-confirmation step. The test must run and fail for the right reason.
 Do NOT write tests for more than one active test case per invocation.
 Do NOT proceed to `4dc-tdd-green` if the test fails for the wrong reason (syntax error, missing import, wrong assertion). Fix the test first.
+Do NOT start without an approved mini-plan recorded for this subtask.
 </HARD-GATE>
 
 ---
 
 ## Process
 
-1. **Read the current subtask** from `.agent/implementation.md` — the first `[behavior]` subtask with an unfinished `tests` list. Select its `active_test`, or the first test case with `state: pending`.
-2. **Mark the todo item `in_progress`** for this subtask (if not already marked from a prior test case in the same subtask).
+1. **Read the current subtask and mini-plan** from `.agent/implementation.md` — the approved `[behavior]` subtask with an unfinished `tests` list. Select its `active_test`, or the first test case with `state: pending`.
+2. **Confirm the todo item is `in_progress`** from subtask planning.
 3. **Read the testing strategy** in `CONSTITUTION.md` and `docs/testing.md` — choose the cheapest test depth that gives sufficient confidence at this boundary.
 3. **Write one test case** for `active_test` that specifies one example of the behavior. Name it in domain language so the test reads as a specification. Do not implement or activate the other cases yet.
 4. **Run the test.** Confirm it fails. Read the failure message — it must fail because the behavior does not exist, not because of a setup or import error.
@@ -75,9 +76,9 @@ Do NOT proceed to `4dc-tdd-green` if the test fails for the wrong reason (syntax
    - Set the active test case `state: red` (the subtask itself remains in progress)
    - Record `test:` the test name and file
    - Record `evidence:` the failure output (test name + assertion reason)
-6. **STOP.** The next skill is `4dc-tdd-green`, which handles this active test case.
+6. **Continue autonomously.** Load `4dc-tdd-green` for this active test case. Do not request user confirmation at this transition.
 
-If the test reveals the subtask is too large or the interface is unclear, record the finding in `learnings.md` and ask one focused question before proceeding.
+If the test reveals a local implementation surprise that stays within the approved mini-plan's scope, record it in `implementation.md` and `learnings.md`, adapt the remaining steps, and continue autonomously. Stop only if it changes acceptance criteria or scope, requires an unapproved structural decision, or makes the approved approach unsafe.
 
 ---
 
