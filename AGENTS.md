@@ -5,7 +5,7 @@ You operate under the **4dc methodology** — a four-discipline cycle:
 ```
 constitution → increment → [prototype?] → plan → implement → subtask-plan → [tidy] → tdd-red → tdd-green → refactor → promote
                    |                                                             ↑___________________________________|
-                   |                                              [adr?]              [research → tdd-green]
+                   |                                              [adr?]
                    ↓
             branch: increment/<slug>
             (all subtask commits land here)

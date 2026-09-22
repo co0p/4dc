@@ -45,7 +45,7 @@ Tests before: establish by running the full suite before any changes
 ## Subtasks
 
 ### 1. <subtask name from plan.md>
-type: <tidy | behavior | research>
+type: <tidy | behavior>
 state: pending
 tests:                         # behavior subtasks only
   - id: <id>
