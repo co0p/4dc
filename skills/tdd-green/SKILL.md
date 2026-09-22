@@ -83,6 +83,7 @@ This skill does **one thing**: make the test pass with minimal code.
 Do NOT write more code than needed to pass the test. No speculative generality, no "while I'm here" features.
 Do NOT refactor in this skill. Improving the design is a separate hat — load `4dc-refactor` next.
 Do NOT mark a `[behavior]` subtask `state: complete` — set the active test to `state: green` and hand off to refactor. The subtask becomes complete only after every planned test case has completed its own Red → Green → Refactor loop.
+Do NOT set the active test to `state: green` before its commit hash is recorded in `implementation.md`.
 Do NOT mix behavior change and refactoring in the same commit.
 Commit behavior work as `feat: <what changed>` or `fix: <what changed>`. Never `refactor:` or `tidy:`.
 Behavior work inherits the mini-plan approved before Red. Continue without routine user confirmation.
@@ -98,10 +99,11 @@ Behavior work inherits the mini-plan approved before Red. Continue without routi
 2. **Write minimal production code** to make the test pass. Add only what the test requires — no extra methods, no speculative abstraction, no "I'll need this later."
 3. **Run the test.** Confirm it passes.
 4. **Run the narrowest relevant tests**, then the broader suite required by the constitution.
-5. **Record evidence** in `implementation.md`: set the active test to `state: green`, with test output showing pass. Leave the other test cases and the subtask `state: in-progress` unchanged.
-6. **Commit** as `feat: <what changed>` or `fix: <what changed>`.
-7. **Append learnings** — decisions, deviations, surprises, promote candidates.
-8. **Continue.** Load `4dc-refactor` to complete this active test case. Do not request user confirmation at this transition.
+5. **Commit** as `feat: <what changed>` or `fix: <what changed>`.
+6. **Record evidence** in `implementation.md`: `commit:` the commit hash and message, `evidence:` test output showing pass.
+7. **Set the active test to `state: green`.** Leave the other test cases and the subtask `state: in-progress` unchanged.
+8. **Append learnings** — decisions, deviations, surprises, promote candidates.
+9. **Continue.** Load `4dc-refactor` to complete this active test case. Do not request user confirmation at this transition.
 
 ---
 
@@ -192,8 +194,9 @@ active_test: <case-id>
 ### Per `[behavior]` subtask
 - [ ] Minimal code written to pass the test (no speculative generality)
 - [ ] Narrowest relevant tests run, then broader suite
-- [ ] Active test case marked `state: green` with evidence
 - [ ] Committed as `feat:` or `fix:`
+- [ ] `implementation.md` records `commit:` the hash and message, `evidence:` test output
+- [ ] Active test case marked `state: green` (only after the commit hash is present)
 - [ ] Learnings appended (decisions, deviations, surprises, promote candidates)
 - [ ] After refactor, activate the next pending test case or mark the behavior subtask complete when all cases are complete
 

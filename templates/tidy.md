@@ -60,7 +60,8 @@ The distinction: `tidy` makes the change easier; `refactor` makes the result cle
 Do NOT change observable behavior. If any test goes red, stop — the subtask was mislabeled.
 Do NOT mix tidy work with behavior change in the same commit.
 Do NOT skip the test run. Tests must be green before and after.
-Do NOT mark the subtask complete without objective evidence (test output showing green).
+Do NOT set `state: complete` before the commit hash is recorded in `implementation.md`.
+Do NOT mark the todo item `completed` before `implementation.md` shows `state: complete` and the commit hash.
 Commit as `tidy: <what changed>` — never `feat:` or `fix:`.
 Do NOT start without an approved mini-plan recorded for this subtask.
 </HARD-GATE>
@@ -74,11 +75,12 @@ Do NOT start without an approved mini-plan recorded for this subtask.
 3. **Run the tests.** Confirm they are green before you start. If they are not green, stop — fix the baseline first.
 4. **Make the structural change** — rename, extract, reorganise, inline. One move, one purpose: prepare for the behavior change that follows.
 5. **Run the tests again.** Confirm they stay green. If any test changed behavior, the change is not tidy — revert and record the mislabel in `learnings.md`.
-6. **Record evidence** in `implementation.md`: `state: complete`, test output confirming green.
-7. **Commit** as `tidy: <what changed>`.
-8. **Mark the todo item `completed`.**
-9. **Append learnings** if design or architecture implications emerged.
-10. **Advance** to the next subtask — if it is pending, load `subtask-plan` before any implementation skill.
+6. **Commit** as `tidy: <what changed>`.
+7. **Record evidence** in `implementation.md`: `commit:` the commit hash and message, `evidence:` test output confirming green.
+8. **Set `state: complete`** for the subtask.
+9. **Mark the todo item `completed`.**
+10. **Append learnings** if design or architecture implications emerged.
+11. **Advance** to the next subtask — if it is pending, load `subtask-plan` before any implementation skill.
 
 ---
 
@@ -89,8 +91,9 @@ Do NOT start without an approved mini-plan recorded for this subtask.
 - [ ] Tests green before starting
 - [ ] One structural change made (rename, extract, reorganise, inline)
 - [ ] Tests green after — no behavior change
-- [ ] `implementation.md` updated: `state: complete`, evidence
 - [ ] Committed as `tidy: <what changed>`
+- [ ] `implementation.md` records `commit:` the hash and message, `evidence:` test output
+- [ ] `implementation.md` records `state: complete` (only after the commit hash is present)
 - [ ] Todo item marked `completed`
 - [ ] Learnings appended if implications emerged
 

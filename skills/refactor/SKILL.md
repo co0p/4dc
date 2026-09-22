@@ -87,8 +87,9 @@ The distinction: `tidy` prepares structure before behavior; `refactor` improves 
 Do NOT change observable behavior. If any test goes red, you changed behavior — revert and try again.
 Do NOT add new tests or new production features. This is the refactor hat, not the behavior hat.
 Do NOT skip the question "can the design be improved?" — even if the answer is no, the question must be asked and recorded.
+Do NOT set the active test case to `state: complete` before either the refactor commit hash or an explicit "no refactor needed" note is recorded in `implementation.md`.
 Do NOT mark the subtask complete until every planned test case has completed Red → Green → Refactor and all tests are green.
-Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactoring was needed, skip the commit and record that decision.
+Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactoring was needed, skip the commit and record `refactor: none — <reason>` instead.
 </HARD-GATE>
 
 ---
@@ -98,13 +99,13 @@ Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactor
 1. **Read the current subtask** from `.agent/implementation.md` — the `[behavior]` subtask in `state: in-progress` with an active test case in `state: green`.
 2. **Run the tests.** Confirm they are green before you start.
 3. **Ask the refactor question:** can the design be improved without changing behavior? Look for: duplication, unclear naming, long methods, deep nesting, missing abstraction, poor separation of concerns.
-4. **If no improvement is needed:** record `evidence: no refactoring needed — design is sufficient` for the active test case and continue.
+4. **If no improvement is needed:** skip the commit. Record `refactor: none — <one-line reason>` for the active test case as evidence. Advance to step 8.
 5. **If improvement is needed:** make the change. One move at a time — extract method, rename, inline, move. Run the tests after each move. If they go red, revert — you changed behavior.
 6. **Run the full test suite** required by the constitution.
-7. **Record evidence** in `implementation.md`: set the active test case `state: complete`, with test output confirming green and what was refactored.
-8. **Commit** as `refactor: <what changed>`.
+7. **Commit** as `refactor: <what changed>` and record `refactor:` the commit hash and message in `implementation.md`.
+8. **Set the active test case to `state: complete`** with test output evidence. This transition happens only after step 4 or step 7 has recorded either the "no refactor needed" note or the commit hash.
 9. **Append learnings** if design decisions or promote candidates emerged.
-10. **Advance within the subtask:** if a pending test case remains, set it as `active_test` with `state: pending`; the approved subtask mini-plan remains valid and `tdd-red` starts its cycle automatically without another user gate. If all cases are complete, set the behavior subtask `state: complete`, **mark the todo item `completed`**, and route the next pending subtask through `subtask-plan`.
+10. **Advance within the subtask:** if a pending test case remains, set it as `active_test` with `state: pending`; the approved subtask mini-plan remains valid and `tdd-red` starts its cycle without another user gate. If all cases are complete, set the behavior subtask `state: complete`, **mark the todo item `completed`**, and route the next pending subtask through `subtask-plan`.
 
 ### When all subtasks are complete
 
@@ -120,11 +121,10 @@ Commit as `refactor: <what changed>` — never `feat:` or `fix:`. If no refactor
 ### Per subtask
 - [ ] Tests green before starting
 - [ ] Refactor question asked (duplication, naming, structure, separation)
-- [ ] If refactored: tests stayed green after each move
-- [ ] If no refactoring needed: decision recorded
-- [ ] Active test case marked `state: complete` with evidence
+- [ ] If refactored: tests stayed green after each move, committed as `refactor:`, hash recorded in `implementation.md`
+- [ ] If no refactoring needed: `refactor: none — <reason>` recorded in `implementation.md`
+- [ ] Active test case marked `state: complete` (only after commit hash or "no refactor" note is present)
 - [ ] Next pending test case activated, or behavior subtask marked complete and todo item marked `completed` when all cases are complete
-- [ ] Committed as `refactor: <what changed>` (or commit skipped with recorded reason)
 - [ ] Learnings appended if decisions or candidates emerged
 
 ### When all subtasks complete

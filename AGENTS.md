@@ -98,7 +98,7 @@ Inspect the workspace and determine the current phase:
 
 The approved mini-plan is the only routine user-interaction gate within a subtask. After approval, continue through its complete Tidy or Red → Green → Refactor sequence, updating `implementation.md` and the todo list at every transition. Do not ask for confirmation between implementation skills. Stop and return to conversation only when new information changes acceptance criteria or scope, requires an unapproved structural decision, makes the approved mini-plan unsafe, or creates an external or destructive action requiring approval.
 
-At every subtask transition: mark the current todo item `in_progress` before starting, `completed` only after `implementation.md` records `state: complete` with a commit hash.
+At every subtask transition: mark the current todo item `in_progress` before starting, `completed` only after `implementation.md` records `state: complete` and the commit hash (or explicit "no commit" reason for refactor with no design change).
 
 ---
 
