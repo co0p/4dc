@@ -7,7 +7,7 @@ description: "Use after implementation.md is marked complete. Reviews all .agent
 
 ## One Responsibility
 
-Promote durable outcomes to permanent project artifacts, run a final tidy pass on the branch, then land the increment — either as a squash-merge to `main` or by pushing the branch for a pull request on the project's hosting platform. The user chooses; the skill executes.
+Promote durable outcomes to permanent project artifacts, run a final tidy pass on the branch, then land the increment as a squash-merge to `main`. Capture landing evidence, then delete transient artifacts.
 
 ---
 
@@ -43,7 +43,7 @@ One or more of the following, per approval:
 - Updated `README.md` or other docs (for changed behavior or usage)
 - Updated `docs/roadmap.md` — feature moved from In Progress to Done, acceptance test link added
 - Acceptance-test evidence — linked for every acceptance criterion; exceptions require explicit prior approval and rationale
-- Deleted or archived `.agent/` files after promotion (keeping `.agent/` clean for next cycle)
+- Deleted `.agent/` files after landing evidence is verified (never archived; keeps `.agent/` clean for the next cycle)
 
 Required outputs:
 - Promotion candidates are listed individually with destination path, rationale, and approval status.
@@ -104,8 +104,10 @@ Do NOT leave permanent docs stale when the implementation changed architecture, 
 Do NOT close promotion while any required permanent documentation baseline item is missing or inadequate. If runtime structure, domain vocabulary, and UI decisions are unchanged, still verify that `docs/architecture.md`, `docs/domain.md`, and `docs/ui.md` (when applicable) exist and satisfy their requirements.
 Do NOT squash-merge until the final tidy pass is complete and all tests are green.
 Do NOT write the squash commit message without reading implementation.md to list actual delivered subtasks.
-Do NOT ask the user to choose a merge strategy before the final tidy pass and doc promotions are complete.
 Do NOT land the increment before proving it integrates cleanly with the current `main` tip.
+Do NOT archive `.agent/` files. Delete them, and only after landing evidence is captured and verified.
+Do NOT delete `.agent/` or the increment branch before `LANDING_COMMIT` is captured and verified reachable from `main`.
+On any failure between the squash-merge step and the evidence check, stop and report. Do not touch `.agent/` or the branch.
 </HARD-GATE>
 
 ---
@@ -118,21 +120,9 @@ Do NOT land the increment before proving it integrates cleanly with the current 
 4. **On approval** — write each approved permanent artifact.
 5. **Re-audit the baseline** — confirm every required document exists and satisfies its content requirement before cleanup.
 6. **Final tidy pass** — on the increment branch, run the full test suite, then ask: is there any structural cleanup (rename, extract, inline) that would make the branch cleaner before it lands? Apply only behavior-preserving changes. Commit each as `tidy: <what>`. Tests must stay green throughout.
-7. **Main-fit review** — present the intended fetch and integration strategy and wait for explicit approval. Then fetch the latest target branch without changing it, inspect the complete diff from its merge base, and check for conflicts, duplicated work, stale assumptions, accidental files, migration ordering, public-contract drift, and documentation inconsistency. Integrate the latest `main` into the increment branch using the approved strategy, resolve conflicts on the increment branch, then rerun the full release gate and every required acceptance test. Present the diff summary and evidence; wait for explicit approval that the increment fits `main`.
-8. **Ask the user how to land the increment** — present the two options and wait for an explicit choice:
+7. **Main-fit review** — present the intended fetch and integration strategy and wait for explicit approval. Then fetch the latest `main` without changing it, inspect the complete diff from its merge base, and check for conflicts, duplicated work, stale assumptions, accidental files, migration ordering, public-contract drift, and documentation inconsistency. Integrate the latest `main` into the increment branch using the approved strategy, resolve conflicts on the increment branch, then rerun the full release gate and every required acceptance test. Present the diff summary and evidence; wait for explicit approval that the increment fits `main`.
+8. **Draft the squash commit message** from `implementation.md`:
 
-   > The branch is clean and all docs are promoted. How would you like to land this increment?
-   > - **A) Squash-merge to main** — collapses all branch commits into one summary commit on `main`. Keeps `main` history linear and scannable.
-   > - **B) Push branch and open a PR** — pushes the branch as-is so a pull request can be reviewed and merged on GitHub / GitLab / Bitbucket or equivalent. Use this when the project requires peer review, CI gates on the hosting platform, or a merge strategy other than squash.
-
-9. **Execute the chosen strategy:**
-
-   **Option A — Squash-merge to main:**
-   Draft the commit message from `implementation.md`, then run:
-   ```
-   git checkout main && git merge --squash <branch> && git commit
-   ```
-   Commit message structure:
    ```
    feat: <one-sentence goal from increment.md>
 
@@ -150,17 +140,46 @@ Do NOT land the increment before proving it integrates cleanly with the current 
    Evidence: <test suite result — N passing, 0 failing>
    ```
 
-   **Option B — Push branch for PR:**
-   Push the branch and provide the URL or command to open a pull request:
-   ```
-   git push -u origin <branch>
-   ```
-   Then open a PR with:
-   - **Title:** `<one-sentence goal from increment.md>`
-   - **Body:** acceptance criteria, subtasks delivered (from `implementation.md`), and evidence — same content as the squash commit message body above.
-   The PR description is the durable record; do not summarise it shorter than the squash message would have been.
+9. **Land the increment (squash-merge to main):**
 
-10. **Clean up** — archive or delete `.agent/` files for this cycle. For Option A, optionally delete the increment branch after confirming the squash commit landed. For Option B, leave the branch until the PR is merged.
+   ```
+   git checkout main
+   git merge --squash <branch>
+   git commit
+   LANDING_COMMIT=$(git rev-parse HEAD)
+   ```
+
+10. **Verify landing evidence:**
+    - `LANDING_COMMIT` is non-empty.
+    - `git merge-base --is-ancestor "$LANDING_COMMIT" main` succeeds.
+    - `main` moved forward by exactly this commit (its previous tip is `LANDING_COMMIT`'s parent).
+
+    If any check fails, treat as landing failure. Do NOT proceed to cleanup. Go to Recovery.
+
+11. **On verified landing evidence — cleanup:**
+    - Delete every file under `.agent/` for this cycle. Never archive.
+    - Delete the increment branch: `git branch -D <branch>`.
+    - Report `LANDING_COMMIT` and the deleted paths.
+
+12. **Handoff** — cycle complete. Next action is `4dc-increment` for the next cycle.
+
+---
+
+## Recovery
+
+If landing fails at any step in 9 or 10:
+
+- Do NOT delete `.agent/` files.
+- Do NOT delete the increment branch.
+- Report which step failed and what tree state resulted.
+
+Common failure paths:
+
+- **`git checkout main` failed** → tree unchanged; resolve working-tree issues (dirty state, permissions, missing branch), then retry from step 9.
+- **`git merge --squash` failed** → `main` unchanged; conflict or hook rejection. Re-run the Main-fit review (step 7), resolve on the increment branch, then retry from step 9.
+- **`git commit` failed** → `main` may hold a staged merge with no commit. Run `git status`, address the failure (commit hook, GPG signing, empty commit), then retry `git commit` and re-capture `LANDING_COMMIT`.
+- **`LANDING_COMMIT` empty or not reachable from `main`** → treat as commit failure; do not proceed to cleanup.
+- **`git branch -D` failed** after landing succeeded → `LANDING_COMMIT` is already on `main`; the branch remains. Delete it manually when convenient; the cycle is still complete.
 
 ---
 
@@ -200,17 +219,17 @@ Do NOT land the increment before proving it integrates cleanly with the current 
 - [ ] Full branch diff reviewed against the current merge base for conflicts, stale assumptions, accidental scope, migrations, public contracts, and docs
 - [ ] Release gate and required acceptance tests pass after integration
 - [ ] User explicitly approved the main-fit review and evidence
-- [ ] User asked to choose landing strategy (squash-merge to main or push branch for PR)
-- [ ] **Option A:** squash commit message drafted from `implementation.md`; `git merge --squash <branch>` run and commit pushed to `main`
-- [ ] **Option B:** branch pushed; PR opened with title and body matching squash commit message structure
-- [ ] `.agent/` files cleaned up
-- [ ] Increment branch deleted (Option A) or left open until PR is merged (Option B)
+- [ ] Squash commit message drafted from `implementation.md`
+- [ ] `git merge --squash <branch>` and `git commit` succeeded on `main`
+- [ ] `LANDING_COMMIT` captured via `git rev-parse HEAD` and verified reachable from `main`
+- [ ] `.agent/` files deleted (not archived) — only after evidence verified
+- [ ] Increment branch deleted with `git branch -D <branch>` — only after evidence verified
 
 ---
 
 ## Handoff
 
-Terminal artifacts: permanent docs updated, increment landed (squash commit on `main` or branch pushed for PR), `.agent/` clean
+Terminal artifacts: permanent docs updated, `LANDING_COMMIT` on `main`, `.agent/` deleted, increment branch deleted.
 Cycle complete. Next action: `4dc-increment` for the next cycle — load `skills/increment/SKILL.md`
 
 ---

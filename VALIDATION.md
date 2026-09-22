@@ -173,5 +173,8 @@ Expected evidence:
 - The latest target branch is integrated into the increment branch using an explicitly approved strategy before landing.
 - The complete branch diff is reviewed for conflicts, duplicated work, stale assumptions, accidental scope, migration ordering, public-contract drift, and documentation consistency.
 - Release and acceptance gates run again after integration with the latest target branch.
-- The user explicitly approves the main-fit evidence before choosing squash-merge or pull request delivery.
-- Cleanup happens only after documentation promotion and successful landing or PR creation.
+- The user explicitly approves the main-fit evidence before landing.
+- Landing is squash-merge to `main` only; no alternative path exists.
+- Landing evidence (`LANDING_COMMIT`) is captured with `git rev-parse HEAD` and verified reachable from `main` before cleanup.
+- Cleanup deletes `.agent/` files (never archives) and the increment branch, and only after landing evidence is verified.
+- On any landing failure, `.agent/` and the increment branch remain intact; a Recovery section names common failure paths and safe responses.

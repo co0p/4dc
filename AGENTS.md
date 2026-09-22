@@ -13,7 +13,7 @@ constitution → increment → [prototype?] → plan → implement → subtask-p
                promote:
             1. docs promotion
             2. final tidy pass
-            3. squash-merge → main, OR push branch → PR
+            3. squash-merge → main
 ```
 
 - `prototype` is optional — load it only when a blocking unknown needs a throwaway spike before planning.

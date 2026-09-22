@@ -109,7 +109,7 @@ The files are the memory between skills. Read the current handover before acting
 | `.agent/implementation.md` | `implement` (creates); `subtask-plan` and implementation skills (update) | Current subtask, approved mini-plan, active test, state, and evidence. |
 | `.agent/learnings.md` | implementation skills | Decisions, deviations, surprises, and promotion candidates. |
 
-The temporary files are cleared or archived after `promote` completes. The plan is deliberately detailed so implementation skills can load only the files and references needed for the current subtask.
+The temporary files are deleted after `promote` completes, once landing evidence is captured and verified. The plan is deliberately detailed so implementation skills can load only the files and references needed for the current subtask.
 
 ## The Cycle
 
@@ -123,7 +123,7 @@ constitution -> increment -> [prototype?] -> plan -> implement -> subtask-plan -
                 promote:
              1. docs promotion
              2. final tidy pass
-             3. squash-merge -> main, OR push branch -> PR
+             3. squash-merge -> main
 ```
 
 `adr` is on-demand whenever a structural, hard-to-reverse, or non-obvious decision emerges. Each phase has an explicit approval gate. Silence is not approval.
@@ -272,7 +272,7 @@ repeat for the next test case
 
 Use after all implementation subtasks pass final verification and `.agent/implementation.md` is approved as complete.
 
-**Does:** Promotes durable outcomes to permanent documentation, updates the roadmap, and records ADRs or architecture changes. It runs a final tidy pass, integrates the latest `main` into the increment branch, reviews the complete branch diff, reruns release and acceptance gates, and asks for explicit main-fit approval before offering squash-merge or PR options.
+**Does:** Promotes durable outcomes to permanent documentation, updates the roadmap, and records ADRs or architecture changes. It runs a final tidy pass, integrates the latest `main` into the increment branch, reviews the complete branch diff, reruns release and acceptance gates, and requires explicit main-fit approval before squash-merging to `main`. Cleanup deletes `.agent/` files (never archives) and the increment branch only after the landing commit hash is captured and verified reachable from `main`.
 
 **Does not:** Promote guesses, unverified plans, or increments without feature-level evidence for every acceptance criterion unless an exception was explicitly approved and recorded.
 
