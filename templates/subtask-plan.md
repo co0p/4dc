@@ -1,13 +1,13 @@
 ---
 name: 4dc-subtask-plan
-description: "Use before each pending implementation subtask. Investigates local unknowns, agrees the immediate implementation slice, and starts autonomous execution after one explicit approval."
+description: "Use before each pending implementation subtask. Investigates local unknowns, agrees the immediate implementation slice, and starts execution after one explicit approval."
 ---
 
 # Subtask Plan Skill
 
 ## One Responsibility
 
-Turn the next approved-plan subtask into a small, immediate implementation agreement between developers. Resolve local unknowns, discuss the exact sequence and evidence with the user, record the approved mini-plan, and then execute the whole subtask autonomously through Tidy or Red-Green-Refactor.
+Turn the next approved-plan subtask into a small, immediate implementation agreement between developers. Resolve local unknowns, discuss the exact sequence and evidence with the user, record the approved mini-plan, then run the bounded Tidy or Red-Green-Refactor sequence for this one subtask without further routine confirmation.
 
 ## Foundations
 
@@ -51,7 +51,7 @@ The mini-plan may refine HOW within the approved subtask. It may not expand acce
 
 Research is folded into this skill:
 - Before approval, inspect code, docs, history, and run non-mutating diagnostics needed to make the mini-plan credible.
-- If a safe experiment must change files, include the disposable experiment and cleanup in the mini-plan. Execute it only after approval, record the result, remove scratch artifacts, and continue autonomously when the finding stays within scope.
+- If a safe experiment must change files, include the disposable experiment and cleanup in the mini-plan. Execute it only after approval, record the result, remove scratch artifacts, and continue when the finding stays within scope.
 - If the finding changes scope, acceptance criteria, architecture, or safety, stop and return to the relevant approval gate.
 
 {{SHARED:execution-contract}}
@@ -64,7 +64,7 @@ Do NOT set `state: approved` until the user explicitly approves the presented mi
 Do NOT plan more than the current subtask.
 Do NOT implement directly from `state: pending`; every tidy and behavior subtask requires this conversation.
 If current code invalidates the approved cycle plan, record the discrepancy and return to plan approval rather than improvising.
-After approval, do NOT ask for routine confirmation during Red, Green, Refactor, verification, commits, or progress tracking. Continue until the subtask is complete or a stop condition is reached.
+After approval, do NOT ask for routine confirmation during Red, Green, Refactor, verification, commits, or progress tracking within this subtask. Return to conversation before the next subtask's mini-plan or when a stop condition is reached.
 </HARD-GATE>
 
 ---
@@ -76,7 +76,7 @@ After approval, do NOT ask for routine confirmation during Red, Green, Refactor,
 3. **Draft the mini-plan** — state the intent, findings, exact files and symbols, ordered moves, test evidence, observability impact, local risks, and explicit non-goals. For behavior work, name the first failing acceptance-facing or focused test and the minimal expected production path; for tidy work, state the behavior-preservation proof. Include any approved post-approval experiment as an explicit first step with cleanup and decision rules.
 4. **Developer conversation** — present the mini-plan concisely. Ask one focused question where a choice remains. Iterate until the user explicitly approves it.
 5. **Persist approval** — write the approved `mini_plan`, `approved`, and `state: approved` fields into `.agent/implementation.md`.
-6. **Execute autonomously** — `[tidy]` goes to `4dc-tidy` and `[behavior]` to `4dc-tdd-red`. Continue through all implementation-skill transitions without asking the user again. Each skill updates `implementation.md`; return to `subtask-plan` only after the current subtask is complete and the next one is pending.
+6. **Bounded execution** — `[tidy]` goes to `4dc-tidy` and `[behavior]` to `4dc-tdd-red`. Continue through the implementation-skill transitions for this one subtask without asking the user again. Each skill updates `implementation.md`. Return to `subtask-plan` for the next pending subtask, or to conversation if a stop condition triggers.
 
 ## Checklist
 
@@ -92,4 +92,4 @@ After approval, do NOT ask for routine confirmation during Red, Green, Refactor,
 ## Handoff
 
 Updated artifact: `.agent/implementation.md` (current subtask `state: approved` with an approved mini-plan)
-Next skill: detected from the approved subtask type and executed autonomously until the subtask is complete.
+Next skill: detected from the approved subtask type and executed within the bounded subtask sequence.

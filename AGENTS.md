@@ -96,7 +96,7 @@ Inspect the workspace and determine the current phase:
 - `[behavior]` with `active_test: green` → load `refactor` (improves design, sets active test `state: complete`, activates the next test or completes the subtask)
 - All subtasks `state: complete` → `refactor` runs final verification and sets `status: complete`
 
-The approved mini-plan is the only routine user-interaction gate within a subtask. After approval, continue autonomously through its complete Tidy or Red → Green → Refactor sequence, updating `implementation.md` and the todo list at every transition. Do not ask for confirmation between implementation skills. Stop only when new information changes acceptance criteria or scope, requires an unapproved structural decision, makes the approved mini-plan unsafe, or creates an external/destructive action requiring approval.
+The approved mini-plan is the only routine user-interaction gate within a subtask. After approval, continue through its complete Tidy or Red → Green → Refactor sequence, updating `implementation.md` and the todo list at every transition. Do not ask for confirmation between implementation skills. Stop and return to conversation only when new information changes acceptance criteria or scope, requires an unapproved structural decision, makes the approved mini-plan unsafe, or creates an external or destructive action requiring approval.
 
 At every subtask transition: mark the current todo item `in_progress` before starting, `completed` only after `implementation.md` records `state: complete` with a commit hash.
 
@@ -132,9 +132,29 @@ All `.agent/` files are lowercase. The `.agent/` directory is gitignored by defa
 
 ## Approval
 
-Before writing a phase's final artifact, propose the outcome in the conversation and pause for explicit approval. This applies in every phase.
+**Approval required for:**
+- Constitution proposal
+- Increment proposal
+- Technical plan
+- Each subtask mini-plan
+- Any change to scope or acceptance criteria
+- New ADR
+- Destructive or externally visible actions
+- Final implementation evidence before promote
+- Each documentation promotion candidate
+- Main integration strategy and main-fit evidence
+- Landing strategy
 
-**Approval semantics:** An explicit user statement in the conversation, such as "looks good" or "proceed," is approval. Silence is not approval. When in doubt, ask.
+**Approval not required for:**
+- Tracking updates to `.agent/implementation.md` under an approved mini-plan
+- Recording evidence and commit hashes
+- Red → Green → Refactor transitions inside one approved subtask
+- Advancing between test cases in the same approved subtask
+- Running approved local verification commands
+
+**Approval semantics:** An explicit user statement such as "looks good" or "proceed" is approval. Silence is not approval. When in doubt, ask.
+
+Bounded execution: within an approved subtask mini-plan, continue through Tidy or Red-Green-Refactor without further confirmation. Return to conversation before the next subtask's mini-plan.
 
 ---
 
