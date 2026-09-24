@@ -88,7 +88,7 @@ Research is not an implementation subtask type. Resolve plan-blocking unknowns b
 A `[tidy]` subtask is a small, single-purpose structural change with immediate payoff in this cycle. Timing options (Beck, *Tidy First?*):
 - **Tidy first**: a `[tidy]` subtask placed before the behavior it enables.
 - **Tidy after**: not a subtask — handled by the Refactor skill after Green, proportional to the behavior just added.
-- **Tidy later**: not part of this plan — deferred to `docs/roadmap.md` as a candidate Refactor or Chore increment.
+- **Tidy later**: not part of this plan — deferred as a candidate Refactor or Chore increment.
 
 Every `[tidy]` subtask has a `supports:` reference. Two allowed forms:
 

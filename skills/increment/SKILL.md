@@ -25,7 +25,6 @@ Define one small, outcome-focused increment with measurable acceptance criteria 
 ## Expected Input
 
 - `CONSTITUTION.md`
-- `docs/roadmap.md`
 - User intent (one sentence or short phrase describing the desired outcome)
 - **Customer-authored use case** — a job story written before acceptance criteria are defined
 
@@ -46,7 +45,6 @@ Define one small, outcome-focused increment with measurable acceptance criteria 
 - **Out of scope**: explicit exclusions that prevent scope creep
 - **Smallest-slice rationale**: why removing any remaining criterion would make the outcome unusable, unverifiable, or not independently releasable
 - **Constitution constraints**: which guardrails apply to this increment
-- **Roadmap entry**: the feature name and job story to add to `docs/roadmap.md` In Progress section
 
 Required `.agent/increment.md` headings:
 - `## Use Case`
@@ -58,7 +56,6 @@ Required `.agent/increment.md` headings:
 - `## Out Of Scope`
 - `## Smallest-Slice Rationale`
 - `## Constitution Constraints`
-- `## Roadmap Entry`
 
 ### Mode Reference
 
@@ -107,7 +104,7 @@ Do NOT start a plan or any implementation work during this phase.
 Do NOT approve an increment with vague acceptance criteria ("works correctly", "feels right").
 One increment per cycle — if scope expands, split into separate increments.
 Do NOT propose the final increment after only restating the initial request. Ask one focused question at a time until the user, trigger, outcome, failure behavior, and scope boundary are explicit.
-Do NOT keep two independently valuable outcomes in one increment. Present the smaller first slice and move the remainder to out of scope or the roadmap.
+Do NOT keep two independently valuable outcomes in one increment. Present the smaller first slice and defer the remainder to a future increment.
 Do NOT call an increment smallest without performing the subtraction test: remove each criterion in turn and split it out unless its removal makes the remaining outcome unusable, unverifiable, or not independently releasable.
 Exactly one Mode must be declared (`Behavior`, `Refactor`, or `Chore`). Exploratory work belongs in the `prototype` phase, not an increment.
 Acceptance-Test Intent is required for every mode:
@@ -120,7 +117,7 @@ Acceptance-Test Intent is required for every mode:
 
 ## Process
 
-1. **Read context** — `CONSTITUTION.md`, `docs/roadmap.md`, and any prior `.agent/` files from the last cycle.
+1. **Read context** — `CONSTITUTION.md` and any prior `.agent/` files from the last cycle.
 2. **Conversation: Discover the outcome** — ask one focused question at a time. Establish who experiences the problem, the triggering situation, the smallest valuable outcome, the expected failure or boundary behavior, and what must not be included. Do not infer a missing answer from conventions.
 3. **Determine the Mode** — from the discussion, classify the increment as `Behavior`, `Refactor`, or `Chore`. If the work has no observable outcome anywhere (user, operator, developer, or CI), it is a `prototype`, not an increment.
 4. **Slice by subtraction** — draft the criteria, remove each one in turn, and split any independently releasable value into a later increment. State the smallest-slice rationale and deferred outcomes.
@@ -129,13 +126,13 @@ Acceptance-Test Intent is required for every mode:
    - `Refactor`: which existing acceptance tests must keep passing to prove behavior is preserved
    - `Chore`: which actor observes what outcome at which boundary
 6. **Conversation: Propose the increment** — present the job story, mode, binary criteria, acceptance-test intent, out-of-scope list, and smallest-slice rationale. Iterate until the user explicitly confirms it.
-7. **On approval** — write `.agent/increment.md`, move the feature to In Progress in `docs/roadmap.md`, and create the branch: `git checkout -b increment/<slug>`.
+7. **On approval** — write `.agent/increment.md` and create the branch: `git checkout -b increment/<slug>`.
 
 ---
 
 ## Checklist
 
-- [ ] `CONSTITUTION.md` and `docs/roadmap.md` read
+- [ ] `CONSTITUTION.md` read
 - [ ] Use case (job story) stated by customer
 - [ ] Mode declared (`Behavior`, `Refactor`, or `Chore`); exploratory work routed to `prototype` instead
 - [ ] Acceptance criteria derived from use case, not from technical assumptions
@@ -149,10 +146,8 @@ Acceptance-Test Intent is required for every mode:
 - [ ] Subtraction test performed for every acceptance criterion
 - [ ] Smallest-slice rationale explains why the remaining criteria cannot be split further
 - [ ] Branch name derived (`increment/<slug>`)
-- [ ] Roadmap entry (feature name + job story) identified
 - [ ] User approval received
 - [ ] `.agent/increment.md` written
-- [ ] `docs/roadmap.md` updated: feature moved to In Progress
 - [ ] Branch created: `git checkout -b increment/<slug>`
 
 ---

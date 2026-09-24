@@ -41,7 +41,6 @@ One or more of the following, per approval:
 - Updated `docs/domain.md` (if domain language changed or new concepts appeared)
 - Updated `docs/ui.md` (if shared UI, interaction, visual, accessibility, or content decisions changed)
 - Updated `README.md` or other docs (for changed behavior or usage)
-- Updated `docs/roadmap.md` — feature moved from In Progress to Done, acceptance test link added
 - Acceptance-test evidence — linked for every acceptance criterion; exceptions require explicit prior approval and rationale
 - Deleted `.agent/` files after landing evidence is verified (never archived; keeps `.agent/` clean for the next cycle)
 
@@ -61,7 +60,6 @@ Every promotion must verify that the project's permanent documentation baseline 
 - `docs/domain.md` containing the current domain glossary
 - `docs/ui.md` containing current UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
-- `docs/roadmap.md`
 
 The check is semantic, not just a file-existence check. A generic architecture narrative does not satisfy the C4 requirement, a glossary hidden in an ADR or README does not satisfy the domain-document requirement, and a deployment health checklist does not replace maintained observability guidance. Missing or inadequate documents become promotion candidates and must be created or corrected before the cycle can close.
 
@@ -191,8 +189,8 @@ Common failure paths:
 | Guardrail update | A durable, cross-project engineering boundary needs revision | `CONSTITUTION.md` |
 | Architecture sync | Runtime containers, dependency direction, or performance-critical paths changed | `docs/architecture.md` |
 | Behavior change | Public API, CLI, or user-facing behavior changed | `README.md` |
-| Feature shipped | Acceptance tests pass; feature complete | `docs/roadmap.md` — move to Done, add acceptance test link |
-| Acceptance evidence | Required feature-level test was run | `docs/roadmap.md` or implementation evidence, linked to every covered criterion |
+| Feature shipped | Acceptance tests pass; feature complete | `README.md` or project release notes |
+| Acceptance evidence | Required feature-level test was run | Implementation evidence, linked to every covered criterion |
 | Test pattern | New project-specific testing approach worth standardizing | `docs/testing.md` |
 | Observability change | Signals, health criteria, alert response, or blind spots changed | `docs/observability.md` |
 | Performance contract | A concrete latency, throughput, cost, or scaling expectation changed | `docs/architecture.md` or another project-specific performance document |

@@ -126,7 +126,7 @@ Required `CONSTITUTION.md` headings:
 
 ### Secondary Artifact
 
-`docs/roadmap.md` (created from the template in the Appendix if it does not exist yet)
+*(none)*
 
 ### Documentation Baseline
 
@@ -140,7 +140,6 @@ Before creating or updating the constitution, audit the repository for the compl
 - `docs/domain.md` with the project's glossary
 - `docs/ui.md` with the project's UI decisions (if the system has a UI; omit for headless systems)
 - `docs/adr/`
-- `docs/roadmap.md`
 
 Missing baseline documents are constitution outputs; they are not optional follow-up work. Existing documents must be checked for the required content rather than accepted solely because the path exists.
 
@@ -199,7 +198,6 @@ Do NOT add a `## Delivery and Documentation` section — documentation policy be
     - Create `docs/domain.md` with the project's initial glossary, even if only a few concepts are known
     - Create `docs/ui.md` with the project's initial UI decisions when the system has a user interface
    - Create initial `docs/adr/` structure if foundational decisions exist
-   - Create `docs/roadmap.md` if not present
 
 ### Deployment Concept Menu
 
@@ -239,7 +237,6 @@ Each axis maps to one section of `docs/deployment.md`. The scaffold at `template
 - [ ] `docs/domain.md` created with the project's initial glossary (concepts, events, rules in domain language) — not just an empty file
 - [ ] `docs/ui.md` created with the project's initial UI decisions **if the system has a UI**; explicitly recorded as "not applicable — headless system" otherwise
 - [ ] `docs/adr/` directory created with index link from `CONSTITUTION.md` (populate with foundational decisions if identified)
-- [ ] `docs/roadmap.md` created if not present
 - [ ] Each baseline doc satisfies its content requirement, not merely file existence
 
 ---
@@ -252,7 +249,6 @@ Terminal artifacts:
 - `docs/deployment.md` — deployment and release procedures
 - `docs/observability.md` — signals, alerts, health checks, and operating guidance
 - `docs/adr/` structure — architectural decisions
-- `docs/roadmap.md` — product roadmap
 
 Future work should reference the testing, deployment, and architecture documents defined by the project constitution. New ADRs should be added when architectural decisions emerge.
 
@@ -486,57 +482,3 @@ Record material observability gaps, their risk, and the evidence that would just
 Update this guide when behavior, architecture, data sensitivity, operational ownership, or failure modes change. Remove stale signals rather than preserving an inventory of obsolete telemetry.
 ```
 
-### Template: docs/roadmap.md
-
-```markdown
-# Roadmap
-
-Product direction and sequencing guide. Each entry explains the user outcome, current confidence, and ordering rationale. Keep it concise and decision-oriented; detailed implementation status belongs in phase artifacts and code evidence.
-
-> A feature moves to **Done** only when its user outcome is verified and the evidence is linked here.
-> Source of truth: if a feature is not in Done with a passing test link, it is not considered shipped.
-
----
-
-## Done
-
-<!--
-Each entry follows this pattern:
-
-### [Feature name — short, user-visible]
-- **Job story:** When [situation], I want to [action], so that [outcome].
-- **Evidence:** [link to the smallest durable verification record](path/to/evidence)
-- **Use case:** [docs/usecases/use-case-slug.md](docs/usecases/use-case-slug.md) *(if promoted)*
-- **Delivered:** [increment slug or YYYY-MM-DD]
--->
-
----
-
-## In Progress
-
-<!--
-### [Feature name]
-- **Job story:** When [situation], I want to [action], so that [outcome].
-- **Evidence:** pending — define the verification approach before work starts
--->
-
----
-
-## Planned
-
-<!--
-### [Feature name]
-- **Job story:** When [situation], I want to [action], so that [outcome].
-- **Why now / ordering:** [dependencies, user value, open questions, or sequencing rationale]
--->
-
----
-
-## How This List Works
-
-- Features move left to right: Planned → In Progress → Done. Never skip In Progress.
-- A feature enters In Progress when work begins.
-- A feature enters Done only when its user outcome is verified and the evidence link is present.
-- Do not add implementation detail here — link to the use case or ADR for that.
-- If a planned feature is no longer needed, remove it and record the reason in a code comment, commit message, or ADR.
-```

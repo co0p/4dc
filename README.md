@@ -97,7 +97,6 @@ The files are the memory between skills. Read the current handover before acting
 | `docs/domain.md` | Shared business terms, events, and rules. |
 | `docs/ui.md` | Permanent UI, interaction, visual, accessibility, and content decisions. Required for projects with a UI. |
 | `docs/adr/ADR-*.md` | Significant decisions, alternatives, rationale, and consequences. |
-| `docs/roadmap.md` | User outcomes and delivery status backed by evidence. |
 
 ### Temporary cycle documents
 
@@ -272,7 +271,7 @@ repeat for the next test case
 
 Use after all implementation subtasks pass final verification and `.agent/implementation.md` is approved as complete.
 
-**Does:** Promotes durable outcomes to permanent documentation, updates the roadmap, and records ADRs or architecture changes. It runs a final tidy pass, integrates the latest `main` into the increment branch, reviews the complete branch diff, reruns release and acceptance gates, and requires explicit main-fit approval before squash-merging to `main`. Cleanup deletes `.agent/` files (never archives) and the increment branch only after the landing commit hash is captured and verified reachable from `main`.
+**Does:** Promotes durable outcomes to permanent documentation and records ADRs or architecture changes. It runs a final tidy pass, integrates the latest `main` into the increment branch, reviews the complete branch diff, reruns release and acceptance gates, and requires explicit main-fit approval before squash-merging to `main`. Cleanup deletes `.agent/` files (never archives) and the increment branch only after the landing commit hash is captured and verified reachable from `main`.
 
 **Does not:** Promote guesses, unverified plans, or increments without feature-level evidence for every acceptance criterion unless an exception was explicitly approved and recorded.
 
