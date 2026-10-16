@@ -19,9 +19,18 @@
 
 Each agent hands off to the next. Nothing is built until the idea is clear. Nothing is planned in detail before building starts. Nothing is closed without reflection.
 
-## Inside craft
+## The four agents
 
-The `craft` agent does not follow a plan. It finds the next step through conversation and repeats this cycle until the use case goal is met.
+| Agent | Phase | What it does |
+|---|---|---|
+| `idea` | Idea | Explores the problem with you at the domain level. No code, no files, no implementation. |
+| `shape` | Shape | Turns the domain concept into a use-case skeleton using Cockburn use cases. |
+| `craft` | Build | Enriches the skeleton step by step through the craft loop. |
+| `reflect` | Reflect | Disperses learnings into your project docs, runs a short retrospective, and closes the cycle. |
+
+### The craft loop
+
+The `craft` agent does not follow a plan. It finds the next step through conversation and repeats this loop until the use case goal is met.
 
 ```
 discuss ──► agree ──► tdd ──► review ──► repeat
@@ -35,55 +44,39 @@ discuss ──► agree ──► tdd ──► review ──► repeat
 
 **Review.** You review the result. Leave `// @review: <instruction>` comments on anything that needs changing. Approve to commit and repeat.
 
-## The four agents
-
-| Agent | Phase | What it does |
-|---|---|---|
-| `idea` | Idea | Explores the problem with you at the domain level. No code, no files, no implementation. |
-| `shape` | Shape | Turns the domain concept into a use-case skeleton using Cockburn use cases. |
-| `craft` | Build | Enriches the skeleton step by step. This is done in the craft cycle: discuss, agree, tdd, review, repeat. |
-| `reflect` | Reflect | Disperses learnings into your project docs, runs a short retrospective, and closes the cycle. |
-
 ## How to install
 
-Copy the `.opencode/` directory and `AGENTS.md` into your project root.
+Run this in your project root:
 
 ```bash
-cp -r /path/to/4dc/.opencode /your/project/
-cp /path/to/4dc/AGENTS.md /your/project/
+curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install.sh | bash
 ```
 
-Add `.agent/` to your project's `.gitignore`. That directory holds temporary cycle files and must never be committed.
+The script downloads the latest `main` branch, copies `.opencode/agents/` and `opencode.jsonc` into your project, and adds `.agent/` to `.gitignore`. It skips files that already exist. Pass `--force` to overwrite them.
 
 ```bash
-echo ".agent/" >> .gitignore
-```
-
-If you use the `opencode.jsonc` from this repository, copy it too. It registers the four agents with OpenCode and sets their display colors.
-
-```bash
-cp /path/to/4dc/opencode.jsonc /your/project/
+curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install.sh | bash -s -- --force
 ```
 
 ## How to start
 
-Tell OpenCode to read `AGENTS.md` and load the `idea` agent.
+Tell OpenCode to load the `idea` agent.
 
 ```text
-Read AGENTS.md and use the idea agent.
+Use the idea agent.
 ```
 
-The orchestrator in `AGENTS.md` detects your current cycle state and tells you which agent to load next. If you are starting fresh, it points you to `idea`.
+The agent checks the current cycle state and tells you what to do next. If you are starting fresh, it opens the domain conversation.
 
 ## Cycle files
 
-The agents write temporary files to `.agent/` during a cycle. These files are the memory between agents. Do not edit them by hand unless you know what you are doing.
+The agents write temporary files to `.agent/` during a cycle. All 4dc-owned files are prefixed with `4dc-`. Do not edit them by hand unless you know what you are doing.
 
 | File | Written by | Consumed by |
 |---|---|---|
-| `.agent/domain-concept.md` | `idea` | `shape` |
-| `.agent/cycle-plan.md` | `shape` | `craft` |
-| `.agent/learnings.md` | `craft` | `reflect` |
+| `.agent/4dc-idea.md` | `idea` | `shape` — weaved into project docs, then deleted |
+| `.agent/4dc-shape.md` | `shape` | `craft` and `reflect` — deleted at cycle close |
+| `.agent/4dc-craft.md` | `craft` | `reflect` — weaved into project docs, then deleted |
 
 The `reflect` agent deletes all three files when the cycle closes.
 

@@ -13,7 +13,7 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 3 | Does the agent require an explicit out-of-scope list before handing off? |
 | 4 | Does the agent reference the Ubiquitous Language and flag inconsistent terms? |
 | 5 | Does the agent stop when the concept is clear, not when it is complete? |
-| 6 | Does the hand-off document (`domain-concept.md`) capture all fields needed by `shape`? |
+| 6 | Does the hand-off document (`.agent/4dc-idea.md`) capture all fields needed by `shape`? |
 
 ## Shape agent
 
@@ -24,7 +24,7 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 9 | Does the agent refuse to name implementation files, classes, or libraries? |
 | 10 | Does the agent name coupling risks when another context is involved? |
 | 11 | Does the agent mark extensions as deferred rather than detailing them? |
-| 12 | Does the hand-off document (`cycle-plan.md`) contain enough for `craft` to start without asking `shape` questions? |
+| 12 | Does the hand-off document (`.agent/4dc-shape.md`) contain enough for `craft` to start without asking `shape` questions? |
 
 ## Craft agent
 
@@ -36,7 +36,7 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 16 | Does the agent stop after each step and wait for human review? |
 | 17 | Does the agent enforce separate `tidy:` and `feat:` commits? |
 | 18 | Does the agent respond to `// @review:` comments before moving to the next step? |
-| 19 | Does the agent append to `learnings.md` with a decision, reason, and rejected alternative? |
+| 19 | Does the agent append to `.agent/4dc-craft.md` with a decision, reason, and rejected alternative? |
 
 ## Reflect agent
 
@@ -44,10 +44,10 @@ Each question inspects a specific property of the agent definitions. A no means 
 |---|---|
 | 20 | Does the agent read the project's existing doc structure before writing anything? |
 | 21 | Does the agent write into existing project docs rather than creating 4DC-owned files? |
-| 22 | Does the agent update `AGENTS.md` with new system patterns or metaphors? |
+| 22 | Does the agent weave new system patterns or metaphors into the appropriate project doc? |
 | 23 | Does the agent run a retrospective with all three questions? |
-| 24 | Does the agent delete all three `.agent/` files at cycle close? |
-| 25 | Does the agent refuse to commit `.agent/` files? |
+| 24 | Does `shape` delete `4dc-idea.md` after weaving it into the project? |
+| 25 | Does `reflect` delete `4dc-shape.md` and `4dc-craft.md` at cycle close? |
 
 ## Language and consistency
 
