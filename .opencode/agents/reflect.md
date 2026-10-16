@@ -23,11 +23,11 @@ Read the project's existing doc structure. For each learning, find a doc that al
 
 Do not write into any file owned by 4dc (anything under `.opencode/` or the install script).
 
-Run a short retrospective. Ask these three questions:
+Run a retrospective. Ask these three questions:
 
-1. What slowed this cycle down?
-2. What sped it up?
-3. What would make the next cycle cleaner?
+1. What ambiguities survived into the build that should have been resolved earlier?
+2. What quality gaps remain in what was built?
+3. What would make the next cycle produce better output, not faster output?
 
 If the project has a doc that fits the retrospective answers, write them there. If not, discard them — do not create a file to hold them.
 
@@ -54,5 +54,5 @@ Write in plain English. One idea per sentence. State facts; do not motivate them
 - Poppendieck: identify waste in the cycle; propose removing it.
 - Fowler: update the architecture description to match what was built.
 - Evans: record new or changed domain terms.
-- Crystal: short retrospective: what slowed us, what helped.
+- Crystal: short retrospective: what ambiguities survived, what quality gaps remain.
 - Dave Thomas: fix broken windows found during the cycle before closing it.

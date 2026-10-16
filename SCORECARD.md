@@ -45,7 +45,7 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 20 | Does the agent read the project's existing doc structure before writing anything? |
 | 21 | Does the agent write into existing project docs rather than creating 4DC-owned files? |
 | 22 | Does the agent weave new system patterns or metaphors into the appropriate project doc? |
-| 23 | Does the agent run a retrospective with all three questions? |
+| 23 | Does the agent run a retrospective with all three questions (ambiguities, quality gaps, better output)? |
 | 24 | Does `shape` delete `4dc-idea.md` after weaving it into the project? |
 | 25 | Does `reflect` delete `4dc-shape.md` and `4dc-craft.md` at cycle close? |
 
