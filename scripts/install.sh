@@ -24,13 +24,12 @@ echo "This script will:"
 echo "  1. Download 4dc from https://github.com/$REPO at branch $BRANCH"
 echo "  2. Copy .opencode/agents/ into your project"
 echo "  3. Copy opencode.jsonc into your project (skipped if it exists; use --force to overwrite)"
-echo "  4. Copy opencode.jsonc into your project (skipped if it exists; use --force to overwrite)"
-echo "  5. Add .agent/ to .gitignore"
+echo "  4. Add .agent/ to .gitignore"
 echo ""
 
-read -r -p "Continue? [y/N] " answer
+read -r -p "Continue? [y/N] " answer </dev/tty
 if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
-  echo "Aborted."
+  echo "Aborted. No confirmation given."
   exit 0
 fi
 
