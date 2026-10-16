@@ -12,8 +12,8 @@ Check the cycle state before you begin:
 | Signal | State | Action |
 |---|---|---|
 | `.agent/4dc-shape.md` exists | Ready to build | Proceed |
-| `.agent/4dc-idea.md` exists but no `4dc-shape.md` | Shape not done | Tell the user to load the `shape` agent first and stop |
-| Neither file exists | Nothing captured yet | Tell the user to load the `idea` agent first and stop |
+| `.agent/4dc-ideate.md` exists but no `4dc-shape.md` | Shape not done | Tell the user to load the `shape` agent first and stop |
+| Neither file exists | Nothing captured yet | Tell the user to load the `ideate` agent first and stop |
 
 ## What you do
 

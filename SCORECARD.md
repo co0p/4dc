@@ -1,10 +1,10 @@
 # 4DC Scorecard
 
-Use this scorecard to evaluate the agent definitions in this repository. Run it when an agent feels off, after changing an agent file, or periodically to catch drift in the workflow design itself.
+This scorecard assesses the consistency of the agent definitions in this repository. It does not assess the output of a cycle. Run it after changing an agent file, when an agent's behavior feels off, or periodically to catch drift in the workflow design itself.
 
 Each question inspects a specific property of the agent definitions. A no means the agent file needs attention.
 
-## Idea agent
+## Ideate agent
 
 | # | Question |
 |---|---|
@@ -13,17 +13,17 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 3 | Does the agent require an explicit out-of-scope list before handing off? |
 | 4 | Does the agent reference the Ubiquitous Language and flag inconsistent terms? |
 | 5 | Does the agent stop when the concept is clear, not when it is complete? |
-| 6 | Does the hand-off document (`.agent/4dc-idea.md`) capture all fields needed by `shape`? |
+| 6 | Does the hand-off document (`.agent/4dc-ideate.md`) capture all fields needed by `shape`, including the main success scenario? |
 
 ## Shape agent
 
 | # | Question |
 |---|---|
-| 7 | Does the agent require a bounded context before writing any use case? |
-| 8 | Does the agent write remaining use cases at summary level and expand only one at a time? |
+| 7 | Does the agent require a bounded context before proposing an approach? |
+| 8 | Does the agent propose multiple candidate approaches and discuss their trade-offs before committing to one? |
 | 9 | Does the agent refuse to name implementation files, classes, or libraries? |
 | 10 | Does the agent name coupling risks when another context is involved? |
-| 11 | Does the agent mark extensions as deferred rather than detailing them? |
+| 11 | Does the agent state the reason each rejected alternative was set aside? |
 | 12 | Does the hand-off document (`.agent/4dc-shape.md`) contain enough for `craft` to start without asking `shape` questions? |
 
 ## Craft agent
@@ -46,8 +46,8 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 21 | Does the agent write into existing project docs rather than creating 4DC-owned files? |
 | 22 | Does the agent weave new system patterns or metaphors into the appropriate project doc? |
 | 23 | Does the agent run a retrospective with all three questions (ambiguities, quality gaps, better output)? |
-| 24 | Does `shape` delete `4dc-idea.md` after weaving it into the project? |
-| 25 | Does `reflect` delete `4dc-shape.md` and `4dc-craft.md` at cycle close? |
+| 24 | Does `shape` leave `4dc-ideate.md` in place for `reflect` to weave and delete? |
+| 25 | Does `reflect` delete `4dc-ideate.md`, `4dc-shape.md`, and `4dc-craft.md` at cycle close? |
 
 ## Language and consistency
 

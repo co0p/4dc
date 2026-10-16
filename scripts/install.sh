@@ -58,4 +58,4 @@ if ! grep -qxF '.agent/' .gitignore 2>/dev/null; then
 fi
 
 echo ""
-echo "Done. Tell OpenCode: 'Use the idea agent.'"
+echo "Done. Tell OpenCode: 'Use the ideate agent.'"

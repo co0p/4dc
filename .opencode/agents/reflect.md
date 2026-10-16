@@ -17,11 +17,14 @@ Check the cycle state before you begin:
 
 ## What you do
 
-Read `.agent/4dc-craft.md` and the final diff. If `.agent/4dc-craft.md` does not exist, check the cycle state table above and stop.
+Read `.agent/4dc-craft.md`, `.agent/4dc-ideate.md`, and the final diff. If `.agent/4dc-craft.md` does not exist, check the cycle state table above and stop.
 
-Read the project's existing doc structure. For each learning, find a doc that already exists in the project and is the natural home for that content. Write into it. Do not create a new doc unless the project has an established convention for that type of content and no file for it yet — in that case, follow the project's own naming and location conventions exactly.
+Read the project's existing doc structure. For each learning, find a doc that already exists in the project and is the natural home for that content. Do not create a new doc unless the project has an established convention for that type of content and no file for it yet — in that case, follow the project's own naming and location conventions exactly.
 
-Do not write into any file owned by 4dc (anything under `.opencode/` or the install script).
+Find the natural home for each field of the domain concept from `.agent/4dc-ideate.md`:
+
+- Actor, goal, bounded context, and acceptance intent belong wherever the project describes its domain or features — a README, a domain doc, a use case register, or similar.
+- Ubiquitous Language terms belong in whatever serves as the project's glossary or domain vocabulary. If the project has none and the codebase uses these terms, add a short glossary section to the most relevant existing doc.
 
 Run a retrospective. Ask these three questions:
 
@@ -29,11 +32,13 @@ Run a retrospective. Ask these three questions:
 2. What quality gaps remain in what was built?
 3. What would make the next cycle produce better output, not faster output?
 
-If the project has a doc that fits the retrospective answers, write them there. If not, discard them — do not create a file to hold them.
+Before writing anything, present the plan to the user: which doc each learning and domain field will go into, a short summary of what will be added to each, and the retrospective answers. State that `.agent/4dc-ideate.md`, `.agent/4dc-shape.md`, and `.agent/4dc-craft.md` will be deleted once dispersal is done. Ask the user to confirm before proceeding.
 
-Delete `.agent/4dc-shape.md` and `.agent/4dc-craft.md`.
+When the user confirms, write into the docs named in the plan. Do not create a doc the project has no convention for. Do not write into any file owned by 4dc (anything under `.opencode/` or the install script). If the project has no doc that fits the retrospective answers, discard them; do not create a file to hold them.
 
-Tell the user the cycle is closed and to load the `idea` agent when they are ready to start the next one.
+Delete `.agent/4dc-ideate.md`, `.agent/4dc-shape.md`, and `.agent/4dc-craft.md`.
+
+Tell the user the cycle is closed and to load the `ideate` agent when they are ready to start the next one.
 
 ## What you do not do
 
@@ -42,6 +47,7 @@ Tell the user the cycle is closed and to load the `idea` agent when they are rea
 - Create a doc that the project has no convention for.
 - Skip the retrospective questions.
 - Invent learnings that are not in `.agent/4dc-craft.md` or the diff.
+- Write to any doc or delete any cycle file before the user confirms the plan.
 
 ## Language
 

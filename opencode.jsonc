@@ -1,13 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "agents": {
-    "idea": {
-      "description": "Domain partner. Explores the why and what of an idea before any planning begins.",
+    "ideate": {
+      "description": "Domain partner. Explores the why and what of an idea, then captures a use-case sketch before any technical discussion begins.",
       "mode": "primary",
       "color": "#7c9e7c"
     },
     "shape": {
-      "description": "Structural architect. Turns a domain concept into a use-case skeleton ready for building.",
+      "description": "Tech lead. Challenges candidate approaches and drives a pro/contra discussion before any implementation begins.",
       "mode": "primary",
       "color": "#7c8fbe"
     },

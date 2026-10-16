@@ -12,9 +12,9 @@
 4DC keeps a coding agent from jumping straight from a vague request to a large code change. It separates the work into four phases, each owned by a dedicated agent.
 
 ```
-[idea] ──► [shape] ──► [craft] ──► [reflect]
-  ^                                    │
-  └────────────────────────────────────┘
+[ideate] ──► [shape] ──► [craft] ──► [reflect]
+   ^                                     │
+   └─────────────────────────────────────┘
 ```
 
 Each agent hands off to the next. Nothing is built until the idea is clear. Nothing is planned in detail before building starts. Nothing is closed without reflection.
@@ -23,9 +23,9 @@ Each agent hands off to the next. Nothing is built until the idea is clear. Noth
 
 | Agent | Phase | What it does |
 |---|---|---|
-| `idea` | Idea | Explores the problem with you at the domain level. No code, no files, no implementation. |
-| `shape` | Shape | Turns the domain concept into a use-case skeleton using Cockburn use cases. |
-| `craft` | Build | Enriches the skeleton step by step through the craft loop. |
+| `ideate` | Idea | Explores the problem with you at the domain level, then sketches the main success scenario. No code, no files, no implementation. |
+| `shape` | Shape | Proposes candidate technical approaches and drives a pro/contra discussion before one is agreed. |
+| `craft` | Build | Enriches the use case step by step through the craft loop. |
 | `reflect` | Reflect | Disperses learnings into your project docs, runs a short retrospective, and closes the cycle. |
 
 ### The craft loop
@@ -60,10 +60,10 @@ curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install.sh | 
 
 ## How to start
 
-Tell OpenCode to load the `idea` agent.
+Tell OpenCode to load the `ideate` agent.
 
 ```text
-Use the idea agent.
+Use the ideate agent.
 ```
 
 The agent checks the current cycle state and tells you what to do next. If you are starting fresh, it opens the domain conversation.
@@ -74,7 +74,7 @@ The agents write temporary files to `.agent/` during a cycle. All 4dc-owned file
 
 | File | Written by | Consumed by |
 |---|---|---|
-| `.agent/4dc-idea.md` | `idea` | `shape` — weaved into project docs, then deleted |
+| `.agent/4dc-ideate.md` | `ideate` | `shape` and `craft` — weaved into project docs by `reflect`, then deleted |
 | `.agent/4dc-shape.md` | `shape` | `craft` and `reflect` — deleted at cycle close |
 | `.agent/4dc-craft.md` | `craft` | `reflect` — weaved into project docs, then deleted |
 
@@ -82,7 +82,7 @@ The `reflect` agent deletes all three files when the cycle closes.
 
 ## Scorecard
 
-`SCORECARD.md` contains 27 yes/no questions grouped by phase. Use it at the end of a cycle or whenever the work feels off. Each question targets a specific drift pattern. The scoring at the bottom tells you how to respond.
+`SCORECARD.md` contains 30 yes/no questions grouped by agent. It assesses the agent definitions themselves, not the output of a cycle. Run it after changing an agent file, or whenever an agent's behavior feels off, to check whether the agent files have drifted from the design. Each question targets a specific drift pattern. The scoring at the bottom tells you how to respond.
 
 ## What 4DC does not do
 
@@ -94,7 +94,7 @@ The `reflect` agent deletes all three files when the cycle closes.
 
 4DC borrows from people who shaped modern software development.
 
-| Influence | `idea` | `shape` | `craft` | `reflect` |
+| Influence | `ideate` | `shape` | `craft` | `reflect` |
 |---|---|---|---|---|
 | **Cockburn** | Express the goal as an actor-goal pair; the domain rule must not depend on delivery mechanism | Summary level first; casual level when the build pulls it; name ports before naming adapters | Enrich toward the main success scenario; implement toward the port, keep the framework outside the domain | Check whether every use case reached its stated goal |
 | **Kent Beck** | One idea at a time; stop when the concept is clear | The skeleton is a sketch, not a contract | Red-green-refactor within each step; simplest thing that works | Ask what changed about how we test next time |
