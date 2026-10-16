@@ -1,1 +1,0 @@
-- **Alistair Cockburn: reflective improvement.** Inspect evidence from completed work and adapt the process to the team, risk, and current context.

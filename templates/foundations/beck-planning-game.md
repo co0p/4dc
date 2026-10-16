@@ -1,1 +1,0 @@
-- **Kent Beck: the planning game.** Treat the plan as a conversation that creates small, testable commitments and can be revised when evidence changes.

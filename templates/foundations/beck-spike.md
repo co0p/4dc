@@ -1,1 +1,0 @@
-- **Kent Beck: spike.** Use a time-boxed, throwaway experiment to answer one question rather than deliver production behavior.

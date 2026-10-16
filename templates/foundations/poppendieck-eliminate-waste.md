@@ -1,1 +1,0 @@
-- **Mary and Tom Poppendieck: eliminate waste.** Build, preserve, and document only work that contributes verified value or necessary learning.

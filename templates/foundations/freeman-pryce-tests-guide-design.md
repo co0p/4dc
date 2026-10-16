@@ -1,1 +1,0 @@
-- **Steve Freeman and Nat Pryce: tests guide design.** Use test difficulty and feedback to discover clearer interfaces and looser coupling.

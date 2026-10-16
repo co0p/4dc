@@ -1,1 +1,0 @@
-- **Mary and Tom Poppendieck: pull small batches from value.** Work on one small, valuable unit at a time so feedback is fast and correction is cheap.

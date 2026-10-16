@@ -1,0 +1,25 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agents": {
+    "idea": {
+      "description": "Domain partner. Explores the why and what of an idea before any planning begins.",
+      "mode": "primary",
+      "color": "#7c9e7c"
+    },
+    "shape": {
+      "description": "Structural architect. Turns a domain concept into a use-case skeleton ready for building.",
+      "mode": "primary",
+      "color": "#7c8fbe"
+    },
+    "craft": {
+      "description": "Craftsman. Enriches the use-case skeleton one step at a time and waits for human review after each action.",
+      "mode": "primary",
+      "color": "#be9b7c"
+    },
+    "reflect": {
+      "description": "Reflector. Disperses cycle learnings into project docs, runs a short retrospective, and closes the cycle.",
+      "mode": "primary",
+      "color": "#9b7cbe"
+    }
+  }
+}

@@ -1,1 +1,0 @@
-- **Mary and Tom Poppendieck: decide at the last responsible moment.** Delay reversible commitments until evidence is available, while making blocking decisions explicit when they become necessary.

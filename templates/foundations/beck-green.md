@@ -1,1 +1,0 @@
-- **Kent Beck: Green.** Write only enough production code to satisfy the current failing test.

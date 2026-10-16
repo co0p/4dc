@@ -1,1 +1,0 @@
-- **Jez Humble: continuous delivery.** Treat releasability, deployment safety, and production verification as properties of every change.

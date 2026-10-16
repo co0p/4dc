@@ -1,1 +1,0 @@
-- **Bill Wake: INVEST.** Shape work so it is independent, negotiable, valuable, estimable, small, and testable.

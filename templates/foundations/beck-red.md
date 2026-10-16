@@ -1,1 +1,0 @@
-- **Kent Beck: Red.** Express one missing behavior as a test and confirm that it fails for that reason before writing production code.

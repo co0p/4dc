@@ -1,1 +1,0 @@
-- **Martin Fowler: evolutionary architecture.** Define durable boundaries and fitness constraints while allowing implementation details to evolve.
