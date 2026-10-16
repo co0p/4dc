@@ -1,1 +1,0 @@
-- **Martin Fowler: two hats.** Keep behavior changes and structural improvements separate so each remains understandable and verifiable.

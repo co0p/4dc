@@ -1,1 +1,0 @@
-- **Ron Jeffries: card, conversation, confirmation.** Keep the written request concise, develop shared understanding through conversation, and prove the outcome with concrete acceptance evidence.

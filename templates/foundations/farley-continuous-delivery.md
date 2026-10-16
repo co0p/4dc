@@ -1,1 +1,0 @@
-- **David Farley: continuous delivery.** Keep changes releasable through small batches, repeatable verification, and fast feedback.

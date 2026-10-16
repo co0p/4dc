@@ -2,299 +2,111 @@
   <img src="assets/4dc-logo-traced.svg" alt="4DC logo" width="120" />
 </p>
 
-<p align="center"><strong>4dc - four discipline cycle</strong></p>
+<p align="center"><strong>4dc — four discipline cycle</strong></p>
 <p align="center"><em>A small-step workflow for building software with coding agents.</em></p>
 
-> Do not trust AI output blindly. Review every proposed change, command, and test result.
+> Do not trust AI output blindly. Review every proposed change before you accept it.
 
-## Why 4dc?
+## What is 4DC?
 
-4dc keeps a coding agent from jumping straight from a vague request to a large code change. It separates:
+4DC keeps a coding agent from jumping straight from a vague request to a large code change. It separates the work into four phases, each owned by a dedicated agent.
 
-```text
-what the user needs -> how to build it -> one small change -> proof -> durable knowledge
+```
+[idea] ──► [shape] ──► [craft] ──► [reflect]
+  ^                                    │
+  └────────────────────────────────────┘
 ```
 
-This gives a junior developer a clear path:
+Each agent hands off to the next. Nothing is built until the idea is clear. Nothing is planned in detail before building starts. Nothing is closed without reflection.
 
-- The request becomes one small, testable increment.
-- The plan names the files, symbols, tests, and risks before code changes.
-- The agent works in small steps instead of guessing across the repository.
-- Tests and handover files show what happened and why.
-- Important decisions are preserved instead of being lost in chat.
+## Inside craft
 
-4dc borrows practical ideas from people who shaped modern software development:
+The `craft` agent does not follow a plan. It finds the next step through conversation and repeats this cycle until the use case goal is met.
 
-- **Kent Beck:** test-first development, small steps, Tidy First, and the planning game.
-- **Mary Poppendieck:** remove waste, pull work from user value, decide late when possible, and keep batches small.
-- **Martin Fowler:** evolutionary architecture, explicit architecture decisions, and refactoring as behavior-preserving design improvement.
+```
+discuss ──► agree ──► tdd ──► review ──► repeat
+```
 
-The skills are not a replacement for judgment. They are guardrails that make good judgment easier to apply repeatedly.
+**Discuss.** The agent looks at the use case goal and the current code, then suggests the next meaningful step. You respond, redirect, or add context.
 
-## Installation
+**Agree.** The agent states the step in one sentence. You confirm it before any code is written.
 
-Run this from the root of the project that will use 4dc:
+**TDD.** The agent writes a failing test, shows the failure, writes the minimum code to pass, then refactors if needed.
+
+**Review.** You review the result. Leave `// @review: <instruction>` comments on anything that needs changing. Approve to commit and repeat.
+
+## The four agents
+
+| Agent | Phase | What it does |
+|---|---|---|
+| `idea` | Idea | Explores the problem with you at the domain level. No code, no files, no implementation. |
+| `shape` | Shape | Turns the domain concept into a use-case skeleton using Cockburn use cases. |
+| `craft` | Build | Enriches the skeleton step by step. This is done in the craft cycle: discuss, agree, tdd, review, repeat. |
+| `reflect` | Reflect | Disperses learnings into your project docs, runs a short retrospective, and closes the cycle. |
+
+## How to install
+
+Copy the `.opencode/` directory and `AGENTS.md` into your project root.
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc.sh)"
+cp -r /path/to/4dc/.opencode /your/project/
+cp /path/to/4dc/AGENTS.md /your/project/
 ```
 
-The installer requires:
-
-- Bash 3.2 or newer
-- `curl`
-- `tar`
-- `mktemp`
-- `grep`
-- A coding agent that can read Markdown instructions and run the project's commands
-
-4dc has no runtime package. It does not install Node.js, Python, a test runner, a language toolchain, an MCP server, or an agent application. The project must already provide whatever its own testing and deployment documentation requires.
-
-The installer needs network access once to download the repository. After installation, the skills work from local files.
-
-It installs:
-
-```text
-.agents/
-  AGENTS.md                 orchestrator
-  skills/
-    constitution/SKILL.md
-    increment/SKILL.md
-    prototype/SKILL.md
-    plan/SKILL.md
-    implement/SKILL.md
-    subtask-plan/SKILL.md
-    adr/SKILL.md
-    tidy/SKILL.md
-    tdd-red/SKILL.md
-    tdd-green/SKILL.md
-    refactor/SKILL.md
-    promote/SKILL.md
-.agent/                     temporary handover directory
-```
-
-`.agent/` is added to `.gitignore`. Existing `.agents/AGENTS.md` is preserved by default. To update it explicitly:
+Add `.agent/` to your project's `.gitignore`. That directory holds temporary cycle files and must never be committed.
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install-4dc.sh)" -- --force
+echo ".agent/" >> .gitignore
 ```
 
-The skill files are updated on every installation. The installer fails if a required skill is missing instead of installing an incomplete workflow. It does not delete unrelated files in `.agents/`.
-
-## Handover Documents
-
-The files are the memory between skills. Read the current handover before acting. Do not rely on chat history alone.
-
-### Permanent documents
-
-| Document | Purpose |
-|----------|---------|
-| `CONSTITUTION.md` | Project rules: architecture, testing, performance, documentation, release. |
-| `docs/testing.md` | Test strategy, commands, evidence, risks, and confidence gaps. |
-| `docs/deployment.md` | Release, deployment, rollback, configuration, and health checks. |
-| `docs/observability.md` | Operational signals, alert response, release health, and known blind spots. |
-| `docs/architecture.md` | Current system boundaries, containers, communication, and data stores. |
-| `docs/domain.md` | Shared business terms, events, and rules. |
-| `docs/ui.md` | Permanent UI, interaction, visual, accessibility, and content decisions. Required for projects with a UI. |
-| `docs/adr/ADR-*.md` | Significant decisions, alternatives, rationale, and consequences. |
-
-### Temporary cycle documents
-
-| Document | Written by | Purpose |
-|----------|------------|---------|
-| `.agent/increment.md` | `increment` | The user outcome, acceptance criteria, and scope boundary. |
-| `.agent/prototype.md` | `prototype` | Finding from an optional throwaway experiment. |
-| `.agent/plan.md` | `plan` | Detailed file-level implementation map. |
-| `.agent/implementation.md` | `implement` (creates); `subtask-plan` and implementation skills (update) | Current subtask, approved mini-plan, active test, state, and evidence. |
-| `.agent/learnings.md` | implementation skills | Decisions, deviations, surprises, and promotion candidates. |
-
-The temporary files are deleted after `promote` completes, once landing evidence is captured and verified. The plan is deliberately detailed so implementation skills can load only the files and references needed for the current subtask.
-
-## The Cycle
-
-```text
-constitution -> increment -> [prototype?] -> plan -> implement -> subtask-plan -> [tidy?]
-                    |                                                    -> tdd-red -> tdd-green -> refactor
-                    |                                                    ↑__________________________________|
-                    ↓
-             branch: increment/<slug>  (all subtask commits land here)
-                    ↓
-                promote:
-             1. docs promotion
-             2. final tidy pass
-             3. squash-merge -> main
-```
-
-`adr` is on-demand whenever a structural, hard-to-reverse, or non-obvious decision emerges. Each phase has an explicit approval gate. Silence is not approval.
-
-The orchestrator reads the workspace and loads the next skill. If automatic discovery is unavailable, ask the agent to read `.agents/AGENTS.md` first.
-
-## Skills By Phase
-
-### 1. Constitution
-
-**Skill:** `constitution`
-
-Use when `CONSTITUTION.md` is missing or needs revision.
-
-**Does:** Establishes durable engineering guardrails across architecture, testing, observability, security, reliability, performance, documentation, and release. Project-specific facts and procedures go into `docs/` or ADRs.
-
-**Does not:** Choose the implementation for a feature.
-
-**Handoff:** `CONSTITUTION.md` and supporting `docs/` files.
-
-### 2. Increment
-
-**Skill:** `increment`
-
-Use after the constitution exists.
-
-**Does:** Turns a request into one small outcome with a job story, one declared Mode (`Behavior`, `Refactor`, or `Chore`), binary acceptance criteria, non-technical Acceptance-Test Intent, and explicit out-of-scope items.
-
-**Does not:** Name files, classes, libraries, or implementation approaches.
-
-Acceptance-Test Intent is required for every increment. Its shape depends on the Mode:
-- `Behavior`: describes the new user-observable outcome.
-- `Refactor`: names existing acceptance tests that must remain green as the regression anchor.
-- `Chore`: names the actor (developer, operator, CI) and observable outcome at their boundary.
-
-Plan turns intent into executable acceptance tests. Every criterion has a promotion gate unless the user explicitly approves and records an exception. Exploratory work with no observable outcome belongs in the `prototype` phase, not an increment.
-
-**Handoff:** `.agent/increment.md`.
-
-### 3. Prototype (Optional)
-
-**Skill:** `prototype`
-
-Use only when a blocking unknown needs investigation before planning.
-
-**Does:** Builds a time-boxed throwaway spike and records the finding.
-
-**Does not:** Produce production code or become a shortcut around planning.
-
-**Handoff:** `.agent/prototype.md`.
-
-### 4. Plan
-
-**Skill:** `plan`
-
-Use after the increment, and after the prototype if one was needed.
-
-**Does:** Reads the codebase broadly and creates the implementation map:
-
-- Goal and branch name
-- Approach and architecture boundary
-- Design: data models, call/data flow, error/edge-case inventory, observability intent, architecture delta
-- Complete file list: new, modify, touch, delete
-- Ordered `[tidy]` and `[behavior]` subtasks; local research is performed while mini-planning the subtask that needs it
-- Symbols, line ranges, and document references
-- Test file and test cases for behavior work
-- One `active_test` at a time for multi-case behavior subtasks
-- Dependencies, risks, and acceptance-criteria coverage
-- Planning decisions: options chosen, alternatives rejected, reasons
-- Required feature-level acceptance tests with exact observable outcomes and evidence
-
-**Does not:** Edit production code.
-
-**Handoff:** `.agent/plan.md`.
-
-### 5. ADR (On Demand)
-
-**Skill:** `adr`
-
-Use when a decision changes a lasting boundary, dependency direction, technology choice, data model, or ownership of behavior.
-
-**Does:** Records one decision, its context, alternatives, rationale, and consequences.
-
-**Does not:** Document small implementation details or duplicate existing rules.
-
-**Handoff:** `docs/adr/ADR-YYYYMMDD-<slug>.md`.
-
-### 6. Implement
-
-**Skill:** `implement`
-
-Use once after the plan is approved, before any code is written.
-
-**Does:** Scaffolds `.agent/implementation.md` from the approved plan — every subtask in its initial state, test lists copied verbatim. Populates the internal todo list and hands off to `subtask-plan`.
-
-**Does not:** Write code, write tests, or make any structural change to the codebase.
-
-**Handoff:** `.agent/implementation.md` (all subtasks `state: pending`).
-
-### 7. Subtask Plan
-
-**Skill:** `subtask-plan`
-
-Runs before every implementation subtask. It investigates local unknowns, checks the immediate code context, proposes the exact files, steps, evidence, observability impact, risks, and non-goals, then waits for explicit user approval. After approval, the agent writes the mini-plan into `.agent/implementation.md` and executes the complete Tidy or Red-Green-Refactor sequence autonomously, tracking every transition without routine user interaction.
-
-### 8. Implementation Loop
-
-The implementation skills work one subtask at a time. They read only the files named by the plan. After mini-plan approval they continue autonomously until that subtask is complete, updating `.agent/implementation.md` and the todo list at every transition. The next user interaction is the mini-plan for the next subtask, unless scope, acceptance criteria, architecture, safety, or external side effects require an earlier stop.
-
-#### Tidy
-
-**Skill:** `tidy`
-
-Executes one behavior-preserving structural change before behavior work. Tests stay green. Commit prefix: `tidy:`.
-
-#### TDD Red
-
-**Skill:** `tdd-red`
-
-Writes one failing test for the current `active_test`. It confirms a real behavior failure and writes no production code.
-
-#### TDD Green
-
-**Skill:** `tdd-green`
-
-Writes the minimum production code needed to pass the current test. It does not refactor. Behavior commits use `feat:` or `fix:`.
-
-#### Refactor
-
-**Skill:** `refactor`
-
-Improves the design after green without changing behavior. Tests stay green. Commit prefix: `refactor:`. It activates the next test case or advances to the next subtask.
-
-For multiple cohesive test cases:
-
-```text
-active test pending -> tdd-red -> red
-red -> tdd-green -> green
-green -> refactor -> complete
-repeat for the next test case
-```
-
-### 9. Promote
-
-**Skill:** `promote`
-
-Use after all implementation subtasks pass final verification and `.agent/implementation.md` is approved as complete.
-
-**Does:** Promotes durable outcomes to permanent documentation and records ADRs or architecture changes. It runs a final tidy pass, integrates the latest `main` into the increment branch, reviews the complete branch diff, reruns release and acceptance gates, and requires explicit main-fit approval before squash-merging to `main`. Cleanup deletes `.agent/` files (never archives) and the increment branch only after the landing commit hash is captured and verified reachable from `main`.
-
-**Does not:** Promote guesses, unverified plans, or increments without feature-level evidence for every acceptance criterion unless an exception was explicitly approved and recorded.
-
-## Direct Use
-
-The orchestrator is recommended. You can also load a skill directly:
-
-```text
-Read `.agents/skills/increment/SKILL.md` and define the next increment.
-Read `.agents/skills/plan/SKILL.md` and create the approved implementation plan.
-Read `.agents/skills/implement/SKILL.md` and scaffold the implementation tracker.
-Read `.agents/skills/subtask-plan/SKILL.md` and agree the current subtask mini-plan.
-Read `.agents/skills/tdd-red/SKILL.md` and handle the current active test.
-```
-
-Keep responses and artifacts direct: state the action, evidence, blocker, or handoff. Do not add generic motivation or repeat the handover contents.
-
-## Maintainer Notes
-
-This repository contains `templates/`, generated `skills/`, installer scripts, and `VALIDATION.md`. Shared influence statements live as one-idea fragments in `templates/foundations/`; skill templates select them with `{{FOUNDATION:<id>}}`. To regenerate skills after changing templates:
+If you use the `opencode.jsonc` from this repository, copy it too. It registers the four agents with OpenCode and sets their display colors.
 
 ```bash
-./scripts/generate-4dc.sh
+cp /path/to/4dc/opencode.jsonc /your/project/
 ```
 
-`VALIDATION.md` is for maintaining this repository. It is not installed into consuming projects.
+## How to start
+
+Tell OpenCode to read `AGENTS.md` and load the `idea` agent.
+
+```text
+Read AGENTS.md and use the idea agent.
+```
+
+The orchestrator in `AGENTS.md` detects your current cycle state and tells you which agent to load next. If you are starting fresh, it points you to `idea`.
+
+## Cycle files
+
+The agents write temporary files to `.agent/` during a cycle. These files are the memory between agents. Do not edit them by hand unless you know what you are doing.
+
+| File | Written by | Consumed by |
+|---|---|---|
+| `.agent/domain-concept.md` | `idea` | `shape` |
+| `.agent/cycle-plan.md` | `shape` | `craft` |
+| `.agent/learnings.md` | `craft` | `reflect` |
+
+The `reflect` agent deletes all three files when the cycle closes.
+
+## Scorecard
+
+`SCORECARD.md` contains 27 yes/no questions grouped by phase. Use it at the end of a cycle or whenever the work feels off. Each question targets a specific drift pattern. The scoring at the bottom tells you how to respond.
+
+## What 4DC does not do
+
+4DC has no runtime dependency. It does not install Node.js, Python, a test runner, or an MCP server. Your project must already provide whatever testing and tooling it needs.
+
+4DC does not create documentation upfront. Docs are created by the `reflect` agent when a cycle produces something worth recording, and only in locations consistent with your project's existing conventions.
+
+## Influences
+
+4DC borrows from people who shaped modern software development.
+
+| Influence | `idea` | `shape` | `craft` | `reflect` |
+|---|---|---|---|---|
+| **Cockburn** | Express the goal as an actor-goal pair; the domain rule must not depend on delivery mechanism | Summary level first; casual level when the build pulls it; name ports before naming adapters | Enrich toward the main success scenario; implement toward the port, keep the framework outside the domain | Check whether every use case reached its stated goal |
+| **Kent Beck** | One idea at a time; stop when the concept is clear | The skeleton is a sketch, not a contract | Red-green-refactor within each step; simplest thing that works | Ask what changed about how we test next time |
+| **Poppendieck** | Decide late; do not lock in a solution during ideation | Defer detail; keep the skeleton small | Pull from the use case; do not push from a plan | Identify waste in the cycle; propose removing it |
+| **Fowler** | Name the bounded context before naming any behavior | Draw the rough boundary; flag coupling risks | Refactor after green; keep the structure honest | Update the architecture description to match what was built |
+| **Evans** | Use and test the Ubiquitous Language | Every use case step uses domain language | Implement only what the domain model calls for | Record new or changed domain terms |
+| **Crystal** | The conversation is the artifact at this stage | Enough design to start | Stop after each action; human feedback drives the next step | Short retrospective: what slowed us, what helped |
+| **Dave Thomas** | Name the problem before naming the solution; a tracer bullet starts with a clear target | Design orthogonally; keep concerns separate at the boundary | Tracer bullet first: thin end-to-end before filling in detail; DRY within each step | Fix broken windows found during the cycle before closing it |

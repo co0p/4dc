@@ -1,1 +1,0 @@
-- **Kent Beck: the refactor pass.** After reaching green, deliberately inspect the design and improve it only when the improvement is useful.

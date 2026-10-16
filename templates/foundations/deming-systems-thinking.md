@@ -1,1 +1,0 @@
-- **W. Edwards Deming: systems thinking.** Optimize and verify the whole delivery system rather than treating local activity as proof of value.
