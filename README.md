@@ -19,6 +19,10 @@
 
 Each agent hands off to the next. Nothing is built until the idea is clear. Nothing is planned in detail before building starts. Nothing is closed without reflection.
 
+Every agent reports the result of each check it runs, even when the result is "none found". This way you always know what the agent looked at and what it did not find, rather than having to infer it from silence.
+
+Each agent also works on its own. You do not need the full pipeline to ask `shape` for a pro/contra discussion, or `ideate` to think through an idea. If the artifact from a previous phase is missing, the agent asks you for the missing context directly, or accepts a pointer to something you already have, instead of refusing to proceed.
+
 ## The four agents
 
 | Agent | Phase | What it does |
@@ -42,7 +46,7 @@ discuss ──► agree ──► tdd ──► review ──► repeat
 
 **TDD.** The agent writes a failing test, shows the failure, writes the minimum code to pass, then refactors if needed.
 
-**Review.** You review the result. Leave `// @review: <instruction>` comments on anything that needs changing. Approve to commit and repeat.
+**Review.** The agent scans the changed files for `// @review: <instruction>` comments and states the result explicitly: each comment found and how it was addressed, or that none were found. You review the result. Approve to commit and repeat.
 
 ## How to install
 
@@ -52,7 +56,7 @@ Run this in your project root:
 curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install.sh | bash
 ```
 
-The script downloads the latest `main` branch, copies `.opencode/agents/` and `opencode.jsonc` into your project, and adds `.agent/` to `.gitignore`. It skips files that already exist. Pass `--force` to overwrite them.
+The script downloads the latest `main` branch, copies `dist/agents/` and `opencode.jsonc` into your project, and adds `.agent/` to `.gitignore`. It skips files that already exist. Pass `--force` to overwrite them.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/co0p/4dc/main/scripts/install.sh | bash -s -- --force
@@ -80,9 +84,23 @@ The agents write temporary files to `.agent/` during a cycle. All 4dc-owned file
 
 The `reflect` agent deletes all three files when the cycle closes.
 
+## Using an agent standalone
+
+You can load any agent on its own, for a one-off discussion, without running the rest of the pipeline. For example:
+
+```text
+Use the shape agent: help me figure out the best way to onboard the user.
+```
+
+When an agent runs as part of the pipeline, it writes straight to its `.agent/4dc-*.md` file as described above, no questions asked. When it finds no pipeline file to write to or read from, it treats this as a standalone conversation instead of refusing to proceed. At the end of the conversation, it asks you where to save the outcome, and whether to save it at all. The default is a file under `./agents/` in your project root, named after the topic you discussed, for example `./agents/onboard-the-user.md`. You can point it to any other path, or tell it not to save anything, in which case it shows you the result in the chat instead.
+
 ## Scorecard
 
-`SCORECARD.md` contains 30 yes/no questions grouped by agent. It assesses the agent definitions themselves, not the output of a cycle. Run it after changing an agent file, or whenever an agent's behavior feels off, to check whether the agent files have drifted from the design. Each question targets a specific drift pattern. The scoring at the bottom tells you how to respond.
+`SCORECARD.md` contains 40 yes/no questions grouped by agent and concern. It assesses the agent definitions themselves, not the output of a cycle. Run it after changing an agent file, or whenever an agent's behavior feels off, to check whether the agent files have drifted from the design. Each question targets a specific drift pattern. The scoring at the bottom tells you how to respond.
+
+## Contributing
+
+`AGENTS.md` in the repository root contains working notes for contributors. It describes the repository layout, how to edit and release agent files, how to run the scorecard, and how to use the pipeline to dog-food the agent definitions themselves.
 
 ## What 4DC does not do
 

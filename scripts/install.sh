@@ -22,7 +22,7 @@ echo "   Working directory: $(pwd)"
 echo ""
 echo "This script will:"
 echo "  1. Download 4dc from https://github.com/$REPO at branch $BRANCH"
-echo "  2. Copy .opencode/agents/ into your project"
+echo "  2. Copy dist/agents/ into your project's .opencode/agents/"
 echo "  3. Copy opencode.jsonc into your project (skipped if it exists; use --force to overwrite)"
 echo "  4. Add .agent/ to .gitignore"
 echo ""
@@ -43,7 +43,7 @@ curl -fsSL "https://github.com/$REPO/archive/refs/heads/$BRANCH.tar.gz" \
 
 echo "Installing agents..."
 mkdir -p .opencode/agents
-cp -r "$TMPDIR/.opencode/agents/." .opencode/agents/
+cp -r "$TMPDIR/dist/agents/." .opencode/agents/
 
 if [ ! -f opencode.jsonc ] || [ "$FORCE" = "1" ]; then
   cp "$TMPDIR/opencode.jsonc" opencode.jsonc

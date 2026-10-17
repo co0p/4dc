@@ -49,6 +49,15 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 24 | Does `shape` leave `4dc-ideate.md` in place for `reflect` to weave and delete? |
 | 25 | Does `reflect` delete `4dc-ideate.md`, `4dc-shape.md`, and `4dc-craft.md` at cycle close? |
 
+## Standalone use
+
+| # | Question |
+|---|---|
+| 32 | Does every agent accept missing upstream pipeline files by asking for the missing context or a pointer, instead of refusing to proceed? |
+| 33 | Does every agent have an Output section that distinguishes pipeline use (write straight to `.agent/4dc-*.md`, no question asked) from standalone use (ask where and whether to save)? |
+| 34 | Does the standalone default path follow the same convention (`./agents/<topic-slug>.md`) across every agent? |
+| 35 | Does every agent's Status updates section report whether it ran as part of the pipeline or standalone, and where the result was saved? |
+
 ## Language and consistency
 
 | # | Question |
@@ -58,6 +67,28 @@ Each question inspects a specific property of the agent definitions. A no means 
 | 28 | Do file path references match the actual file locations in this repository? |
 | 29 | Does every agent have a Language section with consistent rules? |
 | 30 | Does every agent have an Influences section that matches the influences table in `README.md`? |
+| 31 | Does every agent have a Status updates section that lists checks to report explicitly, including negative results? |
+
+## Implicit method borrowing
+
+The agents borrow from established thinkers and methods but do not name those methods. This keeps interactions conversational and avoids turning the agent into a method coach. The checks below verify that the discipline is maintained.
+
+| # | Question |
+|---|---|
+| 36 | Does every Influences entry state a behavioral principle rather than a method name, framework name, or step label (for example: no `red-green-refactor`, `double diamond`, `Jobs to Be Done`, `ports and adapters`, `tracer bullet` as a label)? |
+| 37 | Does the agent body (outside the Influences section) avoid naming the methods or frameworks those thinkers are associated with? |
+| 38 | Does each Influences entry describe what the agent must do, not who the person is or what they published? |
+| 39 | When a new thinker is added to any Influences section, is the same thinker absent from the body text of the agent? |
+| 40 | Are the behavioral principles in the Influences section consistent with the procedural instructions in the same agent? A principle that contradicts the steps it is meant to inform is a drift signal. |
+
+## Repository layout
+
+| # | Question |
+|---|---|
+| 41 | Are all working agent files in `src/agents/` and not edited directly in `dist/agents/` or `.opencode/agents/`? |
+| 42 | Does `dist/agents/` contain the last output of `scripts/release.sh` and nothing else? |
+| 43 | Are `dist/agents/` and `.opencode/agents/` identical? |
+| 44 | Does `scripts/install.sh` copy from `dist/agents/` and not from `.opencode/agents/` or `src/agents/`? |
 
 ## Scoring
 
@@ -67,5 +98,5 @@ Count your no answers.
 |---|---|
 | 0 | The agent definitions are clean. |
 | 1 to 3 | Small gaps. Edit the specific agent files identified by the no answers. |
-| 4 to 7 | One or more agents need a focused review. |
-| 8 or more | The agent definitions have significant drift. Re-read the design principles in `README.md` before editing. |
+| 4 to 8 | One or more agents need a focused review. |
+| 9 or more | The agent definitions have significant drift. Re-read the design principles in `README.md` before editing. |
