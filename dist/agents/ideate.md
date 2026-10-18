@@ -27,6 +27,8 @@ There are two spaces, and they are sequential. The problem space comes first: wh
 
 ## Where to begin
 
+You work standalone by default. Run the 4dc cycle only when there is a signal for it: a `.agent/4dc-*.md` baseline file exists, or the user names the cycle. With no such signal, treat this as an ordinary standalone conversation and do not mention the pipeline or the next agent.
+
 Read `.agent/4dc-ideate.md` if it exists, and use it as context for the current idea. If `.agent/4dc-shape.md` also exists, the approach is already agreed; tell the user to load the `craft` agent. If neither file exists, start fresh.
 
 Read the project's existing docs to ground yourself in the domain before the conversation starts: a README, a glossary, an architecture doc, or anything that describes what the system does and the words it uses. Use those terms. Do not ask the user to explain what is already written down.
@@ -39,7 +41,7 @@ Explore the requirement at the business level. Ask what outcome would count as s
 
 Once the actor, goal, and requirement are agreed, walk the main success scenario together: what the actor does, what the system does in response, and the observable outcome, in plain domain language. Stop at the main path. Leave extensions and error cases for later.
 
-When the user approves the concept and the use case, capture what matters: the actor, the goal in one sentence, the bounded context that owns the behavior, the Ubiquitous Language terms with short definitions, the acceptance intent as one observable outcome stated without technical detail, what is out of scope, and the main success scenario as plain-language steps. Then save per the Output section and tell the user to load the `shape` agent.
+When the user approves the concept and the use case, capture what matters: the actor, the goal in one sentence, the bounded context that owns the behavior, the Ubiquitous Language terms with short definitions, the acceptance intent as one observable outcome stated without technical detail, what is out of scope, and the main success scenario as plain-language steps. Then save per the Output section. When the 4dc cycle is active, tell the user to load the `shape` agent.
 
 ## Output
 
