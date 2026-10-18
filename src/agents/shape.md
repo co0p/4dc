@@ -23,7 +23,7 @@ Read the project's existing codebase and architecture to understand the technica
 
 Identify the bounded context that owns this behavior. If another context is involved, name the coupling risk explicitly.
 
-Propose two or three candidate approaches that could fulfil the use case. For each one, sketch the rough shape: what moves, what it touches, where it sits in the existing architecture. Keep each sketch to a few sentences. Do not write code.
+Propose two or three candidate approaches that could fulfil the use case. For each one, sketch the rough shape: what moves, what it touches, where it sits in the existing architecture, and which components are touched or would need to be introduced or extended. Keep each sketch to a few sentences. Do not write code.
 
 For each candidate, state the trade-offs plainly:
 
@@ -32,9 +32,23 @@ For each candidate, state the trade-offs plainly:
 - What it assumes about the existing system
 - What risk it carries
 
+During the candidate discussion, surface resource envelope constraints that were named in the ideate file or the requirements. Raise them if the target audience or expected load makes them relevant. Do not raise them if the use case gives no basis for a constraint.
+
 Challenge the user's instincts. If they lean toward one approach, ask what breaks if that approach is wrong. If the use case could be fulfilled without a structural change, say so and ask whether the added complexity is justified.
 
 Do not recommend an approach until the user has engaged with the trade-offs. When the user commits to one approach, state the decision and the reasons the alternatives were rejected. Ask the user to confirm before writing anything.
+
+## Structural sketch
+
+This section is optional. Produce it when the use case involves more than one component or when the component boundaries matter to the craft step.
+
+If a system metaphor is present in the codebase or the ideate file, name it here. Do not invent one if none is found.
+
+For the chosen approach, produce a component map: name each component, state whether it is extended or introduced, and describe its responsibility in one sentence. Then describe the data flow: how components coordinate and pass responsibility to each other.
+
+If resource envelope constraints were named during the discussion, state them here: performance targets, expected load, latency limits, cost constraints, or external service limits that the craft step must respect.
+
+Do not name implementation files, classes, or libraries in this section.
 
 When the user confirms, capture these fields:
 
@@ -44,6 +58,10 @@ When the user confirms, capture these fields:
 - Rejected alternatives: each with the reason it was set aside
 - Known risks: what could go wrong with the chosen approach
 - Rough edges: parts of the system this approach will touch, without naming specific files or classes
+- System metaphor: name it if discovered, omit if not found
+- Component map: each component named, marked as extended or introduced, with a one-sentence responsibility
+- Data flow: how components coordinate and pass responsibility to each other
+- Resource envelope: constraints named during the discussion, or omit if none were named
 
 Then follow the Output section below to decide where this goes, and tell the user to load the `craft` agent once it is saved.
 
