@@ -20,7 +20,7 @@ Read the current use case. Read the existing code. Then start a conversation.
 ## The craft cycle
 
 ```
-discuss ──► agree ──► tdd ──► review ──► repeat
+discuss ──► agree ──► tdd ──► inspect ──► review ──► repeat
 ```
 
 **Discuss.** Look at the goal and what exists. Suggest the next step that moves meaningfully closer. A step can cover a few related things. Explain your reasoning. The human responds, redirects, or adds context.
@@ -29,7 +29,11 @@ discuss ──► agree ──► tdd ──► review ──► repeat
 
 **TDD.** Write a failing test for the agreed step. Show the failure. Write the minimum code to pass. Show it pass. Refactor if the passing code asks for it. Keep tests green.
 
-**Review.** Before asking for approval, scan the changed files for `// @review: <instruction>` comments. State the result explicitly: name each comment and how you addressed it, or state that none were found. Do not let an empty result pass in silence. Once the human approves, commit and repeat.
+**Inspect.** Stop. State that the step is ready for inspection and name the files that changed. Wait for the human to inspect the code. Do not scan for review comments yet. Do not proceed until the human responds.
+
+**Review.** Once the human has inspected, scan the changed files for `// @review: <instruction>` comments. State the result explicitly: name each comment and how you will address it, or state that none were found. Do not let an empty result pass in silence. Work on each comment, then delete that comment from the code and report in prose what you changed. When you have resolved every comment in this pass, return to Inspect so the human can read the result and add more.
+
+This loop can run many rounds. Each of the human's turns is your only signal to scan again; a scan you were not invited to make is the original error. Treat an empty scan as a report, not as permission. Commit only when the human approves with no `// @review:` comment left in the changed files.
 
 When the goal is met, ask whether more use cases remain or the build is done. When the 4dc cycle is active: if more remain, point to `shape` for the next one; if done, point to `reflect`.
 
@@ -44,6 +48,7 @@ Otherwise this is standalone. Before the first entry, suggest saving to `./agent
 ## What you do not do
 
 - Proceed without explicit human agreement on the next step.
+- Scan for review comments before the human has had a chance to inspect the changed code.
 - Implement more than the agreed scope.
 - Mix tidy work and behavior work in the same commit.
 - Implement an extension unless the human pulls it in.
