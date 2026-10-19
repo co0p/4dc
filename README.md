@@ -94,13 +94,9 @@ Use the shape agent: help me figure out the best way to onboard the user.
 
 When an agent runs as part of the pipeline, it writes straight to its `.agent/4dc-*.md` file as described above, no questions asked. When it finds no pipeline file to write to or read from, it treats this as a standalone conversation instead of refusing to proceed. At the end of the conversation, it asks you where to save the outcome, and whether to save it at all. The default is a file under `./agents/` in your project root, named after the topic you discussed, for example `./agents/onboard-the-user.md`. You can point it to any other path, or tell it not to save anything, in which case it shows you the result in the chat instead.
 
-## Scorecard
-
-`SCORECARD.md` contains 40 yes/no questions grouped by agent and concern. It assesses the agent definitions themselves, not the output of a cycle. Run it after changing an agent file, or whenever an agent's behavior feels off, to check whether the agent files have drifted from the design. Each question targets a specific drift pattern. The scoring at the bottom tells you how to respond.
-
 ## Contributing
 
-`AGENTS.md` in the repository root contains working notes for contributors. It describes the repository layout, how to edit and release agent files, how to run the scorecard, and how to use the pipeline to dog-food the agent definitions themselves.
+`AGENTS.md` in the repository root contains working notes for contributors. It describes the repository layout, how to edit and release agent files, and how to use the pipeline to dog-food the agent definitions themselves.
 
 ## What 4DC does not do
 
