@@ -1,0 +1,1 @@
+The slug is fixed once the first doc is written. If the human wants a different one, every doc for this effort must be renamed together, or the phases will not find each other. The folder stays `.agent/`.

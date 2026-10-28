@@ -17,17 +17,17 @@
    └─────────────────────────────────────┘
 ```
 
-Each agent hands off to the next. Nothing is built until the idea is clear. Nothing is planned in detail before building starts. Nothing is closed without reflection.
+Each agent hands off to the next. Nothing is built until the use case is clear. Nothing is planned in detail before building starts. Nothing is closed without reflection.
 
 Every agent reports the result of each check it runs, even when the result is "none found". This way you always know what the agent looked at and what it did not find, rather than having to infer it from silence.
 
-Each agent also works on its own. You do not need the full pipeline to ask `shape` for a pro/contra discussion, or `ideate` to think through an idea. If the artifact from a previous phase is missing, the agent asks you for the missing context directly, or accepts a pointer to something you already have, instead of refusing to proceed.
+Each agent also works on its own. You do not need the full pipeline to ask `shape` for a pro/contra discussion, or `ideate` to turn a need into a use case. There is no separate standalone mode. Every agent reads what already exists in `.agent/`, asks you for anything missing, or accepts a pointer to something you already have, instead of refusing to proceed. You decide when a phase is done and which phase comes next.
 
 ## The four agents
 
 | Agent | Phase | What it does |
 |---|---|---|
-| `ideate` | Idea | Explores the problem with you at the domain level, then sketches the main success scenario. No code, no files, no implementation. |
+| `ideate` | Use case | Turns a backlog item, story, or need into one sprint-ready use case with actors, a main success scenario, extensions, and acceptance criteria. No code, no implementation. |
 | `shape` | Shape | Proposes candidate technical approaches and drives a pro/contra discussion before one is agreed. |
 | `craft` | Build | Enriches the use case step by step through the craft loop. |
 | `reflect` | Reflect | Disperses learnings into your project docs, runs a short retrospective, and closes the cycle. |
@@ -70,33 +70,40 @@ Tell OpenCode to load the `ideate` agent.
 Use the ideate agent.
 ```
 
-The agent checks the current cycle state and tells you what to do next. If you are starting fresh, it opens the domain conversation.
+The agent lists `.agent/` and tells you what to do next. If no doc fits your idea, it opens the domain conversation.
 
-## Cycle files
+## Working files
 
-The agents write temporary files to `.agent/` during a cycle. All 4dc-owned files are prefixed with `4dc-`. Do not edit them by hand unless you know what you are doing.
+Every phase reads and writes its working docs in `.agent/` at the project root. The folder is the only place the agents look for state, and the installer adds it to `.gitignore`.
 
-| File | Written by | Consumed by |
+Each doc is named `<slug>-<phase>.md`. The slug is a few lowercase words taken from the idea, goal, or decision, and it stays the same across the phases of one piece of work. For example:
+
+| File | Written by | Read by |
 |---|---|---|
-| `.agent/4dc-ideate.md` | `ideate` | `shape` and `craft` — weaved into project docs by `reflect`, then deleted |
-| `.agent/4dc-shape.md` | `shape` | `craft` and `reflect` — deleted at cycle close |
-| `.agent/4dc-craft.md` | `craft` | `reflect` — weaved into project docs, then deleted |
+| `.agent/onboard-the-user-ideate.md` | `ideate` | `shape`, `craft`, `reflect` |
+| `.agent/onboard-the-user-shape.md` | `shape` | `craft`, `reflect` |
+| `.agent/onboard-the-user-craft.md` | `craft` | `reflect` |
+| `.agent/onboard-the-user-reflect.md` | `reflect` | you, when no project doc fits the retrospective |
 
-The `reflect` agent deletes all three files when the cycle closes.
+`reflect` deletes the ideate, shape, and craft docs when the work closes, after you confirm the plan. It leaves the reflect doc and every unrelated file alone.
 
-## Using an agent standalone
+Several efforts can live in the folder at the same time. An agent asks which slug you mean when more than one fits. When a shape doc exists, `craft` reads it instead of asking you to restate the approach.
 
-You can load any agent on its own, for a one-off discussion, without running the rest of the pipeline. For example:
+If you used an earlier version of 4dc, move any `.agent/4dc-*.md` file you want to keep to `.agent/<slug>-<phase>.md`, or remove it. Those old names match the new pattern and would otherwise be read as current state.
+
+## Working one phase at a time
+
+You can load any agent on its own, for a one-off discussion, without running the other phases. For example:
 
 ```text
 Use the shape agent: help me figure out the best way to onboard the user.
 ```
 
-When an agent runs as part of the pipeline, it writes straight to its `.agent/4dc-*.md` file as described above, no questions asked. When it finds no pipeline file to write to or read from, it treats this as a standalone conversation instead of refusing to proceed. At the end of the conversation, it asks you where to save the outcome, and whether to save it at all. The default is a file under `./agents/` in your project root, named after the topic you discussed, for example `./agents/onboard-the-user.md`. You can point it to any other path, or tell it not to save anything, in which case it shows you the result in the chat instead.
+There is no separate standalone mode and no separate output location. The agent lists `.agent/`, reads any doc that fits the question, asks you for what is missing, and saves its own doc to the same folder. At the end of the conversation it suggests a slug and a path; you can rename the slug, or decline a file, in which case the agent shows the result in the chat instead.
 
 ## Contributing
 
-`AGENTS.md` in the repository root contains working notes for contributors. It describes the repository layout, how to edit and release agent files, and how to use the pipeline to dog-food the agent definitions themselves.
+`AGENTS.md` in the repository root contains working notes for contributors. It describes the repository layout and how to edit and release agent files.
 
 ## What 4DC does not do
 
